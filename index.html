@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport optimizado para Smart Devices: Evita zooms accidentales al interactuar -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>El Expediente Nutricional - Smart Devices Edition</title>
+    <!-- Librería para generación de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700;800&display=swap');
+
+        /* ==========================================
+           1. VARIABLES Y ESTILOS BASE (RESPONSIVE)
+           ========================================== */
+        :root {
+            --bg-body: #111827;
+            --paper-color: #f7f4ee; 
+            --paper-right: #fbf9f5;
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            --primary-color: #1a365d;
+            --accent-color: #2b6cb0;
+            --border-color: #cbd5e0;
+            --badge-facil: #276749;
+            --badge-intermedio: #d69e2e;
+            --badge-dificil: #9b2c2c;
+            --touch-target: 44px; /* Tamaño táctil mínimo recomendado */
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            /* Mejora la fluidez del scroll en iOS y previene retardos al tocar */
+            touch-action: manipulation; 
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 10px;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* OVERLAY DE CARGA */
+        #pdfLoadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(17, 24, 39, 0.95);
+            z-index: 999999;
+            color: white;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ==========================================
+           2. BARRA DE CONTROLES FLUIDA Y TÁCTIL
+           ========================================== */
+        .controls-bar {
+            background-color: #1f2937;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 1000px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            color: #fff;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .controls-bar select {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #4b5563;
+            background-color: #374151;
+            color: #fff;
+            font-size: 16px; /* Evita zoom automático en iPhone/Safari */
+            width: 100%;
+            min-height: var(--touch-target);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .btn-print {
+            flex: 1;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            min-height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: opacity 0.2s;
+        }
+
+        .btn-print:active {
+            opacity: 0.8;
+        }
+
+        /* ==========================================
+           3. ESTRUCTURA FLUIDA (MÓVIL / TABLET)
+           ========================================== */
+        .book-spread-page {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--paper-color);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column; /* Apilado vertical por defecto en móviles */
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .page-left, .page-right {
+            width: 100%;
+            padding: 20px 16px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-left {
+            border-bottom: 2px dashed var(--border-color);
+        }
+
+        .page-right {
+            background-color: var(--paper-right);
+            gap: 15px;
+        }
+
+        /* ==========================================
+           4. ELEMENTOS INTERNOS Y TABLAS
+           ========================================== */
+        .case-number {
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .case-title {
+            font-size: clamp(18px, 5vw, 22px);
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 0 0 8px 0;
+            line-height: 1.25;
+        }
+
+        .badge-difficulty {
+            display: inline-block;
+            color: #fff;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .badge-facil { background-color: var(--badge-facil); }
+        .badge-intermedio { background-color: var(--badge-intermedio); }
+        .badge-dificil { background-color: var(--badge-dificil); }
+
+        .context-box {
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-muted);
+            background: #eae5de;
+            padding: 12px;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 14px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            margin: 12px 0 6px 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+        }
+
+        .elements-summary {
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .clues-list {
+            padding-left: 20px;
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .clues-list li {
+            margin-bottom: 8px;
+        }
+
+        .matrix-header-title {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        /* TABLA CON SCROLL HORIZONTAL SUAVE EN MÓVILES */
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        table.grid-table {
+            width: 100%;
+            min-width: 320px; /* Garantiza la integridad de la matriz */
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        table.grid-table th {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 8px 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        table.grid-table td {
+            border: 1px solid var(--border-color);
+            height: 40px; /* Área óptima para toque táctil */
+            text-align: center;
+            font-size: 14px;
+        }
+
+        table.grid-table td.row-label {
+            text-align: left;
+            padding-left: 8px;
+            font-weight: 700;
+            background-color: #edf2f7;
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        tr.category-divider td {
+            border-top: 2px solid var(--primary-color) !important;
+        }
+
+        .notes-area {
+            border: 1px dashed #a0aec0;
+            border-radius: 6px;
+            min-height: 90px;
+            padding: 10px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+            background-color: #fff;
+            width: 100%;
+        }
+
+        .notes-area:empty:before {
+            content: attr(data-placeholder);
+            color: #a0aec0;
+        }
+
+        .solution-toggle {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 20px;
+        }
+
+        details {
+            background: #1f2937;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #90cdf4;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .solution-content {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #374151;
+            line-height: 1.5;
+        }
+
+        .solution-pill {
+            background: #2d3748;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-style: italic;
+            color: #e2e8f0;
+            font-size: 12.5px;
+        }
+
+        /* ==========================================
+           5. ADAPTATIVIDAD PARA TABLETS Y ESCRITORIO
+           ========================================== */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .controls-bar {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 15px 25px;
+            }
+
+            .control-group {
+                flex-direction: row;
+                align-items: center;
+                width: auto;
+            }
+
+            .controls-bar select {
+                width: auto;
+                min-width: 280px;
+            }
+
+            .button-group {
+                width: auto;
+            }
+
+            .book-spread-page {
+                flex-direction: row;
+                min-height: 520px;
+            }
+
+            .page-left, .page-right {
+                width: 50%;
+                padding: 25px;
+            }
+
+            .page-left {
+                border-bottom: none;
+                border-right: 1px dashed var(--border-color);
+            }
+        }
+
+        /* Estilos específicos para renderizado óptimo de PDF */
+        .pdf-export-mode {
+            width: 10.6in !important;
+            height: 8.1in !important;
+            flex-direction: row !important;
+            background: #f7f4ee !important;
+            margin: 0 !important;
+        }
+        .pdf-export-mode .page-left, 
+        .pdf-export-mode .page-right {
+            width: 50% !important;
+            padding: 0.35in 0.4in !important;
+        }
+        .pdf-export-mode .page-left {
+            border-bottom: none !important;
+            border-right: 1px dashed #cbd5e0 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pdfLoadingOverlay">
+        <h2>📄 Generando Expediente en PDF...</h2>
+        <p>Optimizando formato para impresión...</p>
+    </div>
+
+    <div class="controls-bar">
+        <div class="control-group">
+            <label for="caseSelect"><strong>Expediente: </strong></label>
+            <select id="caseSelect" onchange="loadCase(this.value)"></select>
+        </div>
+        <div class="button-group">
+            <button class="btn-print" onclick="generarPDFCasoActual()">📄 Caso Actual</button>
+            <button class="btn-print" onclick="generarPDFLibroCompleto()" style="background-color: #276749;">
+                📚 Todos los Casos
+            </button>
+        </div>
+    </div>
+
+    <!-- VISTA EN PANTALLA -->
+    <div class="book-spread-page" id="vistaPantalla">
+        <div class="page-left" id="pIzquierda"></div>
+        <div class="page-right" id="pDerecha"></div>
+    </div>
+
+    <div class="solution-toggle">
+        <details>
+            <summary>Ver Solución Oficial y Píldora Científica</summary>
+            <div class="solution-content">
+                <p><strong>Resolución Lógica:</strong> <span id="solResolution"></span></p>
+                <div class="solution-pill" id="solPill"></div>
+            </div>
+        </details>
+    </div>
+
+    <script>
+        const casosBD = [
+            {
+                id: 1,
+                num: "EXPEDIENTE #001",
+                titulo: "El Enigma del Desayuno Sospechoso",
+                dificultad: "Fácil (Matriz 3x3)",
+                dificultadClass: "badge-facil",
+                contexto: "Tres compañeros de piso decidieron comenzar una vida más saludable y compraron productos 'fit'. Días después, un nutricionista descubrió que cada producto escondía un ingrediente no esperado. Destapa qué desayunó cada uno.",
+                catA: { titulo: "Personas", items: ["Marta", "Luis", "Sofía"] },
+                catB: { titulo: "Alimentos", items: ["Cereal integral", "Yogur griego", "Tostada c/ aguacate"] },
+                catC: { titulo: "Ingrediente", items: ["Jarabe de maíz (HFCS)", "Maltodextrina", "Lecitina de soja"] },
+                pistas: [
+                    "El cereal integral escondía jarabe de maíz alto en fructosa en su etiqueta.",
+                    "La tostada con aguacate no contenía maltodextrina.",
+                    "Marta no comió cereal integral.",
+                    "Luis no consumió yogur griego.",
+                    "Sofía es intolerante a la lactosa (no elige yogur) y tampoco tolera la lecitina de soja."
+                ],
+                solucion: "Luis → Tostada con aguacate → Lecitina de soja | Marta → Yogur griego → Maltodextrina | Sofía → Cereal integral → Jarabe de maíz alto en fructosa.",
+                pildora: "El jarabe de maíz alto en fructosa se metaboliza casi exclusivamente en el hígado, sin generar la misma respuesta de saciedad que la glucosa, favoreciendo el consumo excesivo. La lecitina de soja, aunque segura, puede desencadenar reacciones en sensibilizados a la soja."
+            },
+            {
+                id: 2,
+                num: "EXPEDIENTE #002",
+                titulo: "La Trampa del Etiquetado 'Sin Azúcar'",
+                dificultad: "Fácil (Matriz 3x3)",
+                dificultadClass: "badge-facil",
+                contexto: "Un inspector de consumo recibe tres denuncias sobre productos 'sin azúcar' que resultaron tener efectos digestivos inesperados. Cada producto usaba un edulcorante distinto. Ayuda al inspector a cerrar el expediente.",
+                catA: { titulo: "Personas", items: ["Pedro", "Carla", "Diego"] },
+                catB: { titulo: "Productos", items: ["Mermelada light", "Chocolate sin azúcar", "Bebida isotónica"] },
+                catC: { titulo: "Edulcorante", items: ["Maltitol", "Sucralosa", "Estevia"] },
+                pistas: [
+                    "El chocolate 'sin azúcar' utilizaba maltitol como edulcorante principal.",
+                    "La bebida isotónica no contenía estevia.",
+                    "Pedro no consumió el chocolate 'sin azúcar'.",
+                    "Carla no bebió la bebida isotónica.",
+                    "Diego es diabético y evita el maltitol por su efecto laxante en dosis altas, y tampoco eligió nunca la mermelada light."
+                ],
+                solucion: "Diego → Bebida isotónica → Sucralosa | Pedro → Mermelada light → Estevia | Carla → Chocolate 'sin azúcar' → Maltitol.",
+                pildora: "El maltitol es un polialcohol que el intestino absorbe parcialmente; el resto fermenta en el colon produciendo gases y efecto laxante en dosis >20-30g. La estevia se compone de glucósidos no calóricos que no afectan la glucemia."
+            },
+            {
+                id: 3,
+                num: "EXPEDIENTE #003",
+                titulo: "El Falso Aceite de Oliva Virgen Extra",
+                dificultad: "Intermedio (Matriz 3x3)",
+                dificultadClass: "badge-intermedio",
+                contexto: "El laboratorio de calidad recibe tres muestras de aceite 'Virgen Extra'. El análisis revela que las tres han sido adulteradas de formas diferentes. Descubre qué analista detectó cada fraude.",
+                catA: { titulo: "Analistas", items: ["Ana", "Javier", "Rocío"] },
+                catB: { titulo: "Muestras", items: ["Finca Real", "Dorado del Sur", "Oliva Premium"] },
+                catC: { titulo: "Adulterante", items: ["Girasol refinado", "Aceite de orujo", "Clorofila añadida"] },
+                pistas: [
+                    "La muestra 'Finca Real' resultó tener aceite de girasol refinado mezclado.",
+                    "'Dorado del Sur' no contenía clorofila añadida.",
+                    "Ana no analizó la muestra 'Finca Real'.",
+                    "Javier no analizó 'Oliva Premium'.",
+                    "Rocío detectó el adulterante que aporta color pero no aroma auténtico, y no fue ella quien analizó 'Dorado del Sur'."
+                ],
+                solucion: "Rocío → Oliva Premium → Clorofila añadida | Ana → Dorado del Sur → Aceite de orujo | Javier → Finca Real → Girasol refinado.",
+                pildora: "La clorofila se añade fraudulentamente para simular el color verde intenso del aceite recién prensado, sin aportar sus polifenoles. El aceite de orujo procede de la extracción con disolventes de los restos de alperujo."
+            },
+            {
+                id: 4,
+                num: "EXPEDIENTE #004",
+                titulo: "El Batido Proteico que no era lo que Prometía",
+                dificultad: "Intermedio (Matriz 3x3)",
+                dificultadClass: "badge-intermedio",
+                contexto: "Tres deportistas compraron batidos proteicos confiando en sus etiquetas. Un análisis reveló que cada batido tenía un 'ingrediente sorpresa' que reducía su valor real. Determina qué tomó cada uno.",
+                catA: { titulo: "Deportistas", items: ["Marcos", "Elena", "Tomás"] },
+                catB: { titulo: "Batidos", items: ["Vainilla Pro", "Chocolate Fit", "Frutos Rojos"] },
+                catC: { titulo: "Ingrediente", items: ["Maltodextrina diluyente", "Soja no declarada", "Exceso de azúcares"] },
+                pistas: [
+                    "El batido 'Vainilla Pro' diluía la proteína de suero con maltodextrina para abaratar costos.",
+                    "El batido de Frutos Rojos no llevaba azúcares añadidos en exceso.",
+                    "Marcos no tomó el batido de Vainilla Pro.",
+                    "Elena no tomó el batido de Chocolate Fit.",
+                    "Tomás es alérgico a la soja (no compra Frutos Rojos) y tampoco detectó el exceso de azúcar."
+                ],
+                solucion: "Tomás → Vainilla Pro → Maltodextrina diluyente | Marcos → Chocolate Fit → Exceso de azúcares | Elena → Frutos Rojos → Soja no declarada.",
+                pildora: "La maltodextrina es un carbohidrato de rápida absorción usado como relleno barato; reduce el porcentaje real de proteína. Declarar la soja es obligatorio en la UE por ser uno de los 14 alérgenos principales."
+            },
+            {
+                id: 5,
+                num: "EXPEDIENTE #005",
+                titulo: "El Misterio del Pan Artesanal 'Sin Gluten'",
+                dificultad: "Intermedio (Matriz 3x3)",
+                dificultadClass: "badge-intermedio",
+                contexto: "Una asociación de celíacos denuncia tres panaderías por posible fraude. Un inspector encuentra un problema distinto en cada una. Descubre qué pan compró cada cliente y qué falló.",
+                catA: { titulo: "Clientes", items: ["Beatriz", "Rodrigo", "Nuria"] },
+                catB: { titulo: "Panes", items: ["Pan de arroz", "Trigo sarraceno", "Pan multicereales"] },
+                catC: { titulo: "Fraude", items: ["Contaminación cruzada", "Almidón trigo modificado", "Centeno no declarado"] },
+                pistas: [
+                    "El pan multicereales 'sin gluten' presentó contaminación cruzada con trigo durante el envasado.",
+                    "El pan de arroz no contenía harina de centeno no declarada.",
+                    "Beatriz no compró el pan multicereales.",
+                    "Rodrigo no compró el pan de arroz.",
+                    "Nuria es celíaca diagnosticada (evita la contaminación cruzada) y tampoco detectó el centeno oculto."
+                ],
+                solucion: "Nuria → Pan de arroz → Almidón de trigo modificado | Beatriz → Trigo sarraceno → Centeno no declarado | Rodrigo → Pan multicereales → Contaminación cruzada.",
+                pildora: "Para un celíaco, trazas mínimas (<20 ppm) pueden desencadenar respuesta inmune. La contaminación cruzada durante el envasado es la causa más común de alerta sanitaria en panaderías mixtas."
+            },
+            {
+                id: 6,
+                num: "EXPEDIENTE #006",
+                titulo: "La Miel que no era Miel",
+                dificultad: "Fácil (Matriz 3x3)",
+                dificultadClass: "badge-facil",
+                contexto: "Un apicultor denuncia que tres tarros de 'miel pura' en mercadillos podrían estar adulterados. Un analista determina el origen y el fraude mediante pruebas de isótopos.",
+                catA: { titulo: "Puestos", items: ["Puesto Dorado", "Puesto Campestre", "Puesto Real"] },
+                catB: { titulo: "Tipo Miel", items: ["Miel de azahar", "Miel de romero", "Miel milflores"] },
+                catC: { titulo: "Adulterante", items: ["Jarabe de arroz", "Jarabe de maíz", "Azúcar invertido"] },
+                pistas: [
+                    "La miel etiquetada como 'de romero' contenía jarabe de arroz añadido.",
+                    "La miel milflores no tenía azúcar invertido industrial.",
+                    "El Puesto Dorado no vendía la miel de romero.",
+                    "El Puesto Campestre no vendía la miel milflores.",
+                    "El Puesto Real fue el único que dio positivo en jarabe de maíz, y no correspondía a la miel de azahar."
+                ],
+                solucion: "Puesto Campestre → Miel de romero → Jarabe de arroz | Puesto Real → Miel milflores → Jarabe de maíz | Puesto Dorado → Miel de azahar → Azúcar invertido.",
+                pildora: "El jarabe de arroz es difícil de detectar por análisis de azúcares convencionales, requiriendo espectrometría de masas de isótopos (SMI-RMN). La adulteración reduce el contenido real de enzimas y antioxidantes."
+            },
+            {
+                id: 7,
+                num: "EXPEDIENTE #007",
+                titulo: "El Enigma del Queso Vegano Impostor",
+                dificultad: "Fácil (Matriz 3x3)",
+                dificultadClass: "badge-facil",
+                contexto: "Tres veganos compraron 'quesos veganos' para una cena. Un nutricionista descubrió que cada producto tenía un componente no apto para veganos. Ayúdales a identificar el fraude.",
+                catA: { titulo: "Comensales", items: ["Iván", "Paula", "Óscar"] },
+                catB: { titulo: "Queso Vegano", items: ["Queso anacardos", "Queso de coco", "Queso almendras"] },
+                catC: { titulo: "Ingrediente No Vegano", items: ["Caseinato de sodio", "Vitamina D3 animal", "Cuajo animal residual"] },
+                pistas: [
+                    "El queso de coco contenía caseinato de sodio, derivado de la leche.",
+                    "El queso de almendras no llevaba cuajo animal residual.",
+                    "Iván no compró el queso de coco.",
+                    "Paula no compró el queso de anacardos.",
+                    "Óscar revisa siempre las vitaminas; su queso contenía vitamina D3 de origen animal, y no fue el de almendras."
+                ],
+                solucion: "Paula → Queso de coco → Caseinato de sodio | Óscar → Queso anacardos → Vitamina D3 animal | Iván → Queso almendras → Cuajo animal residual.",
+                pildora: "El caseinato de sodio se añade en quesos procesados para fundir mejor, pero procede de la leche. La D3 (colecalciferol) se suele extraer de la lana de oveja, mientras que la D2 es apta para veganos."
+            },
+            {
+                id: 8,
+                num: "EXPEDIENTE #008",
+                titulo: "Café Descafeinado... ¿De Verdad?",
+                dificultad: "Fácil (Matriz 3x3)",
+                dificultadClass: "badge-facil",
+                contexto: "Tres pacientes con hipertensión sufren palpitaciones tras consumir 'café descafeinado'. Un análisis revela distintos niveles de cafeína residual según el método de procesado.",
+                catA: { titulo: "Pacientes", items: ["Fernando", "Gloria", "Raúl"] },
+                catB: { titulo: "Marcas Café", items: ["Café Suave", "Café Montaña", "Café Aroma"] },
+                catC: { titulo: "Método", items: ["Cloruro de metileno", "Agua (Swiss Water)", "CO2 supercrítico"] },
+                pistas: [
+                    "'Café Montaña' utilizaba el proceso con disolvente (cloruro de metileno), dejando mayor cafeína residual.",
+                    "'Café Aroma' no utilizaba el proceso de CO2 supercrítico.",
+                    "Fernando no consumía 'Café Montaña'.",
+                    "Gloria no consumía 'Café Suave'.",
+                    "Raúl presentó la mayor cafeína residual en sangre y no consumía 'Café Aroma'."
+                ],
+                solucion: "Raúl → Café Montaña → Cloruro de metileno | Gloria → Café Aroma → Agua (Swiss Water) | Fernando → Café Suave → CO2 supercrítico.",
+                pildora: "El descafeinado por disolventes puede dejar hasta un 3-5% de cafeína residual, afectando a hipertensos. El método Swiss Water usa solo agua y carbón activado, siendo el más puro."
+            },
+            {
+                id: 9,
+                num: "EXPEDIENTE #009",
+                titulo: "El Caso de la Mermelada '0% Azúcar Añadido'",
+                dificultad: "Fácil (Matriz 3x3)",
+                dificultadClass: "badge-facil",
+                contexto: "Tres diabéticos sufrieron picos de glucosa tras consumir mermeladas '0% azúcar añadido'. Su endocrina investiga la fuente de azúcar natural concentrado usada.",
+                catA: { titulo: "Pacientes", items: ["Consuelo", "Manuel", "Alicia"] },
+                catB: { titulo: "Mermeladas", items: ["Mermelada fresa", "Mermelada melocotón", "Mermelada albaricoque"] },
+                catC: { titulo: "Endulzante", items: ["Zumo uva concentrado", "Puré de dátil", "Jarabe de agave"] },
+                pistas: [
+                    "La mermelada de melocotón utilizaba zumo de uva concentrado.",
+                    "La mermelada de albaricoque no contenía jarabe de agave.",
+                    "Consuelo no compró la mermelada de melocotón.",
+                    "Manuel no compró la mermelada de fresa.",
+                    "Alicia sufrió el pico más alto (endulzante con mayor fructosa libre) y no compró la de albaricoque."
+                ],
+                solucion: "Manuel → Mermelada melocotón → Zumo uva concentrado | Alicia → Mermelada fresa → Jarabe de agave | Consuelo → Mermelada albaricoque → Puré de dátil.",
+                pildora: "La etiqueta 'sin azúcar añadido' prohíbe la sacarosa, pero permite concentrados de fruta ricos en fructosa libre. El jarabe de agave llega a tener hasta un 85% de fructosa libre."
+            },
+            {
+                id: 10,
+                num: "EXPEDIENTE #010",
+                titulo: "La Sal Rosa del Himalaya: ¿Mito o Realidad?",
+                dificultad: "Fácil (Matriz 3x3)",
+                dificultadClass: "badge-facil",
+                contexto: "Tres influencers promocionan sales 'premium' prometiendo beneficios milagrosos. Un químico analista desmiente sus afirmaciones analizando la composición mineral.",
+                catA: { titulo: "Influencers", items: ["Valeria", "Bruno", "Camila"] },
+                catB: { titulo: "Sal Premium", items: ["Sal rosa Himalaya", "Sal negra Kala Namak", "Fleur de Sel marina"] },
+                catC: { titulo: "Afirmación Falsa", items: ["84 minerales relevantes", "Baja la presión arterial", "Libre de microplásticos"] },
+                pistas: [
+                    "La sal rosa del Himalaya fue promocionada falsamente afirmando que contenía 84 minerales en cantidad relevante.",
+                    "La sal negra Kala Namak no fue asociada a la afirmación sobre microplásticos.",
+                    "Valeria no promocionaba la sal rosa del Himalaya.",
+                    "Bruno no promocionaba la Fleur de Sel marina.",
+                    "Camila afirmó falsamente que su sal reducía la presión arterial, y no promocionaba la Kala Namak."
+                ],
+                solucion: "Bruno → Sal rosa Himalaya → 84 minerales relevantes | Camila → Sal negra Kala Namak → Baja la presión arterial | Valeria → Fleur de Sel marina → Libre de microplásticos.",
+                pildora: "Todas las sales comerciales son ~97-98% cloruro de sodio; ninguna reduce la presión por sí misma. Los minerales traza en la sal rosa están en cantidades milimétricas sin impacto nutricional real."
+            },
+            {
+                id: 11,
+                num: "EXPEDIENTE #011",
+                titulo: "El Suplemento Deportivo Contaminado",
+                dificultad: "Intermedio (Matriz 3x3)",
+                dificultadClass: "badge-intermedio",
+                contexto: "Un laboratorio antidopaje analiza tres suplementos tras las quejas de tres atletas. Cada producto esconde un contaminante que explica sus síntomas o analíticas anómalas.",
+                catA: { titulo: "Usuarios", items: ["Hugo", "Irene", "Damián"] },
+                catB: { titulo: "Suplementos", items: ["Creatina monohidrato", "Proteína Whey", "Multivitamínico"] },
+                catC: { titulo: "Contaminante", items: ["Plomo (Metal pesado)", "Esteroides no declarados", "Exceso Vitamina A"] },
+                pistas: [
+                    "La creatina monohidrato dio positivo en metales pesados (plomo).",
+                    "El multivitamínico no contenía esteroides anabolizantes no declarados.",
+                    "Hugo no tomaba creatina monohidrato.",
+                    "Irene no tomaba proteína whey.",
+                    "Damián presentó toxicidad por vitamina A tras tomar su suplemento multivitamínico habitual."
+                ],
+                solucion: "Irene → Creatina monohidrato → Plomo | Hugo → Proteína Whey → Esteroides no declarados | Damián → Multivitamínico → Exceso Vitamina A.",
+                pildora: "La creatina de baja pureza puede arrastrar metales pesados en su síntesis industrial. La vitamina A es liposoluble y su exceso se acumula en el hígado provocando toxicidad ósea y hepática."
+            },
+            {
+                id: 12,
+                num: "EXPEDIENTE #012",
+                titulo: "El Zumo '100% Natural' que no lo era",
+                dificultad: "Intermedio (Matriz 3x3)",
+                dificultadClass: "badge-intermedio",
+                contexto: "Tres consumidores confiaron en la etiqueta '100% natural' de sus zumos. Un laboratorio reveló que cada botella escondía un aditivo no declarado que violaba la promesa.",
+                catA: { titulo: "Compradores", items: ["Sara", "Vicente", "Lorena"] },
+                catB: { titulo: "Zumos", items: ["Zumo de naranja", "Zumo de manzana", "Zumo multifrutas"] },
+                catC: { titulo: "Fraude Oculto", items: ["Sulfitos no declarados", "Azúcar de concentrado", "Colorante E-102"] },
+                pistas: [
+                    "El zumo de manzana contenía azúcar añadido disfrazado como 'concentrado de zumo'.",
+                    "El zumo multifrutas no llevaba sulfitos no declarados.",
+                    "Sara no compró el zumo de manzana.",
+                    "Vicente no compró el zumo de naranja.",
+                    "Lorena sufrió una reacción alérgica por sulfitos (no compró el zumo multifrutas)."
+                ],
+                solucion: "Vicente → Zumo de manzana → Azúcar de concentrado | Lorena → Zumo de naranja → Sulfitos no declarados | Sara → Zumo multifrutas → Colorante E-102.",
+                pildora: "Los sulfitos (E-220 a E-228) son conservantes cuyo etiquetado es obligatorio si superan los 10 mg/kg por sus posibles reacciones asmáticas y cutáneas en personas sensibles."
+            },
+            {
+                id: 13,
+                num: "EXPEDIENTE #013",
+                titulo: "La Barrita Energética con Sorpresa",
+                dificultad: "Intermedio (Matriz 3x3)",
+                dificultadClass: "badge-intermedio",
+                contexto: "Tres deportistas sufrieron molestias tras consumir barritas energéticas 'saludables'. Un análisis reveló que cada barrita ocultaba un ingrediente no anunciado con claridad.",
+                catA: { titulo: "Deportistas", items: ["Nicolás", "Patricia", "Álvaro"] },
+                catB: { titulo: "Barritas", items: ["Barrita de avena", "Barrita chocolate Fit", "Barrita frutos secos"] },
+                catC: { titulo: "Ingrediente Oculto", items: ["Trazas de cacahuete", "Exceso jarabe glucosa", "Aceite palma hidrogenado"] },
+                pistas: [
+                    "La barrita proteica de chocolate contenía exceso de jarabe de glucosa pese a anunciarse 'baja en azúcar'.",
+                    "La barrita de avena no llevaba aceite de palma hidrogenado.",
+                    "Nicolás no compró la barrita de chocolate.",
+                    "Patricia no compró la barrita de avena.",
+                    "Álvaro sufrió alergia por trazas de cacahuete no declaradas, presentes en la barrita de avena."
+                ],
+                solucion: "Álvaro → Barrita de avena → Trazas de cacahuete | Patricia → Barrita chocolate Fit → Exceso jarabe glucosa | Nicolás → Barrita frutos secos → Aceite palma hidrogenado.",
+                pildora: "El aceite de palma hidrogenado aporta grasas saturadas y trans perjudiciales para la salud cardiovascular. Las trazas de cacahuete son causa frecuente de shock anafiláctico grave."
+            },
+            {
+                id: 14,
+                num: "EXPEDIENTE #014",
+                titulo: "El Caso del Huevo 'Camperas' Falso",
+                dificultad: "Intermedio (Matriz 3x3)",
+                dificultadClass: "badge-intermedio",
+                contexto: "Una asociación denuncia tres marcas de huevos por fraude en su código de producción. Un inspector examina los sellos impresos en la cáscara y detecta abusos.",
+                catA: { titulo: "Consumidores", items: ["Teresa", "Ignacio", "Beatriz"] },
+                catB: { titulo: "Etiqueta Huevos", items: ["Camperos (Código 1)", "Ecológicos (Código 0)", "De suelo (Código 2)"] },
+                catC: { titulo: "Fraude Real", items: ["Jaula reetiquetada (3)", "Sin certificación eco", "Mezcla de códigos"] },
+                pistas: [
+                    "Los huevos 'camperos' código 1 procedían de gallinas en jaula (código 3) reetiquetadas.",
+                    "Los huevos 'de suelo' código 2 no presentaban mezcla de distintos códigos.",
+                    "Teresa no compró huevos 'camperos'.",
+                    "Ignacio no compró huevos 'ecológicos'.",
+                    "Beatriz descubrió una mezcla de códigos en su cartón; ella nunca compra huevos 'de suelo'."
+                ],
+                solucion: "Ignacio → Camperos (Código 1) → Jaula reetiquetada (3) | Teresa → De suelo (Código 2) → Sin certificación eco | Beatriz → Ecológicos (Código 0) → Mezcla de códigos.",
+                pildora: "El número impreso en la cáscara (0=Eco, 1=Campero, 2=Suelo, 3=Jaula) es la única garantía legal de cría. La reetiquetación fraudulenta de huevos de jaula es un delito de estafa alimentaria común."
+            },
+            {
+                id: 15,
+                num: "EXPEDIENTE #015",
+                titulo: "El Yogur Probiótico sin Bacterias Vivas",
+                dificultad: "Intermedio (Matriz 3x3)",
+                dificultadClass: "badge-intermedio",
+                contexto: "Tres pacientes con molestias no notaron mejora al tomar yogures 'probióticos'. Un análisis microbiológico comprobó que cada marca fallaba en la viabilidad bacteriana.",
+                catA: { titulo: "Pacientes", items: ["Cristina", "Rubén", "Marisol"] },
+                catB: { titulo: "Yogures", items: ["Marca A", "Marca B", "Marca C"] },
+                catC: { titulo: "Fallo Probiótico", items: ["Pasteurización posterior", "UFC Insuficientes", "Cepa muere en ácido"] },
+                pistas: [
+                    "El yogur marca A fue pasteurizado tras la fermentación, matando las bacterias vivas.",
+                    "El yogur marca C no tenía concentración de UFC insuficiente.",
+                    "Cristina no compró la marca A.",
+                    "Rubén no compró la marca B.",
+                    "Marisol usaba una cepa que moría ante el ácido estomacal por carecer de recubrimiento entérico (no compró la A)."
+                ],
+                solucion: "Rubén → Marca A → Pasteurización posterior | Cristina → Marca B → UFC Insuficientes | Marisol → Marca C → Cepa muere en ácido.",
+                pildora: "Para surtir efecto probiótico, el yogur debe aportar $10^6$-$10^7$ UFC/g al consumirlo. Si no cuenta con protección entérica, la mayoría de las bacterias mueren bajo el ácido estomacal (pH 1.5-3)."
+            }
+        ];
+
+        function initApp() {
+            const select = document.getElementById('caseSelect');
+            select.innerHTML = "";
+            casosBD.forEach(caso => {
+                const opt = document.createElement('option');
+                opt.value = caso.id;
+                opt.textContent = `${caso.num}: ${caso.titulo}`;
+                select.appendChild(opt);
+            });
+            loadCase(1);
+        }
+
+        function renderCasoHTML(c) {
+            return `
+                <div class="page-left">
+                    <div class="case-number">${c.num}</div>
+                    <h1 class="case-title">${c.titulo}</h1>
+                    <span class="badge-difficulty ${c.dificultadClass}">NIVEL: ${c.dificultad}</span>
+                    <div class="context-box">${c.contexto}</div>
+                    <div class="section-title">📌 Elementos a Deducir</div>
+                    <div class="elements-summary">
+                        <div><strong>${c.catA.titulo}:</strong> ${c.catA.items.join(', ')}</div>
+                        <div><strong>${c.catB.titulo}:</strong> ${c.catB.items.join(', ')}</div>
+                        <div><strong>${c.catC.titulo}:</strong> ${c.catC.items.join(', ')}</div>
+                    </div>
+                    <div class="section-title">🔍 Pistas Deductivas</div>
+                    <ol class="clues-list">
+                        ${c.pistas.map(p => `<li>${p}</li>`).join('')}
+                    </ol>
+                </div>
+                <div class="page-right">
+                    <div>
+                        <div class="matrix-header-title">Matriz de Deducción Lógica</div>
+                        <div class="table-responsive-wrapper">
+                            <table class="grid-table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:left; padding-left:8px;">VARIABLES</th>
+                                        <th width="26%">${c.catA.items[0]}</th>
+                                        <th width="26%">${c.catA.items[1]}</th>
+                                        <th width="26%">${c.catA.items[2]}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${c.catB.items.map(item => `
+                                        <tr>
+                                            <td class="row-label">${item}</td>
+                                            <td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td>
+                                        </tr>
+                                    `).join('')}
+                                    ${c.catC.items.map((item, idx) => `
+                                        <tr ${idx === 0 ? 'class="category-divider"' : ''}>
+                                            <td class="row-label">${item}</td>
+                                            <td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-title" style="margin-top:0;">📝 Notas de Investigación</div>
+                        <div class="notes-area" contenteditable="true" data-placeholder="Toca aquí para escribir tus notas o hipótesis..."></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadCase(id) {
+            const c = casosBD.find(item => item.id == id);
+            if (!c) return;
+
+            document.getElementById('vistaPantalla').innerHTML = renderCasoHTML(c);
+            document.getElementById('solResolution').textContent = c.solucion;
+            document.getElementById('solPill').innerHTML = `<strong>💡 Píldora Científica:</strong> ${c.pildora}`;
+        }
+
+        window.onload = initApp;
+
+        /* ==========================================
+           EXPORTACIÓN A PDF HORIZONTAL (FORMATO LIBRO IMPRESO)
+           ========================================== */
+        async function exportarA_PDF_Horizontal(contenedorHTML, nombreArchivo) {
+            document.body.appendChild(contenedorHTML);
+
+            const opciones = {
+                margin: 0,
+                filename: nombreArchivo,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' },
+                pagebreak: { mode: ['css', 'legacy'] }
+            };
+
+            try {
+                await html2pdf().set(opciones).from(contenedorHTML).save();
+            } finally {
+                document.body.removeChild(contenedorHTML);
+            }
+        }
+
+        async function generarPDFCasoActual() {
+            const select = document.getElementById('caseSelect');
+            const casoActual = casosBD.find(c => c.id == select.value);
+            
+            const tempDiv = document.createElement('div');
+            const pagina = document.createElement('div');
+            pagina.className = 'book-spread-page pdf-export-mode';
+            pagina.innerHTML = renderCasoHTML(casoActual);
+            tempDiv.appendChild(pagina);
+
+            await exportarA_PDF_Horizontal(tempDiv, `${casoActual.num}_Horizontal.pdf`);
+        }
+
+        async function generarPDFLibroCompleto() {
+            const overlay = document.getElementById('pdfLoadingOverlay');
+            overlay.style.display = 'flex';
+
+            const tempDiv = document.createElement('div');
+            casosBD.forEach(caso => {
+                const pagina = document.createElement('div');
+                pagina.className = 'book-spread-page pdf-export-mode';
+                pagina.innerHTML = renderCasoHTML(caso);
+                tempDiv.appendChild(pagina);
+            });
+
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await exportarA_PDF_Horizontal(tempDiv, 'El_Expediente_Nutricional_15_Casos.pdf');
+            overlay.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
