@@ -4,7 +4,7 @@ on:
   schedule:
     # Se ejecuta todos los días a las 08:00 UTC (ajusta la hora si lo deseas)
     - cron: '0 8 * * *'
-  workflow_dispatch: # Te permite ejecutarlo manualmente cuando quieras desde GitHub
+  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub
 
 jobs:
   ejecutar-script:
@@ -25,7 +25,4 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Ejecutar script principal
-        env:
-          # Descomenta esta línea si usas algún Secret configurado en GitHub:
-          # API_KEY: ${{ secrets.MI_API_KEY }}
         run: python tu_script.py
