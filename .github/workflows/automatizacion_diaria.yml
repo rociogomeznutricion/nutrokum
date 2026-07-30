@@ -1,28 +1,43 @@
-name: Automatización Diaria
+name: Publicar Reto Diario Murdokus
 
 on:
   schedule:
-    # Se ejecuta todos los días a las 08:00 UTC (ajusta la hora si lo deseas)
-    - cron: '0 8 * * *'
-  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub
+    # Se ejecuta todos los días a las 00:00 UTC (medianoche)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Te permite ejecutarlo manualmente con un botón desde GitHub para hacer pruebas
 
 jobs:
-  ejecutar-script:
+  publicar:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Descargar el repositorio
-        uses: actions/checkout@v4
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v3
 
-      - name: Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Instalar dependencias
+      - name: Copiar el caso correspondiente al día de hoy
         run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Detecta el Año-Mes actual (ejemplo: "2026-08")
+          CARPETA_MES=$(date +%Y-%m)
+          
+          # Detecta el día del mes sin ceros a la izquierda (ejemplo: "1", "2", "30")
+          DIA_MES=$(date +%-d)
 
-      - name: Ejecutar script principal
-        run: python main.py
+          # Define la ruta exacta donde buscar el caso
+          ARCHIVO_CASO="casos/$CARPETA_MES/caso-$DIA_MES.json"
+
+          echo "Intentando cargar: $ARCHIVO_CASO"
+
+          # Verifica si el archivo existe
+          if [ -f "$ARCHIVO_CASO" ]; then
+            cp "$ARCHIVO_CASO" "caso_actual.json"
+            echo "✅ El archivo $ARCHIVO_CASO se ha cargado correctamente en caso_actual.json"
+          else
+            echo "⚠️ ¡Atención! No se encontró el archivo $ARCHIVO_CASO. Asegúrate de haber subido la carpeta $CARPETA_MES con sus correspondientes archivos."
+          fi
+
+      - name: Guardar y publicar cambios en GitHub Pages
+        run: |
+          git config --global user.name "Murdokus Bot"
+          git config --global user.email "bot@murdokus.local"
+          git add caso_actual.json
+          git commit -m "🤖 Publicación automática del reto del día $(date +%Y-%m-%d)" || exit 0
+          git push
