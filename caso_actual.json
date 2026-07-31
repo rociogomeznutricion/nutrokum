@@ -1,20 +1,42 @@
 {
-  "id": 30,
-  "num": "EXPEDIENTE #030",
-  "titulo": "El Enigma del Desayuno Sospechoso",
-  "dificultad": "Fácil (Matriz 3x3)",
-  "dificultadClass": "badge-facil",
-  "contexto": "Tres compañeros de piso decidieron comenzar una vida más saludable...",
-  "catA": { "titulo": "Personas", "items": ["Rocio", "Luis", "Sofía"] },
-  "catB": { "titulo": "Alimentos", "items": ["Cereal integral", "Yogur griego", "Tostada c/ aguacate"] },
-  "catC": { "titulo": "Ingrediente", "items": ["Jarabe de maíz (HFCS)", "Maltodextrina", "Lecitina de soja"] },
-  "pistas": [
-    "El cereal integral escondía jarabe de maíz alto en fructosa en su etiqueta.",
-    "La tostada con aguacate no contenía maltodextrina.",
-    "Marta no comió cereal integral.",
-    "Luis no consumió yogur griego.",
-    "Sofía es intolerante a la lactosa (no elige yogur) y tampoco tolera la lecitina de soja."
-  ],
-  "solucion": "Luis → Tostada con aguacate → Lecitina de soja | Marta → Yogur griego → Maltodextrina | Sofía → Cereal integral → Jarabe de maíz alto en fructosa.",
-  "pildora": "El jarabe de maíz alto en fructosa se metaboliza casi exclusivamente en el hígado..."
-}
+    "id": 31,
+    "num": "EXPEDIENTE #031",
+    "titulo": "El Secreto del Batido Post-Entreno",
+    "dificultad": "Fácil (Matriz 3x3)",
+    "dificultadClass": "badge-facil",
+    "contexto": "Tres amigos del gimnasio preparan cada uno su batido después de entrenar, pero uno de ellos usa un ingrediente que no esperaba.",
+    "catA": {
+      "titulo": "Personas",
+      "items": [
+        "Marta",
+        "Iván",
+        "Clara"
+      ]
+    },
+    "catB": {
+      "titulo": "Batidos",
+      "items": [
+        "Batido de proteína",
+        "Batido verde",
+        "Batido de avena"
+      ]
+    },
+    "catC": {
+      "titulo": "Ingrediente",
+      "items": [
+        "Proteína de suero (whey)",
+        "Proteína de guisante",
+        "Espesante goma guar"
+      ]
+    },
+    "pistas": [
+      "Clara es quien eligió: Batido de avena.",
+      "Marta no eligió: Batido de proteína.",
+      "Iván no eligió: Batido verde.",
+      "Batido de proteína contenía: Proteína de suero (whey).",
+      "Batido verde no contenía: Espesante goma guar.",
+      "Clara revisó la etiqueta y descartó: Proteína de suero (whey)."
+    ],
+    "solucion": "Marta → Batido verde → Proteína de guisante | Iván → Batido de proteína → Proteína de suero (whey) | Clara → Batido de avena → Espesante goma guar",
+    "pildora": "La proteína de suero (whey) se absorbe muy rápido y es rica en leucina, mientras que la proteína de guisante es una alternativa vegetal de digestión algo más lenta pero igualmente completa en aminoácidos esenciales."
+  }
