@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infografía - Kit Nutricional de Emergencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #090D16;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #F8FAFC;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Contenedor Canvas adaptable (sin altura fija) */
+    .canvas-container {
+      width: 100%;
+      max-width: 540px;
+      height: auto;
+      min-height: auto;
+      background-color: #0F172A;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 36px 28px;
+      position: relative;
+    }
+
+    /* Fondo decorativo de gradiente ambiental */
+    .canvas-container::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      pointer-events: none;
+    }
+
+    .canvas-container::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0) 70%);
+      pointer-events: none;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #A5B4FC;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+    }
+
+    .title span {
+      background: linear-gradient(135deg, #38BDF8 0%, #818CF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle-header {
+      font-size: 13px;
+      color: #94A3B8;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    /* BODY / TARJETAS */
+    .cards-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      background-color: #1E293B;
+      border-radius: 16px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Bordes laterales de acento */
+    .card-emerald { border-left: 5px solid #10B981; }
+    .card-amber   { border-left: 5px solid #F59E0B; }
+    .card-cyan    { border-left: 5px solid #06B6D4; }
+    .card-violet  { border-left: 5px solid #8B5CF6; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .card-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+
+    .card-subtitle {
+      font-size: 12.5px;
+      color: #94A3B8;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .card-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .card-bullets li {
+      font-size: 12.5px;
+      color: #CBD5E1;
+      line-height: 1.45;
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .card-bullets li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #64748B;
+      font-weight: bold;
+    }
+
+    .card-bullets li strong {
+      color: #F1F5F9;
+    }
+
+    /* Caja de Alerta / Advertencia */
+    .alert-box {
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11.5px;
+      line-height: 1.4;
+      font-weight: 600;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .alert-emerald {
+      background: rgba(16, 185, 129, 0.1);
+      color: #6EE7B7;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .alert-amber {
+      background: rgba(245, 158, 11, 0.1);
+      color: #FDE047;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .alert-cyan {
+      background: rgba(6, 182, 212, 0.1);
+      color: #67E8F9;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .alert-violet {
+      background: rgba(139, 92, 246, 0.1);
+      color: #DDD6FE;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    /* FOOTER */
+    .footer {
+      position: relative;
+      z-index: 2;
+    }
+
+    .quote-card {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+    }
+
+    .quote-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+      line-height: 1.45;
+      font-style: italic;
+      margin-bottom: 14px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      width: 100%;
+      background-color: #FFFFFF;
+      color: #4338CA;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="canvas-container">
+    
+    <header class="header">
+      <div class="badge">Método ARRANCA • Nutrición Real</div>
+      <h1 class="title">KIT NUTRICIONAL DE <span>EMERGENCIA</span> 🚨</h1>
+      <p class="subtitle-header">Tu "Fondo de Armario" para comer bien en menos de 5 minutos</p>
+    </header>
+
+    <main class="cards-wrapper">
+
+      <section class="card card-emerald">
+        <div class="card-header">
+          <span class="card-icon">🛡️</span>
+          <h2 class="card-title">¿Por qué tener un Kit de Emergencia?</h2>
+        </div>
+        <p class="card-subtitle">Tu cortafuegos contra el delivery y las decisiones por agotamiento.</p>
+        <ul class="card-bullets">
+          <li><strong>Evita el colapso mental:</strong> Tras 8h de trabajo, tu cerebro busca la opción con menor esfuerzo.</li>
+          <li><strong>Adiós al "Todo o Nada":</strong> No cocinar 2h desde cero no invalida nutrirte bien.</li>
+        </ul>
+        <div class="alert-box alert-emerald">
+          <span>⚠️</span>
+          <span><strong>Estrategia Realista:</strong> Comer rápido no es comer mal; usar recursos precocinados saludables es nutrición inteligente.</span>
+        </div>
+      </section>
+
+      <section class="card card-amber">
+        <div class="card-header">
+          <span class="card-icon">⚡</span>
+          <h2 class="card-title">Hidratos Rápidos (La Electricidad)</h2>
+        </div>
+        <p class="card-subtitle">Energía inmediata lista para consumir sin perder tiempo pelando ni cociendo.</p>
+        <ul class="card-bullets">
+          <li><strong>Vasitos de arroz o quinoa:</strong> Listos en 1 minuto al microondas.</li>
+          <li><strong>Patatas al vapor o en conserva:</strong> Perfectas para calentar o usar en Airfryer.</li>
+        </ul>
+        <div class="alert-box alert-amber">
+          <span>[!]</span>
+          <span><strong>Clave Nutricional:</strong> Prohibir los hidratos por falta de tiempo provoca apagones de energía y atracones nocturnos.</span>
+        </div>
+      </section>
+
+      <section class="card card-cyan">
+        <div class="card-header">
+          <span class="card-icon">🧱</span>
+          <h2 class="card-title">Proteínas de Fondo (Los Ladrillos)</h2>
+        </div>
+        <p class="card-subtitle">Estructura pura directa de la despensa a tu plato.</p>
+        <ul class="card-bullets">
+          <li><strong>Botes de legumbres cocidas:</strong> Garbanzos o lentejas (aclarar con agua y listo).</li>
+          <li><strong>Conservas de calidad:</strong> Atún, melva, sardinas, pollo en conserva o huevos ya cocidos.</li>
+        </ul>
+        <div class="alert-box alert-cyan">
+          <span>⚠️</span>
+          <span><strong>Tip de Selección:</strong> Prioriza conservas al natural o en aceite de oliva virgen extra para asegurar buena grasa.</span>
+        </div>
+      </section>
+
+      <section class="card card-violet">
+        <div class="card-header">
+          <span class="card-icon">🥦</span>
+          <h2 class="card-title">Verduras y Salsas (El Toque Final)</h2>
+        </div>
+        <p class="card-subtitle">Micronutrientes y sabor para completar el plato sin esfuerzo.</p>
+        <ul class="card-bullets">
+          <li><strong>Verduras congeladas o en conserva:</strong> Salteados directos a la sartén, pimientos asados o espárragos.</li>
+          <li><strong>Salsas y especias:</strong> Elige opciones con buenos ingredientes para dar vida al plato.</li>
+        </ul>
+        <div class="alert-box alert-violet">
+          <span>[!]</span>
+          <span><strong>Regla de Oro:</strong> Si una buena salsa hace que te comas la proteína y verdura a gusto, ¡échala! Es mejor usarla que no comer.</span>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <div class="quote-card">
+        <p class="quote-text">"Comer bien no es pasar horas en la cocina, es ponérselo fácil a tu cuerpo cuando la vida se pone difícil."</p>
+        <button class="cta-button">💬 Guarda este kit o comenta: ¿Qué básico no falta en tu despensa?</button>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
