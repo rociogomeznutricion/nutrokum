@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page {
+    size: 1080px 1920px; /* Standard 9:16 vertical story / reel layout */
+    margin: 0;
+    background-color: #0F172A; /* Dark slate technical theme */
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    width: 1080px;
+    height: 1920px;
+    background-color: #0F172A;
+    color: #F8FAFC;
+    padding: 80px 60px;
+    display: table;
+    table-layout: fixed;
+  }
+
+  /* Header Section */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 3px solid #334155;
+  }
+
+  .badge {
+    display: inline-block;
+    background-color: #1E293B;
+    color: #38BDF8;
+    border: 2px solid #38BDF8;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+
+  .title {
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #FFFFFF;
+  }
+
+  .title span {
+    color: #38BDF8;
+  }
+
+  /* Cards Section */
+  .card-container {
+    margin-bottom: 50px;
+  }
+
+  .card {
+    background-color: #1E293B;
+    border-radius: 24px;
+    padding: 40px 45px;
+    margin-bottom: 35px;
+    border-left: 12px solid #38BDF8;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
+
+  .card.protein { border-left-color: #F43F5E; }
+  .card.fat { border-left-color: #F59E0B; }
+  .card.carb { border-left-color: #10B981; }
+
+  .card-header {
+    display: table;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .card-title {
+    display: table-cell;
+    font-size: 38px;
+    font-weight: 800;
+    color: #FFFFFF;
+  }
+
+  .card.protein .card-title { color: #FDA4AF; }
+  .card.fat .card-title { color: #FDE68A; }
+  .card.carb .card-title { color: #A7F3D0; }
+
+  .card-subtitle {
+    font-size: 26px;
+    color: #94A3B8;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+
+  .card-list {
+    list-style: none;
+  }
+
+  .card-list li {
+    font-size: 26px;
+    color: #E2E8F0;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    padding-left: 35px;
+    position: relative;
+  }
+
+  .card-list li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: #38BDF8;
+  }
+
+  .warning-box {
+    margin-top: 15px;
+    background-color: rgba(15, 23, 42, 0.6);
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-size: 24px;
+    color: #CBD5E1;
+  }
+
+  .warning-box strong {
+    color: #F87171;
+  }
+
+  /* Footer Section */
+  .footer {
+    background: linear-gradient(135deg, #0284C7, #0369A1);
+    border-radius: 24px;
+    padding: 45px;
+    text-align: center;
+  }
+
+  .footer-quote {
+    font-size: 30px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 25px;
+    line-height: 1.3;
+  }
+
+  .footer-cta {
+    background-color: #FFFFFF;
+    color: #0369A1;
+    font-size: 32px;
+    font-weight: 900;
+    padding: 20px 30px;
+    border-radius: 16px;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="badge">SISTEMA DE NUTRICIÓN</div>
+    <div class="title">TU CUERPO ES UN <span>EDIFICIO</span> 🏠</div>
+  </div>
+
+  <!-- Cards -->
+  <div class="card-container">
+    
+    <!-- Proteínas -->
+    <div class="card protein">
+      <div class="card-title">🧱 PROTEÍNAS = LOS LADRILLOS</div>
+      <div class="card-subtitle">Estructura pura del edificio</div>
+      <ul class="card-list">
+        <li>Construyen y reparan músculos, piel y huesos.</li>
+      </ul>
+      <div class="warning-box">
+        <strong>⚠️ Sin ladrillos:</strong> La casa se desmorona y colapsa.
+      </div>
+    </div>
+
+    <!-- Grasas -->
+    <div class="card fat">
+      <div class="card-title">🛠️ GRASAS = TUBERÍAS Y AISLANTE</div>
+      <div class="card-subtitle">Mantenimiento y protección interna</div>
+      <ul class="card-list">
+        <li>Mantienen la temperatura y protegen nervios.</li>
+        <li>Hacen que el sistema hormonal funcione bien.</li>
+      </ul>
+      <div class="warning-box">
+        <strong>⚠️ Sin aislamiento:</strong> La casa es totalmente inhabitable.
+      </div>
+    </div>
+
+    <!-- Carbohidratos -->
+    <div class="card carb">
+      <div class="card-title">⚡ CARBOHIDRATOS = ELECTRICIDAD</div>
+      <div class="card-subtitle">Energía inmediata de la obra</div>
+      <ul class="card-list">
+        <li>Activan las herramientas y la fuerza del equipo.</li>
+      </ul>
+      <div class="warning-box">
+        <strong>⚠️ Sin luz:</strong> Toda la obra se frena de golpe.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-quote">"Tu cuerpo no necesita recortes,<br>necesita materiales de calidad."</div>
+    <div class="footer-cta">👇 Comenta "CASA" para aprender</div>
+  </div>
+
+</body>
+</html>
