@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page {
+    size: 1080px 1920px;
+    margin: 0;
+    background-color: #0F172A;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    width: 1080px;
+    height: 1920px;
+    background-color: #0F172A;
+    color: #F8FAFC;
+    padding: 70px 50px;
+    display: table;
+    table-layout: fixed;
+  }
+
+  /* Header Section */
+  .header {
+    text-align: center;
+    margin-bottom: 45px;
+    padding-bottom: 35px;
+    border-bottom: 3px solid #334155;
+  }
+
+  .badge {
+    display: inline-block;
+    background-color: #1E293B;
+    color: #38BDF8;
+    border: 2px solid #38BDF8;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+  }
+
+  .title {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #FFFFFF;
+  }
+
+  .title span {
+    color: #F59E0B;
+  }
+
+  /* Cards Section */
+  .card-container {
+    margin-bottom: 40px;
+  }
+
+  .card {
+    background-color: #1E293B;
+    border-radius: 20px;
+    padding: 30px 35px;
+    margin-bottom: 25px;
+    border-left: 10px solid #38BDF8;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
+
+  .card.sugar-spike { border-left-color: #EF4444; }
+  .card.crash { border-left-color: #F59E0B; }
+  .card.stable { border-left-color: #10B981; }
+
+  .card-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 8px;
+  }
+
+  .card.sugar-spike .card-title { color: #FCA5A5; }
+  .card.crash .card-title { color: #FDE68A; }
+  .card.stable .card-title { color: #A7F3D0; }
+
+  .card-subtitle {
+    font-size: 22px;
+    color: #94A3B8;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+
+  .card-list {
+    list-style: none;
+  }
+
+  .card-list li {
+    font-size: 22px;
+    color: #E2E8F0;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    padding-left: 30px;
+    position: relative;
+  }
+
+  .card-list li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: #38BDF8;
+  }
+
+  .warning-box {
+    margin-top: 15px;
+    background-color: rgba(15, 23, 42, 0.6);
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 20px;
+    color: #CBD5E1;
+  }
+
+  .warning-box strong {
+    color: #F87171;
+  }
+
+  /* Footer Section */
+  .footer {
+    background: linear-gradient(135deg, #0284C7, #0369A1);
+    border-radius: 24px;
+    padding: 35px;
+    text-align: center;
+  }
+
+  .footer-quote {
+    font-size: 26px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  .footer-cta {
+    background-color: #FFFFFF;
+    color: #0369A1;
+    font-size: 28px;
+    font-weight: 900;
+    padding: 16px 28px;
+    border-radius: 16px;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="badge">BIOHACKING & NUTRICIÓN</div>
+    <div class="title">CÓMO TU DESAYUNO CONDICIONA TU <span>DÍA</span> 📈</div>
+  </div>
+
+  <!-- Cards -->
+  <div class="card-container">
+    
+    <!-- Pico de Glucosa -->
+    <div class="card sugar-spike">
+      <div class="card-title">📈 1. EL PICO INICIAL (AZÚCAR / HARINAS)</div>
+      <div class="card-subtitle">Desayunar tostadas, zumos o bollería dulce</div>
+      <ul class="card-list">
+        <li>La glucosa en sangre se dispara en cuestión de minutos.</li>
+        <li>El páncreas libera un torrente masivo de insulina.</li>
+      </ul>
+      <div class="warning-box">
+        <strong>⚠️ Efecto:</strong> Subidón de energía falso que dura apenas 45 minutos.
+      </div>
+    </div>
+
+    <!-- El Bajón / Crash -->
+    <div class="card crash">
+      <div class="card-title">📉 2. LA CAÍDA EN PICADO (EL "CRASH")</div>
+      <div class="card-subtitle">Hipoglucemia reactiva a media mañana</div>
+      <ul class="card-list">
+        <li>La insulina retira el azúcar de golpetazo.</li>
+        <li>Aparece niebla mental, fatiga y necesidad urgente de más dulce.</li>
+      </ul>
+      <div class="warning-box">
+        <strong>⚠️ Efecto:</strong> Entras en la montaña rusa del apetito todo el día.
+      </div>
+    </div>
+
+    <!-- El Desayuno Estable -->
+    <div class="card stable">
+      <div class="card-title">🛡️ 3. EL PROTOCOLO DE ENERGÍA ESTABLE</div>
+      <div class="card-subtitle">Priorizar Proteína + Grasas Saludables + Fibra</div>
+      <ul class="card-list">
+        <li>Curva de glucosa plana sin picos ni valles drásticos.</li>
+        <li>Saciación prolongada y foco mental continuo durante horas.</li>
+      </ul>
+      <div class="warning-box">
+        <strong>⚠️ Resultado:</strong> Energía estable sin antojos ni bajones.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-quote">"Si controlas tu glucosa por la mañana,<br>dominas tu energía todo el día."</div>
+    <div class="footer-cta">👇 Comenta "ENERGIA" para el protocolo</div>
+  </div>
+
+</body>
+</html>
