@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditor de Etiquetas — ARRANCA</title>
+<meta name="description" content="Calcula las kcal reales de cualquier etiqueta y detecta azúcar oculto en segundos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F172A;
+    --navy-soft:#1E293B;
+    --green:#059669;
+    --green-bright:#10B981;
+    --paper:#F8FAF9;
+    --card:#FFFFFF;
+    --ink:#0F172A;
+    --ink-soft:#5B6472;
+    --line:#E4E9E7;
+    --amber:#D97706;
+    --amber-bg:#FEF3E2;
+    --red:#DC2626;
+    --red-bg:#FDECEC;
+    --green-bg:#E8F7F1;
+    --radius:16px;
+    --shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  h1,h2,h3,.brand-word{
+    font-family:'Poppins', sans-serif;
+  }
+
+  /* ---------- header ---------- */
+  header.top{
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-soft) 100%);
+    color:#fff;
+    padding:28px 20px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::after{
+    content:"";
+    position:absolute;
+    right:-60px; top:-60px;
+    width:220px; height:220px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(16,185,129,.35), transparent 70%);
+  }
+  .brand-row{
+    display:flex; align-items:center; gap:10px;
+    font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    color:rgba(255,255,255,.7);
+    margin-bottom:14px;
+  }
+  .badge{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--green-bright);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:11px; color:var(--navy);
+    font-family:'Poppins',sans-serif;
+  }
+  header.top h1{
+    margin:0 0 8px;
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    max-width:340px;
+  }
+  header.top p{
+    margin:0;
+    color:rgba(255,255,255,.72);
+    font-size:14.5px;
+    max-width:380px;
+    position:relative; z-index:1;
+  }
+
+  /* ---------- layout ---------- */
+  main{
+    max-width:520px;
+    margin:-22px auto 0;
+    padding:0 16px;
+    position:relative;
+    z-index:2;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px 20px;
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+  .card h2{
+    font-size:15px;
+    margin:0 0 4px;
+    color:var(--navy);
+  }
+  .card .sub{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+  }
+
+  /* ---------- field grid ---------- */
+  .field{
+    margin-bottom:14px;
+  }
+  .field label{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:13px; font-weight:600; color:var(--navy);
+    margin-bottom:6px;
+  }
+  .field label .hint{
+    font-weight:400; color:var(--ink-soft); font-size:11.5px;
+  }
+  .input-wrap{
+    position:relative;
+  }
+  input[type=number]{
+    width:100%;
+    font-family:'Public Sans', sans-serif;
+    font-size:16px;
+    padding:11px 42px 11px 13px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FBFDFC;
+    color:var(--ink);
+    transition:border-color .15s, box-shadow .15s;
+    -moz-appearance:textfield;
+  }
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{
+    -webkit-appearance:none; margin:0;
+  }
+  input[type=number]:focus{
+    outline:none;
+    border-color:var(--green-bright);
+    box-shadow:0 0 0 3px rgba(16,185,129,.15);
+  }
+  .unit{
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    font-size:12.5px; color:var(--ink-soft); pointer-events:none;
+  }
+  .two-col{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  }
+
+  button.calc{
+    width:100%;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:14px;
+    border-radius:12px;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    margin-top:6px;
+    transition:transform .12s ease, background .15s;
+  }
+  button.calc:hover{ background:#132038; }
+  button.calc:active{ transform:scale(.98); }
+
+  /* ---------- results ---------- */
+  #results{ display:none; }
+  #results.show{ display:block; animation:rise .35s ease; }
+  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .kcal-headline{
+    text-align:center;
+    padding:6px 0 18px;
+  }
+  .kcal-headline .num{
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:44px;
+    color:var(--navy);
+    line-height:1;
+  }
+  .kcal-headline .label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-top:6px;
+  }
+
+  .bar{
+    display:flex; height:14px; border-radius:8px; overflow:hidden;
+    background:var(--line);
+    margin:4px 0 10px;
+  }
+  .bar span{ height:100%; }
+  .seg-grasa{ background:#F59E0B; }
+  .seg-prot{ background:#0F172A; }
+  .seg-carb{ background:#10B981; }
+  .legend{
+    display:flex; gap:14px; flex-wrap:wrap;
+    font-size:12px; color:var(--ink-soft); margin-bottom:18px;
+  }
+  .legend .dot{
+    width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px;
+  }
+
+  .compare-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 0; border-top:1px dashed var(--line);
+    font-size:13.5px;
+  }
+  .compare-row:first-of-type{ border-top:none; }
+  .compare-row .val{ font-weight:700; color:var(--navy); }
+
+  .flag{
+    display:flex; gap:10px; align-items:flex-start;
+    border-radius:12px;
+    padding:13px 14px;
+    margin-top:16px;
+    font-size:13.5px;
+  }
+  .flag.ok{ background:var(--green-bg); color:#065F46; }
+  .flag.warn{ background:var(--amber-bg); color:#92400E; }
+  .flag.bad{ background:var(--red-bg); color:#991B1B; }
+  .flag .icon{ font-size:16px; line-height:1.3; }
+  .flag strong{ display:block; margin-bottom:2px; font-family:'Poppins',sans-serif; font-size:13px;}
+
+  .verdict{
+    margin-top:16px;
+    padding:16px;
+    border-radius:12px;
+    background:var(--navy);
+    color:#fff;
+  }
+  .verdict .eyebrow{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--green-bright); font-weight:700; margin-bottom:6px;
+  }
+  .verdict p{ margin:0; font-size:13.5px; color:rgba(255,255,255,.85); }
+
+  .footnote{
+    font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:18px 24px 0; line-height:1.5;
+  }
+
+  a.tool-link{ color:var(--green); font-weight:600; text-decoration:none; }
+
+  @media (max-width:380px){
+    .kcal-headline .num{ font-size:38px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand-row"><span class="badge">A</span> ARRANCA · Herramientas</div>
+  <h1>Auditor de Etiquetas</h1>
+  <p>Calcula las kcal reales de cualquier producto en 10 segundos y descubre si esconde azúcar de más — antes de que lo lleves al carrito.</p>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>Datos de la etiqueta</h2>
+    <p class="sub">Copia los gramos "por 100g" tal cual aparecen en el envase.</p>
+
+    <div class="two-col">
+      <div class="field">
+        <label for="grasas">Grasas <span class="hint">g /100g</span></label>
+        <div class="input-wrap">
+          <input type="number" id="grasas" inputmode="decimal" min="0" step="0.1" placeholder="0">
+          <span class="unit">g</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="proteinas">Proteínas <span class="hint">g /100g</span></label>
+        <div class="input-wrap">
+          <input type="number" id="proteinas" inputmode="decimal" min="0" step="0.1" placeholder="0">
+          <span class="unit">g</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label for="carbos">Carbohidratos <span class="hint">g /100g</span></label>
+        <div class="input-wrap">
+          <input type="number" id="carbos" inputmode="decimal" min="0" step="0.1" placeholder="0">
+          <span class="unit">g</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="azucares">— de los cuales azúcares <span class="hint">g</span></label>
+        <div class="input-wrap">
+          <input type="number" id="azucares" inputmode="decimal" min="0" step="0.1" placeholder="0">
+          <span class="unit">g</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="declaradas">Kcal declaradas en el envase <span class="hint">opcional</span></label>
+      <div class="input-wrap">
+        <input type="number" id="declaradas" inputmode="decimal" min="0" step="1" placeholder="Ej: 420">
+        <span class="unit">kcal</span>
+      </div>
+    </div>
+
+    <button class="calc" onclick="auditar()">Auditar etiqueta</button>
+  </section>
+
+  <section class="card" id="results">
+    <h2>Resultado de la auditoría</h2>
+    <p class="sub">Sobre 100g del producto.</p>
+
+    <div class="kcal-headline">
+      <div class="num" id="kcalReal">0</div>
+      <div class="label">Kcal reales calculadas</div>
+    </div>
+
+    <div class="bar" id="bar"></div>
+    <div class="legend">
+      <span><span class="dot" style="background:#F59E0B"></span>Grasas</span>
+      <span><span class="dot" style="background:#0F172A"></span>Proteínas</span>
+      <span><span class="dot" style="background:#10B981"></span>Carbohidratos</span>
+    </div>
+
+    <div id="compareBlock"></div>
+    <div id="sugarFlag"></div>
+    <div class="verdict">
+      <div class="eyebrow">Veredicto</div>
+      <p id="verdictText">Introduce los datos para ver tu análisis.</p>
+    </div>
+  </section>
+
+  <p class="footnote">
+    Herramienta educativa del método ARRANCA — no sustituye la valoración de una o un profesional sanitario colegiado. Los umbrales de azúcar (8–10g/100g) son una referencia general, no una regla médica individual. Ante duda o patología, consulta con tu dietista-nutricionista.
+  </p>
+
+</main>
+
+<script>
+function auditar(){
+  const g = parseFloat(document.getElementById('grasas').value) || 0;
+  const p = parseFloat(document.getElementById('proteinas').value) || 0;
+  const c = parseFloat(document.getElementById('carbos').value) || 0;
+  const az = parseFloat(document.getElementById('azucares').value) || 0;
+  const declaradas = document.getElementById('declaradas').value;
+
+  const kcalGrasa = g * 9;
+  const kcalProt  = p * 4;
+  const kcalCarb  = c * 4;
+  const kcalReal  = kcalGrasa + kcalProt + kcalCarb;
+
+  document.getElementById('kcalReal').textContent = Math.round(kcalReal);
+
+  // Bar
+  const total = kcalReal || 1;
+  const bar = document.getElementById('bar');
+  bar.innerHTML = `
+    <span class="seg-grasa" style="width:${(kcalGrasa/total*100).toFixed(1)}%"></span>
+    <span class="seg-prot" style="width:${(kcalProt/total*100).toFixed(1)}%"></span>
+    <span class="seg-carb" style="width:${(kcalCarb/total*100).toFixed(1)}%"></span>
+  `;
+
+  // Compare with declared
+  const compareBlock = document.getElementById('compareBlock');
+  let compareHTML = '';
+  if(declaradas !== '' && !isNaN(parseFloat(declaradas))){
+    const decl = parseFloat(declaradas);
+    const diff = kcalReal - decl;
+    const pct = decl > 0 ? (diff/decl*100) : 0;
+    compareHTML = `
+      <div class="compare-row"><span>Kcal declaradas en el envase</span><span class="val">${decl} kcal</span></div>
+      <div class="compare-row"><span>Diferencia con tu cálculo</span><span class="val">${diff>=0?'+':''}${diff.toFixed(0)} kcal (${pct>=0?'+':''}${pct.toFixed(1)}%)</span></div>
+    `;
+  }
+  compareBlock.innerHTML = compareHTML;
+
+  // Sugar flag
+  const sugarFlag = document.getElementById('sugarFlag');
+  let flagHTML = '';
+  if(az >= 10){
+    flagHTML = `<div class="flag bad"><span class="icon">🚩</span><div><strong>Azúcar oculto detectado</strong>${az}g de azúcar por 100g supera el umbral de referencia (8–10g). Revisa la lista de ingredientes: busca jarabes, siropes o "azúcar" bajo otros nombres.</div></div>`;
+  } else if(az >= 5){
+    flagHTML = `<div class="flag warn"><span class="icon">⚠️</span><div><strong>Azúcar moderado</strong>${az}g/100g está en zona intermedia. No es motivo de alarma, pero vale la pena comparar con otra opción similar antes de decidir.</div></div>`;
+  } else {
+    flagHTML = `<div class="flag ok"><span class="icon">✅</span><div><strong>Azúcar bajo</strong>${az}g/100g está por debajo del umbral de referencia.</div></div>`;
+  }
+  sugarFlag.innerHTML = flagHTML;
+
+  // Verdict text
+  let verdict = '';
+  if(kcalReal === 0){
+    verdict = 'Introduce al menos grasas, proteínas y carbohidratos para calcular.';
+  } else {
+    const dominante = kcalGrasa >= kcalProt && kcalGrasa >= kcalCarb ? 'grasa' :
+                       (kcalProt >= kcalCarb ? 'proteína' : 'carbohidrato');
+    let base = `El macronutriente dominante en kcal es la ${dominante}. `;
+    if(declaradas !== '' && !isNaN(parseFloat(declaradas))){
+      const decl = parseFloat(declaradas);
+      const diffAbs = Math.abs(kcalReal - decl);
+      if(diffAbs > decl*0.1){
+        base += 'Hay una diferencia notable entre tu cálculo y lo declarado: vuelve a revisar los gramos o desconfía del reclamo de portada. ';
+      } else {
+        base += 'Tu cálculo cuadra razonablemente con lo declarado en el envase. ';
+      }
+    }
+    if(az >= 10){
+      base += 'Recuerda: un reclamo tipo "Light" o "0%" habla de un solo nutriente, no del producto entero.';
+    } else {
+      base += 'Sigue mirando siempre la lista de ingredientes, no solo el reclamo de portada.';
+    }
+    verdict = base;
+  }
+  document.getElementById('verdictText').textContent = verdict;
+
+  const results = document.getElementById('results');
+  results.classList.add('show');
+  results.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+</script>
+
+</body>
+</html>
