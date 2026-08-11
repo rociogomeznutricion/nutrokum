@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Hambre real o emocional? — ARRANCA</title>
+<meta name="description" content="Un pequeño interrogatorio de 4 preguntas para saber qué te está pidiendo el cuerpo de verdad.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F172A;
+    --navy-soft:#1E293B;
+    --green:#059669;
+    --green-bright:#10B981;
+    --paper:#F8FAF9;
+    --card:#FFFFFF;
+    --ink:#0F172A;
+    --ink-soft:#5B6472;
+    --line:#E4E9E7;
+    --amber:#D97706;
+    --amber-bg:#FEF3E2;
+    --red-bg:#FDECEC;
+    --green-bg:#E8F7F1;
+    --radius:16px;
+    --shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  h1,h2,h3{ font-family:'Poppins', sans-serif; }
+
+  header.top{
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-soft) 100%);
+    color:#fff;
+    padding:28px 20px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::after{
+    content:"";
+    position:absolute;
+    right:-50px; top:-70px;
+    width:220px; height:220px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(16,185,129,.35), transparent 70%);
+  }
+  .brand-row{
+    display:flex; align-items:center; gap:10px;
+    font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    color:rgba(255,255,255,.7);
+    margin-bottom:14px;
+  }
+  .badge{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--green-bright);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:11px; color:var(--navy);
+    font-family:'Poppins',sans-serif;
+  }
+  header.top h1{
+    margin:0 0 8px;
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    max-width:340px;
+  }
+  header.top p{
+    margin:0;
+    color:rgba(255,255,255,.72);
+    font-size:14.5px;
+    max-width:380px;
+    position:relative; z-index:1;
+  }
+
+  main{
+    max-width:520px;
+    margin:-22px auto 0;
+    padding:0 16px;
+    position:relative;
+    z-index:2;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:24px 20px;
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+
+  /* progress */
+  .progress-track{
+    display:flex; gap:6px; margin-bottom:20px;
+  }
+  .progress-track .dot{
+    flex:1; height:4px; border-radius:4px; background:var(--line);
+    transition:background .2s;
+  }
+  .progress-track .dot.done{ background:var(--green-bright); }
+
+  .eyebrow{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--green); font-weight:700; margin-bottom:8px;
+  }
+  .question{
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:18px;
+    color:var(--navy);
+    margin:0 0 18px;
+    line-height:1.35;
+  }
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left;
+    width:100%;
+    padding:14px 16px;
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    background:#FBFDFC;
+    font-family:'Public Sans', sans-serif;
+    font-size:14.5px;
+    font-weight:600;
+    color:var(--navy);
+    cursor:pointer;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .opt:hover{ border-color:var(--green-bright); background:var(--green-bg); }
+  .opt:active{ transform:scale(.98); }
+  .opt .sub{
+    display:block; font-weight:400; color:var(--ink-soft); font-size:12.5px; margin-top:3px;
+  }
+
+  .nav-row{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:18px;
+  }
+  .back-btn{
+    background:none; border:none; color:var(--ink-soft);
+    font-size:13px; cursor:pointer; padding:6px 0;
+    font-family:'Public Sans', sans-serif;
+  }
+  .back-btn:hover{ color:var(--navy); }
+  .restart-btn{
+    background:none; border:none; color:var(--green);
+    font-size:13px; cursor:pointer; font-weight:600;
+    font-family:'Public Sans', sans-serif;
+  }
+
+  /* result */
+  #result{ display:none; }
+  #result.show{ display:block; animation:rise .35s ease; }
+  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .verdict-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:8px 14px; border-radius:999px;
+    font-family:'Poppins', sans-serif; font-weight:700; font-size:13px;
+    margin-bottom:16px;
+  }
+  .verdict-badge.fisica{ background:var(--green-bg); color:#065F46; }
+  .verdict-badge.emocional{ background:var(--amber-bg); color:#92400E; }
+  .verdict-badge.mixta{ background:#EFF0FF; color:#3730A3; }
+
+  #result h2{ font-size:19px; color:var(--navy); margin:0 0 10px; }
+  #result p.lead{ font-size:14px; color:var(--ink-soft); margin:0 0 18px; }
+
+  .action-block{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .action-block h3{
+    font-size:13px; margin:0 0 8px; color:var(--navy);
+    display:flex; align-items:center; gap:8px;
+  }
+  .action-block ul{ margin:0; padding-left:18px; font-size:13.5px; color:var(--ink); }
+  .action-block li{ margin-bottom:5px; }
+
+  .cycle-tip{
+    background:var(--navy);
+    color:#fff;
+    border-radius:12px;
+    padding:16px;
+    margin-top:14px;
+  }
+  .cycle-tip .eyebrow{ color:var(--green-bright); margin-bottom:6px; }
+  .cycle-tip p{ margin:0; font-size:13.5px; color:rgba(255,255,255,.85); }
+
+  .footnote{
+    font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:18px 24px 0; line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand-row"><span class="badge">A</span> ARRANCA · Herramientas</div>
+  <h1>¿Hambre real o emocional?</h1>
+  <p>Un pequeño interrogatorio de 4 preguntas antes de abrir la nevera. Sin juicios, solo información para decidir con calma.</p>
+</header>
+
+<main>
+  <section class="card" id="quizCard">
+    <div class="progress-track" id="progressTrack"></div>
+    <div id="questionArea"></div>
+    <div class="nav-row">
+      <button class="back-btn" id="backBtn" onclick="goBack()" style="visibility:hidden;">← Anterior</button>
+      <button class="restart-btn" id="restartBtnTop" onclick="restart()" style="visibility:hidden;">Reiniciar</button>
+    </div>
+  </section>
+
+  <section class="card" id="result">
+    <span class="verdict-badge" id="verdictBadge"></span>
+    <h2 id="resultTitle"></h2>
+    <p class="lead" id="resultLead"></p>
+
+    <div class="action-block">
+      <h3>🎯 Qué hacer ahora</h3>
+      <ul id="actionList"></ul>
+    </div>
+
+    <div class="cycle-tip" id="cycleTip" style="display:none;">
+      <div class="eyebrow">Extra según tu ciclo</div>
+      <p id="cycleTipText"></p>
+    </div>
+
+    <div style="text-align:center; margin-top:18px;">
+      <button class="restart-btn" onclick="restart()">↺ Volver a empezar</button>
+    </div>
+  </section>
+
+  <p class="footnote">
+    Herramienta educativa del método ARRANCA para reconocer señales de hambre, no un diagnóstico. Si notas que la comida se ha convertido en tu única forma de gestionar emociones de forma frecuente, habla con una o un profesional de la salud mental o de la nutrición — pedir ayuda también es parte del método.
+  </p>
+</main>
+
+<script>
+const questions = [
+  {
+    key: 'tiempo',
+    q: '¿Cuándo fue tu última comida real?',
+    options: [
+      { label: 'Hace menos de 2-3 horas', sub: 'Y comiste algo completo', value: 'reciente' },
+      { label: 'Hace 4-5 horas', value: 'medio' },
+      { label: 'Hace más de 5-6 horas', value: 'largo' },
+    ]
+  },
+  {
+    key: 'aparicion',
+    q: 'Esta ganas de comer, ¿aparecieron de golpe o fueron subiendo poco a poco?',
+    options: [
+      { label: 'De golpe', sub: 'Justo después de un mal momento, aburrimiento o estrés', value: 'golpe' },
+      { label: 'Poco a poco', sub: 'Ha ido creciendo a lo largo del rato', value: 'gradual' },
+    ]
+  },
+  {
+    key: 'especificidad',
+    q: '¿Te apetece un alimento muy concreto o cualquier cosa te calmaría?',
+    options: [
+      { label: 'Algo muy concreto', sub: 'Ej: chocolate, patatas fritas, ese dulce en particular', value: 'concreto' },
+      { label: 'Cualquier cosa me vale', sub: 'Incluso comida "aburrida" como fruta o un huevo', value: 'cualquiera' },
+    ]
+  },
+  {
+    key: 'ciclo',
+    q: '¿En qué fase de tu ciclo estás (si aplica)?',
+    options: [
+      { label: 'Fase folicular', sub: 'Después de la regla, antes de ovular', value: 'folicular' },
+      { label: 'Ovulación', sub: 'Mitad del ciclo', value: 'ovulacion' },
+      { label: 'Fase lútea', sub: 'Semana previa a la regla', value: 'lutea' },
+      { label: 'Menstruación', sub: 'Días de regla', value: 'menstrual' },
+      { label: 'No aplica / no lo sé', value: 'na' },
+    ]
+  }
+];
+
+let current = 0;
+let answers = {};
+
+function renderProgress(){
+  const track = document.getElementById('progressTrack');
+  track.innerHTML = '';
+  questions.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < current ? ' done' : '');
+    track.appendChild(d);
+  });
+}
+
+function renderQuestion(){
+  renderProgress();
+  document.getElementById('backBtn').style.visibility = current > 0 ? 'visible' : 'hidden';
+  document.getElementById('restartBtnTop').style.visibility = current > 0 ? 'visible' : 'hidden';
+
+  const qData = questions[current];
+  const area = document.getElementById('questionArea');
+  area.innerHTML = `
+    <div class="eyebrow">Pregunta ${current+1} de ${questions.length}</div>
+    <div class="question">${qData.q}</div>
+    <div class="options">
+      ${qData.options.map(o => `
+        <button class="opt" onclick="answer('${qData.key}','${o.value}')">
+          ${o.label}${o.sub ? `<span class="sub">${o.sub}</span>` : ''}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function answer(key, value){
+  answers[key] = value;
+  if(current < questions.length - 1){
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function goBack(){
+  if(current > 0){
+    current--;
+    renderQuestion();
+    document.getElementById('result').classList.remove('show');
+    document.getElementById('quizCard').style.display = 'block';
+  }
+}
+
+function restart(){
+  current = 0;
+  answers = {};
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('quizCard').style.display = 'block';
+  renderQuestion();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showResult(){
+  document.getElementById('quizCard').style.display = 'none';
+
+  // Scoring: emotional signals vs physical signals
+  let emocionalScore = 0;
+  let fisicaScore = 0;
+
+  if(answers.tiempo === 'reciente') emocionalScore += 2;
+  if(answers.tiempo === 'medio') { emocionalScore += 1; fisicaScore += 1; }
+  if(answers.tiempo === 'largo') fisicaScore += 2;
+
+  if(answers.aparicion === 'golpe') emocionalScore += 2;
+  if(answers.aparicion === 'gradual') fisicaScore += 2;
+
+  if(answers.especificidad === 'concreto') emocionalScore += 2;
+  if(answers.especificidad === 'cualquiera') fisicaScore += 2;
+
+  const badge = document.getElementById('verdictBadge');
+  const title = document.getElementById('resultTitle');
+  const lead = document.getElementById('resultLead');
+  const actionList = document.getElementById('actionList');
+
+  let tipo;
+  if(emocionalScore >= fisicaScore + 2){
+    tipo = 'emocional';
+  } else if(fisicaScore >= emocionalScore + 2){
+    tipo = 'fisica';
+  } else {
+    tipo = 'mixta';
+  }
+
+  if(tipo === 'fisica'){
+    badge.className = 'verdict-badge fisica';
+    badge.textContent = '🟢 Hambre física probable';
+    title.textContent = 'Tu cuerpo te está pidiendo gasolina de verdad';
+    lead.textContent = 'Ha pasado tiempo desde tu última comida, las ganas subieron poco a poco y cualquier alimento te calmaría. Eso apunta a hambre real.';
+    actionList.innerHTML = `
+      <li>Ve directa a tu Kit de Emergencia: una lata de conserva, huevos cocidos o un vasito de arroz + proteína son perfectos ahora mismo.</li>
+      <li>Come sin pantallas, prestando atención a cuándo llega la saciedad.</li>
+      <li>Si puedes, incluye proteína y algo de grasa buena para sostener la energía las próximas horas.</li>
+    `;
+  } else if(tipo === 'emocional'){
+    badge.className = 'verdict-badge emocional';
+    badge.textContent = '🟡 Hambre emocional probable';
+    title.textContent = 'Puede que no sea el estómago quien habla';
+    lead.textContent = 'Comiste hace poco, las ganas llegaron de golpe y quieres algo muy concreto. Son señales típicas de hambre emocional — y no pasa nada, es humano.';
+    actionList.innerHTML = `
+      <li>Bebe un vaso de agua y espera 10 minutos sin decidir nada todavía.</li>
+      <li>Nombra lo que sientes ahora mismo (aburrimiento, estrés, tristeza) — a veces con eso ya baja la intensidad.</li>
+      <li>Si después de esos 10 minutos sigues queriéndolo, cómetelo con calma y sin culpa. Comer algo por gusto no es un fallo del sistema.</li>
+    `;
+  } else {
+    badge.className = 'verdict-badge mixta';
+    badge.textContent = '🔵 Señal mixta';
+    title.textContent = 'Puede que sea un poco de ambas cosas';
+    lead.textContent = 'Tus respuestas no apuntan claramente a un solo lado. Es habitual: el hambre real y la búsqueda de consuelo se mezclan muchas veces.';
+    actionList.innerHTML = `
+      <li>Prueba primero con algo de tu Kit de Emergencia — si el hambre "física" desaparece, ya tienes tu respuesta.</li>
+      <li>Si sigue apeteciéndote ese algo concreto después, cómetelo consciente y sin darle más vueltas.</li>
+      <li>Apunta este momento en tu diario de sensaciones: con el tiempo notarás tus propios patrones.</li>
+    `;
+  }
+
+  // Cycle tip
+  const cycleTip = document.getElementById('cycleTip');
+  const cycleTipText = document.getElementById('cycleTipText');
+  const tips = {
+    folicular: 'Estás en fase folicular: tu digestión está a máxima potencia. Es un buen momento para fibra en abundancia, legumbres y crudos.',
+    ovulacion: 'Estás en ovulación: el pico de estrógenos puede darte algo de hinchazón normal. Platos frescos, ricos en agua y antioxidantes te van a sentar especialmente bien.',
+    lutea: 'Estás en fase lútea: la progesterona ralentiza tu tránsito y es habitual tener más antojos de dulce por la mayor demanda de dopamina. Prioriza grasas buenas (AOVE, aguacate) y fibra soluble (boniato cocido y enfriado, avena).',
+    menstrual: 'Estás en menstruación: las prostaglandinas pueden generar cólicos. Comida calentita, guisos suaves e infusiones de jengibre te ayudarán más que algo crudo o frío ahora mismo.',
+    na: null
+  };
+  if(tips[answers.ciclo]){
+    cycleTip.style.display = 'block';
+    cycleTipText.textContent = tips[answers.ciclo];
+  } else {
+    cycleTip.style.display = 'none';
+  }
+
+  const result = document.getElementById('result');
+  result.classList.add('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+renderQuestion();
+</script>
+
+</body>
+</html>
