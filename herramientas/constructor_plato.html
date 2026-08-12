@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constructor de Plato Inteligente - Método ARRANCA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #090D16;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #F8FAFC;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .canvas-container {
+      width: 100%;
+      max-width: 540px;
+      background-color: #0F172A;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 32px 24px;
+      position: relative;
+    }
+
+    .canvas-container::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      pointer-events: none;
+    }
+
+    .header {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6EE7B7;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #FFFFFF;
+    }
+
+    .title span {
+      background: linear-gradient(135deg, #34D399 0%, #38BDF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle-header {
+      font-size: 13px;
+      color: #94A3B8;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    /* Asistente Container */
+    .assistant-card {
+      background-color: #1E293B;
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .step-count {
+      color: #34D399;
+    }
+
+    .question-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #F8FAFC;
+      margin-bottom: 6px;
+    }
+
+    .question-desc {
+      font-size: 12.5px;
+      color: #94A3B8;
+      margin-bottom: 16px;
+    }
+
+    /* Opciones */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .option-btn {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: left;
+      color: #F1F5F9;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn:hover {
+      background: rgba(52, 211, 153, 0.1);
+      border-color: rgba(52, 211, 153, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .option-btn.selected {
+      background: rgba(52, 211, 153, 0.2);
+      border-color: #34D399;
+      color: #6EE7B7;
+    }
+
+    .option-emoji {
+      font-size: 20px;
+    }
+
+    /* Botones de Navegación del Asistente */
+    .assistant-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94A3B8;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      color: #F8FAFC;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-primary {
+      background: #10B981;
+      border: none;
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #059669;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Resultado del Plato Combinado */
+    .result-container {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .result-header {
+      background: linear-gradient(135deg, #059669 0%, #0D9488 100%);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
+    }
+
+    .result-header h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .result-header p {
+      font-size: 12px;
+      color: #A7F3D0;
+    }
+
+    .recipe-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .recipe-item {
+      background: #1E293B;
+      border-radius: 12px;
+      padding: 12px 16px;
+      border-left: 4px solid #34D399;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .recipe-item-info h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+
+    .recipe-item-info span {
+      font-size: 11px;
+      color: #94A3B8;
+    }
+
+    .recipe-item-icon {
+      font-size: 22px;
+    }
+
+    .assembly-tip {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      color: #7DD3FC;
+      line-height: 1.4;
+      font-weight: 600;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .reset-btn {
+      width: 100%;
+      background: #1E293B;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #F8FAFC;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .reset-btn:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="canvas-container">
+    
+    <!-- HEADER -->
+    <header class="header">
+      <div class="badge">Método ARRANCA • Asistente Exprés</div>
+      <h1 class="title">Constructor de Plato <span>Inteligente</span> 🍽️</h1>
+      <p class="subtitle-header">Diseña tu comida combinada en 3 pasos sin cocinar desde cero</p>
+    </header>
+
+    <!-- ASISTENTE (PASOS) -->
+    <div class="assistant-card" id="assistantCard">
+      <div class="step-indicator">
+        <span id="stepTitle">Paso 1 de 3</span>
+        <span class="step-count" id="stepName">La Protagonista</span>
+      </div>
+
+      <div id="questionContainer">
+        <!-- El contenido dinámico de las preguntas se inyecta por JS -->
+      </div>
+
+      <div class="assistant-nav" id="assistantNav">
+        <button class="btn-secondary" id="prevBtn" style="visibility: hidden;" onclick="prevStep()">Anterior</button>
+        <button class="btn-primary" id="nextBtn" disabled onclick="nextStep()">Siguiente ➔</button>
+      </div>
+    </div>
+
+    <!-- RESULTADO (PLATO CONSTRUIDO) -->
+    <div class="result-container" id="resultContainer">
+      <div class="result-header">
+        <h3 id="resultTitle">✨ ¡Plato Combinado Listo!</h3>
+        <p id="resultSubtitle">Ensamblaje rápido y nutritivo en menos de 3 minutos</p>
+      </div>
+
+      <div class="recipe-breakdown" id="recipeBreakdown">
+        <!-- Detalle de selección inyectado por JS -->
+      </div>
+
+      <div class="assembly-tip" id="assemblyTip">
+        <span>⚡</span>
+        <span id="assemblyTipText">Consejo de montaje rápido</span>
+      </div>
+
+      <button class="reset-btn" onclick="resetAssistant()">🔄 Diseñar otro plato</button>
+    </div>
+
+  </div>
+
+  <script>
+    const steps = [
+      {
+        id: 'protein',
+        name: 'La Protagonista',
+        title: '¿Qué proteína tienes o te apetece hoy?',
+        desc: 'El Método ARRANCA siempre empieza por aquí para asegurar saciedad.',
+        options: [
+          { label: 'Atún o Melva en conserva', desc: 'Bote o lata • Sin cocinar', emoji: '🐟', tip: 'Escurre y mezcla directo.' },
+          { label: 'Garbanzos o Lentejas cocidas', desc: 'Bote de legumbres • Aclarar y listo', emoji: '🧆', tip: 'Enjuaga bien bajo el grifo.' },
+          { label: 'Pollo asado o en conserva', desc: 'Sobra de ayer o pechuga en bote', emoji: '🍗', tip: 'Desmecha o corta rápido.' },
+          { label: 'Huevos (cocidos o plancha)', desc: '2 huevos en 3 minutos', emoji: '🍳', tip: 'Usa microondas (90s) o sartén exprés.' }
+        ]
+      },
+      {
+        id: 'carb',
+        name: 'La Electricidad',
+        title: '¿Qué hidrato rápido vas a añadir?',
+        desc: 'Energía limpia lista para consumir sin complicaciones.',
+        options: [
+          { label: 'Vasito de Arroz o Quinoa', desc: 'Microondas • 1 minuto', emoji: '🍚', tip: 'Abre un poco el film y al micro.' },
+          { label: 'Patata cocida / al vapor', desc: 'En conserva o bolsa al vacío', emoji: '🥔', tip: 'Corta en rodajas y saltea o calienta.' },
+          { label: 'Pan 100% integral de calidad', desc: 'Tostado rápido o natural', emoji: '🍞', tip: 'Excelente para acompañar en formato tostada/plato.' },
+          { label: 'Maíz dulce en lata', desc: 'Directo del bote al plato', emoji: '🌽', tip: 'Aporta toque dulce y textura crujiente.' }
+        ]
+      },
+      {
+        id: 'veg',
+        name: 'El Toque Final',
+        title: '¿Cómo completamos con verduras y extras?',
+        desc: 'Micronutrientes, fibra y sabor para cerrar el plato.',
+        options: [
+          { label: 'Bolsa de ensalada variada', desc: 'Espinacas o brotes • Directo', emoji: '🥗', tip: 'Base limpia sin trocear.' },
+          { label: 'Verduras congeladas salteadas', desc: 'A la sartén con AOVE • 4 min', emoji: '🥦', tip: 'Directas del congelador a la sartén.' },
+          { label: 'Tomates cherry o pimientos asados', desc: 'En conserva o frescos', emoji: '🍅', tip: 'Aportan jugosidad natural.' },
+          { label: 'AOVE, especias y vinagre', desc: 'El toque maestro de sabor', emoji: '🧄', tip: 'Pimentón, orégano o salsa saludable.' }
+        ]
+      }
+    ];
+
+    let currentStep = 0;
+    let selectedOptions = {};
+
+    function renderStep() {
+      const step = steps[currentStep];
+      document.getElementById('stepTitle').innerText = `Paso ${currentStep + 1} de 3`;
+      document.getElementById('stepName').innerText = step.name;
+
+      let html = `
+        <h2 class="question-title">${step.title}</h2>
+        <p class="question-desc">${step.desc}</p>
+        <div class="options-grid">
+      `;
+
+      step.options.forEach((opt, idx) => {
+        const isSelected = selectedOptions[step.id] === idx ? 'selected' : '';
+        html += `
+          <button class="option-btn ${isSelected}" onclick="selectOption(${idx})">
+            <span class="option-emoji">${opt.emoji}</span>
+            <div style="flex-grow: 1;">
+              <div style="font-weight: 700;">${opt.label}</div>
+              <div style="font-size: 11px; color: #94A3B8; font-weight: 500;">${opt.desc}</div>
+            </div>
+          </button>
+        `;
+      });
+
+      html += `</div>`;
+      document.getElementById('questionContainer').innerHTML = html;
+
+      // Actualizar botones de navegación
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      prevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+      nextBtn.disabled = selectedOptions[step.id] === undefined;
+      nextBtn.innerText = currentStep === steps.length - 1 ? '¡Ver mi plato! ✨' : 'Siguiente ➔';
+    }
+
+    function selectOption(idx) {
+      const step = steps[currentStep];
+      selectedOptions[step.id] = idx;
+      renderStep();
+      document.getElementById('nextBtn').disabled = false;
+    }
+
+    function nextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        renderStep();
+      } else {
+        showResult();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        renderStep();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('assistantCard').style.display = 'none';
+      document.getElementById('assistantNav').style.display = 'none';
+      
+      const resultContainer = document.getElementById('resultContainer');
+      resultContainer.style.display = 'flex';
+
+      let breakdownHtml = '';
+      let tipsSummary = [];
+
+      steps.forEach(step => {
+        const optIdx = selectedOptions[step.id];
+        const opt = step.options[optIdx];
+        breakdownHtml += `
+          <div class="recipe-item">
+            <div class="recipe-item-info">
+              <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #34D399; font-weight: 700;">${step.name}</span>
+              <h4>${opt.label}</h4>
+            </div>
+            <div class="recipe-item-icon">${opt.emoji}</div>
+          </div>
+        `;
+        tipsSummary.push(opt.tip);
+      });
+
+      document.getElementById('recipeBreakdown').innerHTML = breakdownHtml;
+      document.getElementById('assemblyTipText').innerText = `Montaje Exprés: ${tipsSummary.join(' • ')}`;
+    }
+
+    function resetAssistant() {
+      currentStep = 0;
+      selectedOptions = {};
+      document.getElementById('resultContainer').style.display = 'none';
+      document.getElementById('assistantCard').style.display = 'block';
+      document.getElementById('assistantNav').style.display = 'flex';
+      renderStep();
+    }
+
+    // Inicializar al cargar
+    renderStep();
+  </script>
+</body>
+</html>
