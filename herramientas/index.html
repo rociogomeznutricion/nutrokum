@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas de Nutrición - Nutriku</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --bg: #f4f6f5;
+            --card-bg: #ffffff;
+            --text: #333333;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        a {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: block;
+        }
+        .loading {
+            text-align: center;
+            grid-column: 1 / -1;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Herramientas de Nutrición</h1>
+    <div id="file-list" class="grid">
+        <div class="loading">Cargando herramientas...</div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN: Cambia estos datos por los tuyos de GitHub
+        const username = 'rociogomeznutricion';
+        const repo = 'NUTROKUM';
+        const path = 'herramientas'; // Ruta de la carpeta en tu repositorio
+
+        const url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('file-list');
+                container.innerHTML = '';
+
+                if (!Array.isArray(data)) {
+                    container.innerHTML = '<div class="loading">No se pudieron cargar las herramientas.</div>';
+                    return;
+                }
+
+                // Filtrar solo archivos HTML y excluir el propio index.html
+                const htmlFiles = data.filter(file => file.name.endsWith('.html') && file.name !== 'index.html');
+
+                if (htmlFiles.length === 0) {
+                    container.innerHTML = '<div class="loading">No hay herramientas disponibles todavía.</div>';
+                    return;
+                }
+
+                htmlFiles.forEach(file => {
+                    // Dar formato al nombre (ej: "calculadora-calorias.html" -> "Calculadora Calorias")
+                    let cleanName = file.name
+                        .replace('.html', '')
+                        .replace(/[-_]/g, ' ');
+                    cleanName = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+
+                    const a = document.createElement('a');
+                    a.href = file.name;
+                    a.textContent = cleanName;
+
+                    card.appendChild(a);
+                    container.appendChild(card);
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener los archivos:', error);
+                document.getElementById('file-list').innerHTML = '<div class="loading">Error al conectar con GitHub.</div>';
+            });
+    </script>
+
+</body>
+</html>
