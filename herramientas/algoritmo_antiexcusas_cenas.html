@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUTRIKU • Decisor de Cenas Express</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-slate: #0F172A;
+      --card-slate: #1E293B;
+      --card-border: #334155;
+      --accent-cyan: #38BDF8;
+      --accent-emerald: #34D399;
+      --accent-amber: #FBBF24;
+      --accent-pink: #F472B6;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--card-slate);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: rgba(56, 189, 248, 0.1);
+      color: var(--accent-cyan);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    select {
+      width: 100%;
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-exec {
+      width: 100%;
+      background: linear-gradient(135deg, #38BDF8 0%, #34D399 100%);
+      color: #0F172A;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-exec:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    /* Resultados */
+    #resultsSection {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .recipe-card {
+      background-color: var(--bg-slate);
+      border-left: 4px solid var(--accent-emerald);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .recipe-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .recipe-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .recipe-steps {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      padding-left: 18px;
+      line-height: 1.5;
+    }
+
+    .tip-box {
+      background-color: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 0.85rem;
+      color: var(--accent-amber);
+      line-height: 1.4;
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background-color: var(--card-border);
+      color: var(--text-main);
+    }
+
+    .footer-brand {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div id="formSection">
+      <span class="badge">⚡ Sistema Anti-Bloqueo Nocturno</span>
+      <h1>Decisor de Cenas Express</h1>
+      <p class="subtitle">Sin pensar, sin remordimientos y con lo que tienes en la nevera.</p>
+
+      <div class="form-group">
+        <label for="timeSelect">⏱️ ¿Cuánto tiempo quieres invertir?</label>
+        <select id="timeSelect">
+          <option value="5">Menos de 5 minutos (Modo supervivencia)</option>
+          <option value="10">10-15 minutos (Cocinilla rápido)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="proteinSelect">🥚 ¿Cuál es tu proteína principal?</label>
+        <select id="proteinSelect">
+          <option value="huevos">Huevos</option>
+          <option value="atun">Atún o Conservas de pescado</option>
+          <option value="pollo">Pollo / Pavo desmigado o filete fino</option>
+          <option value="queso">Queso fresco / Tofu</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="carbVegSelect">🥗 ¿Qué acompañamiento tienes más a mano?</label>
+        <select id="carbVegSelect">
+          <option value="micro">Verdura congelada o rápida al microondas</option>
+          <option value="ensalada">Bolsa de ensalada / Brotes verdes</option>
+          <option value="pan">Pan integral de calidad o tortitas de maíz/trigo</option>
+        </select>
+      </div>
+
+      <button class="btn-exec" onclick="generarCena()">Compilar Cena ➔</button>
+    </div>
+
+    <div id="resultsSection">
+      <span class="badge">✨ Tu Menú Asignado</span>
+      <h1 id="resultMainTitle" style="font-size: 1.3rem;">¡Cena lista en minutos!</h1>
+      
+      <div class="recipe-card" id="recipeCardContainer">
+        </div>
+
+      <div class="tip-box" id="tipContainer">
+        </div>
+
+      <button class="btn-back" onclick="resetForm()">🔄 Probar otra combinación</button>
+    </div>
+
+    <div class="footer-brand">
+      NUTRIKU • Método ARRANCA
+    </div>
+  </div>
+
+  <script>
+    const recetasDB = {
+      "huevos-micro": {
+        titulo: "🍳 Revuelto exprés con verduras al vapor",
+        desc: "Aprovecha el microondas para no manchar sartenes extra.",
+        pasos: [
+          "Pon un bol de verduras congeladas (espinacas o judías verdes) al microondas 4 minutos con un chorrito de agua.",
+          "Bate 2 huevos en un bol.",
+          "Saca las verduras, escúrrelas un poco, échalas a la sartén o al mismo bol con los huevos y cuaja al gusto en 2 minutos."
+        ],
+        tip: "💡 Consejo ARRANCA: Las cenas basadas en huevo son la opción más limpia y saciante. No les tengas miedo por mitos antiguos."
+      },
+      "huevos-ensalada": {
+        titulo: "🥗 Ensalada templada de huevos cocidos (o a la plancha)",
+        desc: "Fresca, crujiente y lista en un parpadeo.",
+        pasos: [
+          "Abre una bolsa de brotes verdes y asígnala como base en un plato hondo.",
+          "Haz un par de huevos a la plancha rápidamente o usa huevos cocidos que ya tengas listos en la nevera.",
+          "Coloca los huevos encima de la ensalada y aliña con aceite de oliva virgen extra, sal y vinagre o especias al gusto."
+        ],
+        tip: "💡 Consejo ARRANCA: Combina grasa saludable (AOVE) con proteína de alta calidad para evitar picoteos nocturnos por ansiedad."
+      },
+      "huevos-pan": {
+        titulo: "🥪 Tostada powerhouse de tortilla francesa",
+        desc: "El clásico que nunca falla y reconforta después de un día duro.",
+        pasos: [
+          "Tuesta una o dos rebanadas de pan integral de buena calidad.",
+          "Haz una tortilla francesa rápida (2 huevos) con un poco de ajo en polvo o pimentón.",
+          "Coloca la tortilla sobre el pan tostado. Opcional: añade unas rodajas de tomate o un toque de queso."
+        ],
+        tip: "💡 Consejo ARRANCA: El pan integral no es tu enemigo por la noche; lo importante es el cómputo total del día y elegir carbohidratos reales."
+      },
+      "atun-micro": {
+        titulo: "🐟 Sartén rápida de atún y verduras salteadas",
+        desc: "Aprovechando latas de despensa con un toque caliente.",
+        pasos: [
+          "Calienta un poco de verdura congelada en la sartén o microondas.",
+          "Añade dos latas de atún bien escurridas al final solo para darles temperatura (sin cocinar el atún en exceso para que no se seque).",
+          "Remueve, añade especias (orégano o pimienta) y sirve caliente."
+        ],
+        tip: "💡 Consejo ARRANCA: Las conservas de pescado de calidad son tu mejor 'Kit de Emergencia' cuando la nevera está bajo mínimos."
+      },
+      "atun-ensalada": {
+        titulo: "🥗 Ensalada 'Rescate' de Atún",
+        desc: "Cero cocina, máxima eficiencia nutricional.",
+        pasos: [
+          "Vierte una bolsa de ensalada en un bol grande.",
+          "Añade dos latas de atún al natural o en aceite de oliva escurrido.",
+          "Añade opcionalmente unos frutos secos o aceitunas para sumar texturas y grasas saludables. ¡Aliña y listo!"
+        ],
+        tip: "💡 Consejo ARRANCA: Menos de 3 minutos de preparación. Cero excusas para recurrir a la comida rápida ultraprocesada."
+      },
+      "atun-pan": {
+        titulo: "🥪 Bocata o tostadas rústicas de paté casero de atún",
+        desc: "Rápido, crujiente y altamente saciante.",
+        pasos: [
+          "Mezcla en un bol pequeño atún de lata escurrido con un poco de queso fresco batido o yogur natural (o un chorrito de AOVE) y especias.",
+          "Tuesta el pan integral.",
+          "Unta generosamente la mezcla sobre el pan tostado y acompaña con unos trozos de tomate o pepino."
+        ],
+        tip: "💡 Consejo ARRANCA: Simplificar la cena reduce la fatiga de decisión al final del día. Hazlo fácil, hazlo sostenible."
+      },
+      "pollo-micro": {
+        titulo: "🍗 Pollo al microondas con verduras de guarnición",
+        desc: "Ideal si tienes filetes finos de pollo o pavo y prisa extrema.",
+        pasos: [
+          "Coloca el filete de pollo en un recipiente apto para microondas con especias (curry o hierbas provenzales) y un chorrito de aceite.",
+          "Cocina a potencia media-alta durante 3-4 minutos (según grosor).",
+          "Acompaña con un bol de verduras rápidas calentadas también al microondas."
+        ],
+        tip: "💡 Consejo ARRANCA: Cocinar en microondas preserva muy bien los nutrientes y te ahorra fregar sartenes a altas horas."
+      },
+      "pollo-ensalada": {
+        titulo: "🥗 Ensalada César Express de Pollo",
+        desc: "Fresca con un aporte proteico sustancial.",
+        pasos: [
+          "Si tienes pollo ya cocinado/asado de antes, desmígralo en frío. Si no, haz un filete fino a la plancha en 3 minutos y trocéalo.",
+          "Mezclalo sobre una base de lechuga o brotes.",
+          "Aliña con una salsa rápida a base de yogur natural, un toque de mostaza y limón."
+        ],
+        tip: "💡 Consejo ARRANCA: El 'batch cooking' básico (dejar un pollo hecho el domingo) soluciona el 80% de tus cenas de entre semana."
+      },
+      "pollo-pan": {
+        titulo: "🥪 Wrap o Sándwich caliente de pollo y vegetales",
+        desc: "Formato práctico tipo rollito o sándwich reconfortante.",
+        pasos: [
+          "Pasa un filete fino de pollo vuelta y vuelta por la sartén con sal y pimienta.",
+          "Colócalo sobre una tortilla de trigo/maíz o pan de sándwich integral.",
+          "Añade hojas de lechuga, un chorrito de aceite o salsa ligera y enrolla o tuesta."
+        ],
+        tip: "💡 Consejo ARRANCA: Cenar con un formato divertido o tipo 'fast food' saludable ayuda a calajar el apetito mental."
+      },
+      "queso-micro": {
+        titulo: "🧀 Tofu o Queso al plato con verduras calientes",
+        desc: "Una cena ligera, digestiva y muy rápida.",
+        pasos: [
+          "Corta queso fresco o tofu firme en dados.",
+          "Calienta una ración de verduras al vapor en el microondas.",
+          "Mezcla ambos en un plato, añade aceite de oliva, pimentón dulce o picante y sal marina."
+        ],
+        tip: "💡 Consejo ARRANCA: Las cenas ligeras basadas en lácteos de calidad o proteína vegetal favorecen un sueño profundo y reparador."
+      },
+      "queso-ensalada": {
+        titulo: "🥗 Ensalada mediterránea exprés con queso",
+        desc: "Combinación clásica refrescante y limpia.",
+        pasos: [
+          "Bate o trocea queso fresco o feta sobre una base de brotes verdes y tomate troceado.",
+          "Añade orégano seco abundante y un buen chorro de aceite de oliva.",
+          "Remueve y disfruta de una cena limpia en 2 minutos."
+        ],
+        tip: "💡 Consejo ARRANCA: No necesitas pasar horas en la cocina para nutrirte correctamente. La simplicidad es la clave del sistema."
+      },
+      "queso-pan": {
+        titulo: "🥪 Tostadas calientes de queso fundido y toque verde",
+        desc: "El placer de lo crujiente y caliente sin complicaciones.",
+        pasos: [
+          "Coloca queso tierno o fresco en rebanadas sobre pan integral.",
+          "Llévalo a la tostadora (si permite posición horizontal) o grill unos minutos hasta que funda.",
+          "Acompaña con unos tomatitos cherry al lado."
+        ],
+        tip: "💡 Consejo ARRANCA: Permitirte comidas reconfortantes sencillas evita que eches de menos la comida ultraprocesada."
+      }
+    };
+
+    function generarCena() {
+      const time = document.getElementById('timeSelect').value;
+      const protein = document.getElementById('proteinSelect').value;
+      const carbVeg = document.getElementById('carbVegSelect').value;
+
+      const key = `${protein}-${carbVeg}`;
+      const receta = recetasDB[key] || {
+        titulo: "🍳 Revuelto exprés de emergencia",
+        desc: "Opción comodín ultrarrápida adaptada a lo que tienes.",
+        pasos: [
+          "Bate dos huevos o abre una lata de atún.",
+          "Combínalo con la guarnición que tengas disponible.",
+          "Cocina o mezcla de forma rápida y aliña al gusto."
+        ],
+        tip: "💡 Consejo ARRANCA: Ante la duda y la falta de tiempo, simplifica: proteína + verdura/pan real. Sal del paso sin culpa."
+      };
+
+      document.getElementById('recipeCardContainer').innerHTML = `
+        <div class="recipe-title">${receta.titulo}</div>
+        <div class="recipe-desc">${receta.desc}</div>
+        <ol class="recipe-steps">
+          ${receta.pasos.map(paso => `<li style="margin-bottom: 6px;">${paso}</li>`).join('')}
+        </ol>
+      `;
+
+      document.getElementById('tipContainer').innerText = receta.tip;
+
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('resultsSection').style.display = 'flex';
+    }
+
+    function resetForm() {
+      document.getElementById('resultsSection').style.display = 'none';
+      document.getElementById('formSection').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

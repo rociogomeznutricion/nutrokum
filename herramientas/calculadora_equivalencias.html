@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Equivalencias e Intercambios - Método ARRANCA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #090D16;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #F8FAFC;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .canvas-container {
+      width: 100%;
+      max-width: 540px;
+      background-color: #0F172A;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 32px 24px;
+      position: relative;
+    }
+
+    .canvas-container::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      pointer-events: none;
+    }
+
+    .header {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38BDF8;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #FFFFFF;
+    }
+
+    .title span {
+      background: linear-gradient(135deg, #38BDF8 0%, #818CF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle-header {
+      font-size: 13px;
+      color: #94A3B8;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    /* Formulario de Intercambio */
+    .tool-card {
+      background-color: #1E293B;
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #CBD5E1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .category-tabs, .state-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .category-tabs {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .tab-btn {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px 8px;
+      color: #94A3B8;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38BDF8;
+      color: #38BDF8;
+    }
+
+    .select-input, .number-input {
+      background: #0F172A;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #F8FAFC;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .select-input:focus, .number-input:focus {
+      border-color: #38BDF8;
+    }
+
+    .calc-btn {
+      background: linear-gradient(135deg, #0284C7 0%, #2563EB 100%);
+      border: none;
+      color: #FFFFFF;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+      transition: opacity 0.2s;
+      margin-top: 4px;
+    }
+
+    .calc-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Resultados de Equivalencias */
+    .results-section {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .results-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .equivalents-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .equivalent-card {
+      background: #1E293B;
+      border-radius: 12px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .equiv-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #F8FAFC;
+      margin-bottom: 2px;
+    }
+
+    .equiv-info span {
+      font-size: 11.5px;
+      color: #94A3B8;
+      font-weight: 500;
+    }
+
+    .equiv-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      text-align: right;
+    }
+
+    .tip-box {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      color: #6EE7B7;
+      line-height: 1.4;
+      font-weight: 600;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .back-btn {
+      width: 100%;
+      background: #1E293B;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #F8FAFC;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="canvas-container">
+    
+    <!-- HEADER -->
+    <header class="header">
+      <div class="badge">Método ARRANCA • Herramientas Skool</div>
+      <h1 class="title">Calculadora de <span>Equivalencias</span> 🔄</h1>
+      <p class="subtitle-header">Compara en crudo o cocinado al instante</p>
+    </header>
+
+    <!-- FORMULARIO -->
+    <div class="tool-card" id="formCard">
+      <div class="form-group">
+        <label class="form-label">1. Selecciona la Categoría</label>
+        <div class="category-tabs">
+          <button class="tab-btn active" id="tab-carb" onclick="setCategory('carb')">🌾 Hidratos</button>
+          <button class="tab-btn" id="tab-protein" onclick="setCategory('protein')">🍗 Proteínas</button>
+          <button class="tab-btn" id="tab-fat" onclick="setCategory('fat')">🥑 Grasas</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">2. Alimento base</label>
+        <select class="select-input" id="foodSelect">
+          <!-- Inyectado por JS -->
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">3. ¿Cómo lo pesas?</label>
+        <div class="state-tabs">
+          <button class="tab-btn active" id="tab-raw" onclick="setState('raw')">⚖️ En Crudo</button>
+          <button class="tab-btn" id="tab-cooked" onclick="setState('cooked')">🍳 Cocinado</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">4. Cantidad en gramos</label>
+        <input type="number" class="number-input" id="amountInput" value="100" min="5" max="1000">
+      </div>
+
+      <button class="calc-btn" onclick="calculateEquivalents()">Calcular Equivalencias ➔</button>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div class="results-section" id="resultsSection">
+      <div class="results-header">
+        <span>✨ Equivalencias para:</span>
+        <span id="resSourceText" style="color: #38BDF8; font-size: 16px; font-weight: 800;"></span>
+      </div>
+
+      <div class="equivalents-grid" id="equivalentsGrid">
+        <!-- Inyectado por JS -->
+      </div>
+
+      <div class="tip-box">
+        <span>💡</span>
+        <span id="kitchenTipText">Consejo de cocina: Ajusta la absorción según el método de cocción.</span>
+      </div>
+
+      <button class="back-btn" onclick="showForm()">🔄 Cambiar ingredientes o estado</button>
+    </div>
+
+  </div>
+
+  <script>
+    const database = {
+      carb: {
+        name: "Hidratos",
+        foods: [
+          { 
+            id: 'arroz', 
+            name: 'Arroz / Pasta', 
+            rawFactor: 1.0,      // Factor base en crudo
+            cookedFactor: 2.5,   // Multiplicador aprox al absorber agua al cocinarse
+            tipRaw: 'El arroz o pasta cruda absorbe agua triplicando o duplicando su peso al cocerse.',
+            tipCooked: 'Ya cocinado, contiene agua retenida; tenlo en cuenta al intercambiar.'
+          },
+          { 
+            id: 'patata', 
+            name: 'Patata', 
+            rawFactor: 1.0, 
+            cookedFactor: 1.15,  // Pierde/absorbe poco en agua dependiendo del hervor/horno
+            tipRaw: 'La patata cruda pelada es la referencia estándar.',
+            tipCooked: 'Al cocer o asar puede variar ligeramente su gramaje final por pérdida de humedad.'
+          },
+          { 
+            id: 'boniato', 
+            name: 'Boniato / Batata', 
+            rawFactor: 0.95, 
+            cookedFactor: 1.1,
+            tipRaw: 'Dulce natural ideal para horno o airfryer.',
+            tipCooked: 'Al asarse pierde algo de agua concentrando azúcares.'
+          },
+          { 
+            id: 'avena', 
+            name: 'Avena / Copos de cereal', 
+            rawFactor: 0.8, 
+            cookedFactor: 2.2,   // Si se hace gacha (porridge)
+            tipRaw: 'Secos para yogur o boles.',
+            tipCooked: 'En formato porridge o cocinados con leche/bebida vegetal.'
+          },
+          { 
+            id: 'legumbre', 
+            name: 'Legumbres (Lentejas, Garbanzos)', 
+            rawFactor: 1.0, 
+            cookedFactor: 2.4,   // De seco a cocido de bote/hervido
+            tipRaw: 'Legumbre seca antes de remojo y cocción.',
+            tipCooked: 'Legumbre cocida (peso escurrido de bote o casera).'
+          }
+        ]
+      },
+      protein: {
+        name: "Proteínas",
+        foods: [
+          { 
+            id: 'pollo', 
+            name: 'Pechuga de Pollo / Pavo', 
+            rawFactor: 1.0, 
+            cookedFactor: 0.75,  // Encoge al cocinar por pérdida de agua
+            tipRaw: 'Peso en crudo limpio.',
+            tipCooked: 'Al cocinar a la plancha pierde agua y encoge un 25% aprox.'
+          },
+          { 
+            id: 'ternera', 
+            name: 'Ternera magra / Lomo de cerdo', 
+            rawFactor: 1.0, 
+            cookedFactor: 0.8,
+            tipRaw: 'Corte magro en crudo.',
+            tipCooked: 'Reducción por calor seco o plancha.'
+          },
+          { 
+            id: 'pescado_blanco', 
+            name: 'Pescado blanco (Merluza/Bacalao)', 
+            rawFactor: 1.1, 
+            cookedFactor: 0.7,
+            tipRaw: 'Alto contenido de agua natural.',
+            tipCooked: 'Al hornear o cocer pierde bastante humedad.'
+          },
+          { 
+            id: 'atun_lata', 
+            name: 'Atún en lata (escurrido)', 
+            rawFactor: 0.85, 
+            cookedFactor: 0.85,
+            tipRaw: 'Ya procesado/cocinado en conserva.',
+            tipCooked: 'Referencia directa lista para abrir.'
+          },
+          { 
+            id: 'tofu', 
+            name: 'Tofu firme', 
+            rawFactor: 1.2, 
+            cookedFactor: 1.0,
+            tipRaw: 'Proteína vegetal compacta.',
+            tipCooked: 'Al marcarlo a la sartén pierde algo de su agua interna.'
+          }
+        ]
+      },
+      fat: {
+        name: "Grasas",
+        foods: [
+          { 
+            id: 'aove', 
+            name: 'Aceite de Oliva / Mantequilla', 
+            rawFactor: 1.0, 
+            cookedFactor: 1.0,
+            tipRaw: 'Medido en crudo para cocinar o aliñar.',
+            tipCooked: 'El aceite incorporado en cocinado se mantiene íntegro.'
+          },
+          { 
+            id: 'aguacate', 
+            name: 'Aguacate', 
+            rawFactor: 3.0, 
+            cookedFactor: 3.0,
+            tipRaw: 'Peso de la pulpa sin hueso ni piel.',
+            tipCooked: 'Generalmente se consume fresco.'
+          },
+          { 
+            id: 'frutos_secos', 
+            name: 'Frutos secos naturales / tostados', 
+            rawFactor: 1.1, 
+            cookedFactor: 1.1,
+            tipRaw: 'Peso de la ración seca.',
+            tipCooked: 'Sin variaciones significativas de peso.'
+          }
+        ]
+      }
+    };
+
+    let currentCategory = 'carb';
+    let currentState = 'raw'; // 'raw' o 'cooked'
+
+    function setCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.category-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`tab-${cat}`).classList.add('active');
+      populateFoods();
+    }
+
+    function setState(st) {
+      currentState = st;
+      document.querySelectorAll('.state-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`tab-${st}`).classList.add('active');
+      
+      // Ajustar valor por defecto sugerido según estado
+      const input = document.getElementById('amountInput');
+      if(st === 'cooked' && currentCategory === 'carb') {
+        input.value = '220'; // Típico plato cocinado de arroz/pasta
+      } else if(st === 'raw' && currentCategory === 'carb') {
+        input.value = '80';  // Típico en crudo
+      } else if(st === 'cooked' && currentCategory === 'protein') {
+        input.value = '100'; 
+      } else if(st === 'raw' && currentCategory === 'protein') {
+        input.value = '130';
+      }
+    }
+
+    function populateFoods() {
+      const select = document.getElementById('foodSelect');
+      select.innerHTML = '';
+      database[currentCategory].foods.forEach((food, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.innerText = food.name;
+        select.appendChild(opt);
+      });
+    }
+
+    function calculateEquivalents() {
+      const foodIdx = document.getElementById('foodSelect').value;
+      const amount = parseFloat(document.getElementById('amountInput').value) || 100;
+      const sourceFood = database[currentCategory].foods[foodIdx];
+
+      // 1. Llevar la cantidad introducida a valor estándar interno (Crudo equivalente)
+      // Si el usuario introdujo en cocinado, dividimos por el factor cocinado y multiplicamos por crudo
+      let factorSource = (currentState === 'raw') ? sourceFood.rawFactor : sourceFood.cookedFactor;
+      let standardBase = amount / factorSource; // Valor normalizado base
+
+      const stateLabel = (currentState === 'raw') ? 'en crudo' : 'cocinado/a';
+      document.getElementById('resSourceText').innerText = `${amount}g de ${sourceFood.name} (${stateLabel})`;
+
+      let gridHtml = '';
+      database[currentCategory].foods.forEach((targetFood, idx) => {
+        if (idx.toString() === foodIdx.toString()) return; // No mostrar el mismo
+
+        // Queremos calcular el resultado en el MISMO estado que eligió el usuario (crudo o cocinado)
+        let factorTarget = (currentState === 'raw') ? targetFood.rawFactor : targetFood.cookedFactor;
+        let equivalentAmount = Math.round(standardBase * factorTarget);
+        
+        let unitText = (currentCategory === 'fat' && targetFood.id === 'aove') ? 'ml/g' : 'g';
+
+        gridHtml += `
+          <div class="equivalent-card">
+            <div class="equiv-info">
+              <h4>${targetFood.name}</h4>
+              <span>Equivalente ${stateLabel}</span>
+            </div>
+            <div class="equiv-value">${equivalentAmount} ${unitText}</div>
+          </div>
+        `;
+      });
+
+      document.getElementById('equivalentsGrid').innerHTML = gridHtml;
+      
+      let specificTip = (currentState === 'raw') ? sourceFood.tipRaw : sourceFood.tipCooked;
+      document.getElementById('kitchenTipText').innerText = `💡 Consejo ARRANCA (${stateLabel}): ${specificTip}`;
+
+      document.getElementById('formCard').style.display = 'none';
+      document.getElementById('resultsSection').style.display = 'flex';
+    }
+
+    function showForm() {
+      document.getElementById('resultsSection').style.display = 'none';
+      document.getElementById('formCard').style.display = 'flex';
+    }
+
+    // Inicializar al cargar
+    populateFoods();
+  </script>
+</body>
+</html>
