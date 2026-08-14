@@ -47,10 +47,22 @@
             font-size: 1.1rem;
             display: block;
         }
+        .badge {
+            font-size: 0.7rem;
+            background: #e0e0e0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #555;
+            margin-top: 8px;
+            display: inline-block;
+            font-weight: bold;
+        }
         .loading {
             text-align: center;
             grid-column: 1 / -1;
             color: #666;
+            font-size: 1.1rem;
+            padding: 20px;
         }
     </style>
 </head>
@@ -58,59 +70,72 @@
 
     <h1>Herramientas de Nutrición</h1>
     <div id="file-list" class="grid">
-        <div class="loading">Cargando herramientas...</div>
+        <div class="loading">Cargando archivos...</div>
     </div>
 
     <script>
-        // CONFIGURACIÓN: Cambia estos datos por los tuyos de GitHub
+        // CONFIGURACIÓN: Reemplaza estos datos con los tuyos de GitHub
         const username = 'rociogomeznutricion';
         const repo = 'NUTROKUM';
-        const path = 'herramientas'; // Ruta de la carpeta en tu repositorio
+        const path = 'herramientas'; // Nombre de la carpeta en tu repositorio
 
         const url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
 
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo conectar con la API de GitHub');
+                }
+                return response.json();
+            })
             .then(data => {
                 const container = document.getElementById('file-list');
                 container.innerHTML = '';
 
                 if (!Array.isArray(data)) {
-                    container.innerHTML = '<div class="loading">No se pudieron cargar las herramientas.</div>';
+                    container.innerHTML = '<div class="loading">La ruta especificada no es válida o está vacía.</div>';
                     return;
                 }
 
-                // Filtrar solo archivos HTML y excluir el propio index.html
-                const htmlFiles = data.filter(file => file.name.endsWith('.html') && file.name !== 'index.html');
+                // Filtrar archivos .html y .pdf, excluyendo el propio index.html
+                const files = data.filter(file => 
+                    (file.name.endsWith('.html') || file.name.endsWith('.pdf')) && 
+                    file.name !== 'index.html'
+                );
 
-                if (htmlFiles.length === 0) {
-                    container.innerHTML = '<div class="loading">No hay herramientas disponibles todavía.</div>';
+                if (files.length === 0) {
+                    container.innerHTML = '<div class="loading">No hay herramientas o PDFs disponibles todavía.</div>';
                     return;
                 }
 
-                htmlFiles.forEach(file => {
-                    // Dar formato al nombre (ej: "calculadora-calorias.html" -> "Calculadora Calorias")
+                files.forEach(file => {
+                    // Obtener la extensión para la etiqueta
+                    const ext = file.name.split('.').pop().toUpperCase();
+                    
+                    // Limpiar el nombre del archivo para que se vea estético (quita guiones y extensión)
                     let cleanName = file.name
-                        .replace('.html', '')
+                        .replace(/\.(html|pdf)$/, '')
                         .replace(/[-_]/g, ' ');
                     cleanName = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
 
+                    // Crear la tarjeta visual
                     const card = document.createElement('div');
                     card.className = 'card';
 
-                    const a = document.createElement('a');
-                    a.href = file.name;
-                    a.textContent = cleanName;
+                    card.innerHTML = `
+                        <a href="${file.name}" target="_blank">${cleanName}</a>
+                        <span class="badge">${ext}</span>
+                    `;
 
-                    card.appendChild(a);
                     container.appendChild(card);
                 });
             })
             .catch(error => {
-                console.error('Error al obtener los archivos:', error);
-                document.getElementById('file-list').innerHTML = '<div class="loading">Error al conectar con GitHub.</div>';
+                console.error('Error:', error);
+                document.getElementById('file-list').innerHTML = '<div class="loading">Error al cargar los archivos desde GitHub. Revisa la consola o la configuración.</div>';
             });
     </script>
 
 </body>
 </html>
+
