@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Menú C-C — ARRANCA</title>
+<meta name="description" content="Cocina una vez, come dos. Dinos qué cenas hoy y te decimos cómo convertirlo en la comida de mañana sin esfuerzo extra.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F172A;
+    --navy-soft:#1E293B;
+    --green:#059669;
+    --green-bright:#10B981;
+    --paper:#F8FAF9;
+    --card:#FFFFFF;
+    --ink:#0F172A;
+    --ink-soft:#5B6472;
+    --line:#E4E9E7;
+    --amber:#D97706;
+    --amber-bg:#FEF3E2;
+    --green-bg:#E8F7F1;
+    --radius:16px;
+    --shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  h1,h2,h3{ font-family:'Poppins', sans-serif; }
+
+  header.top{
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-soft) 100%);
+    color:#fff;
+    padding:28px 20px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::after{
+    content:"";
+    position:absolute;
+    right:-50px; top:-70px;
+    width:220px; height:220px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(16,185,129,.35), transparent 70%);
+  }
+  .brand-row{
+    display:flex; align-items:center; gap:10px;
+    font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    color:rgba(255,255,255,.7);
+    margin-bottom:14px;
+  }
+  .badge{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--green-bright);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:11px; color:var(--navy);
+    font-family:'Poppins',sans-serif;
+  }
+  header.top h1{
+    margin:0 0 8px;
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    max-width:340px;
+  }
+  header.top p{
+    margin:0;
+    color:rgba(255,255,255,.72);
+    font-size:14.5px;
+    max-width:380px;
+    position:relative; z-index:1;
+  }
+
+  main{
+    max-width:520px;
+    margin:-22px auto 0;
+    padding:0 16px;
+    position:relative;
+    z-index:2;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px 20px;
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+  .card h2{ font-size:15px; margin:0 0 4px; color:var(--navy); }
+  .card .sub{ font-size:13px; color:var(--ink-soft); margin:0 0 18px; }
+
+  .field{ margin-bottom:14px; }
+  .field label{
+    display:block;
+    font-size:13px; font-weight:600; color:var(--navy);
+    margin-bottom:6px;
+  }
+  .select-wrap{ position:relative; }
+  select{
+    width:100%;
+    appearance:none;
+    -webkit-appearance:none;
+    font-family:'Public Sans', sans-serif;
+    font-size:15px;
+    padding:11px 36px 11px 13px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FBFDFC;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  select:focus{
+    outline:none;
+    border-color:var(--green-bright);
+    box-shadow:0 0 0 3px rgba(16,185,129,.15);
+  }
+  .select-wrap::after{
+    content:"⌄";
+    position:absolute; right:14px; top:50%; transform:translateY(-55%);
+    color:var(--ink-soft); font-size:16px; pointer-events:none;
+  }
+
+  .field-row{ display:grid; grid-template-columns:1fr; gap:0; }
+
+  .servings{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 14px;
+    margin-bottom:16px;
+  }
+  .servings span{ font-size:13px; color:var(--navy); font-weight:600; }
+  .stepper{ display:flex; align-items:center; gap:10px; }
+  .stepper button{
+    width:28px; height:28px; border-radius:50%;
+    border:1.5px solid var(--line);
+    background:#fff; color:var(--navy);
+    font-size:16px; font-weight:700;
+    cursor:pointer; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .stepper button:hover{ border-color:var(--green-bright); }
+  .stepper .count{ font-family:'Poppins',sans-serif; font-weight:700; font-size:15px; min-width:14px; text-align:center; }
+
+  .btn-row{ display:flex; gap:10px; margin-top:6px; }
+  button.primary{
+    flex:1;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:14px;
+    border-radius:12px;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:transform .12s ease, background .15s;
+  }
+  button.primary:hover{ background:#132038; }
+  button.primary:active{ transform:scale(.98); }
+  button.secondary{
+    background:var(--green-bg);
+    color:var(--green);
+    border:1.5px solid transparent;
+    padding:14px 16px;
+    border-radius:12px;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .15s;
+  }
+  button.secondary:hover{ background:#D8F0E6; }
+
+  /* ---------- results ---------- */
+  #results{ display:none; }
+  #results.show{ display:block; animation:rise .35s ease; }
+  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .today-strip{
+    display:flex; gap:8px; flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .chip{
+    background:var(--paper); border:1px solid var(--line);
+    border-radius:999px; padding:6px 12px;
+    font-size:12.5px; color:var(--navy); font-weight:600;
+  }
+  .chip .k{ color:var(--ink-soft); font-weight:400; margin-right:4px; }
+
+  .steps{ counter-reset:step; margin-bottom:6px; }
+  .step{
+    display:flex; gap:12px;
+    padding:12px 0;
+    border-top:1px dashed var(--line);
+  }
+  .step:first-child{ border-top:none; }
+  .step .num{
+    counter-increment:step;
+    flex:none;
+    width:26px; height:26px; border-radius:50%;
+    background:var(--navy); color:#fff;
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:12px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step .num::before{ content: counter(step); }
+  .step .txt{ font-size:13.5px; color:var(--ink); padding-top:3px; }
+  .step .txt strong{ color:var(--navy); }
+
+  .flag{
+    display:flex; gap:10px; align-items:flex-start;
+    border-radius:12px;
+    padding:13px 14px;
+    margin-top:14px;
+    font-size:13.5px;
+  }
+  .flag.warn{ background:var(--amber-bg); color:#92400E; }
+  .flag.ok{ background:var(--green-bg); color:#065F46; }
+  .flag .icon{ font-size:16px; line-height:1.3; }
+  .flag strong{ display:block; margin-bottom:2px; font-family:'Poppins',sans-serif; font-size:13px; }
+
+  .tomorrow-card{
+    margin-top:16px;
+    padding:18px;
+    border-radius:12px;
+    background:var(--navy);
+    color:#fff;
+  }
+  .tomorrow-card .eyebrow{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--green-bright); font-weight:700; margin-bottom:8px;
+  }
+  .tomorrow-card .dish{
+    font-family:'Poppins', sans-serif; font-weight:700; font-size:19px;
+    margin-bottom:6px;
+  }
+  .tomorrow-card p{ margin:0; font-size:13.5px; color:rgba(255,255,255,.8); }
+
+  .footnote{
+    font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:18px 24px 0; line-height:1.5;
+  }
+
+  @media (max-width:380px){
+    .btn-row{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand-row"><span class="badge">A</span> ARRANCA · Herramientas</div>
+  <h1>Generador de Menú C-C</h1>
+  <p>Cocina una vez, come dos. Dinos qué cenas hoy y te decimos exactamente cómo convertirlo en tu comida de mañana sin esfuerzo extra.</p>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>Tu cena de hoy</h2>
+    <p class="sub">Elige lo que ya tienes pensado cocinar. Si no lo tienes claro, prueba "Sorpréndeme".</p>
+
+    <div class="field">
+      <label for="proteina">Proteína</label>
+      <div class="select-wrap">
+        <select id="proteina"></select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="verdura">Verdura</label>
+      <div class="select-wrap">
+        <select id="verdura"></select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="hidrato">Hidrato de hoy</label>
+      <div class="select-wrap">
+        <select id="hidrato"></select>
+      </div>
+    </div>
+
+    <div class="servings">
+      <span>Raciones extra para mañana</span>
+      <div class="stepper">
+        <button type="button" onclick="changeServings(-1)">−</button>
+        <span class="count" id="servingsCount">1</span>
+        <button type="button" onclick="changeServings(1)">+</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="primary" onclick="generar()">Generar mi C-C de mañana</button>
+      <button class="secondary" onclick="sorprendeme()">🎲 Sorpréndeme</button>
+    </div>
+  </section>
+
+  <section class="card" id="results">
+    <h2>Tu estrategia C-C</h2>
+    <p class="sub">Cocina hoy pensando ya en mañana.</p>
+
+    <div class="today-strip" id="todayStrip"></div>
+
+    <div class="steps" id="stepsList"></div>
+
+    <div id="reheatFlag"></div>
+
+    <div class="tomorrow-card">
+      <div class="eyebrow">Menú de mañana</div>
+      <div class="dish" id="tomorrowDish"></div>
+      <p id="tomorrowNote"></p>
+    </div>
+  </section>
+
+  <p class="footnote">
+    Guarda la ración extra en un tupper hermético en la nevera y consúmela dentro de 48h, o congélala si no vas a comerla mañana mismo. Recalienta siempre hasta que humee por dentro antes de comer.
+  </p>
+
+</main>
+
+<script>
+const PROTEINAS = ['Pollo', 'Pavo', 'Ternera', 'Salmón', 'Merluza / pescado blanco', 'Huevos', 'Garbanzos', 'Lentejas', 'Tofu'];
+const VERDURAS = ['Brócoli', 'Espinacas', 'Calabacín', 'Pimientos', 'Zanahoria', 'Judías verdes', 'Champiñones', 'Mezcla de verduras congeladas'];
+
+// Hidratos que se estropean o "se ponen zapateros" al recalentar al día siguiente
+const HIDRATOS = [
+  { name:'Patata',              reheatOk:false },
+  { name:'Arroz muy hecho',     reheatOk:false },
+  { name:'Puré de patata',      reheatOk:false },
+  { name:'Boniato',             reheatOk:true,  note:'cocinado y enfriado en la nevera es incluso mejor: se convierte en almidón resistente, ideal en fase lútea.' },
+  { name:'Pasta',                reheatOk:true },
+  { name:'Quinoa',               reheatOk:true },
+  { name:'Cuscús',                reheatOk:true },
+  { name:'Pan',                   reheatOk:true },
+];
+
+// Alternativas rápidas del Kit de Emergencia para el hidrato de mañana cuando el de hoy no reaprovecha bien
+const HIDRATO_ALTERNATIVAS = [
+  { name:'Ñoquis', prep:'2 minutos al agua hirviendo (o con el recipiente tipo "pasta quick" al micro)' },
+  { name:'Vasito de arroz o quinoa de microondas', prep:'90 segundos al microondas, listo para servir' },
+  { name:'Tortitas de arroz o maíz', prep:'0 cocinado, directo del paquete' },
+  { name:'Cuscús', prep:'5 minutos en remojo con agua caliente' },
+  { name:'Pan de pita o chapata congelada', prep:'2-3 minutos en tostadora o sartén' },
+  { name:'Pasta rápida', prep:'con el truco del recipiente "pasta quick" al microondas' },
+];
+
+let servings = 1;
+
+function poblarSelects(){
+  const pSel = document.getElementById('proteina');
+  const vSel = document.getElementById('verdura');
+  const hSel = document.getElementById('hidrato');
+  pSel.innerHTML = PROTEINAS.map(p => `<option value="${p}">${p}</option>`).join('');
+  vSel.innerHTML = VERDURAS.map(v => `<option value="${v}">${v}</option>`).join('');
+  hSel.innerHTML = HIDRATOS.map(h => `<option value="${h.name}">${h.name}</option>`).join('');
+}
+
+function changeServings(delta){
+  servings = Math.max(1, Math.min(4, servings + delta));
+  document.getElementById('servingsCount').textContent = servings;
+}
+
+function sorprendeme(){
+  document.getElementById('proteina').value = PROTEINAS[Math.floor(Math.random()*PROTEINAS.length)];
+  document.getElementById('verdura').value = VERDURAS[Math.floor(Math.random()*VERDURAS.length)];
+  document.getElementById('hidrato').value = HIDRATOS[Math.floor(Math.random()*HIDRATOS.length)].name;
+  generar();
+}
+
+function generar(){
+  const proteina = document.getElementById('proteina').value;
+  const verdura = document.getElementById('verdura').value;
+  const hidratoNombre = document.getElementById('hidrato').value;
+  const hidratoHoy = HIDRATOS.find(h => h.name === hidratoNombre);
+
+  const racionTxt = servings === 1 ? '1 ración extra' : `${servings} raciones extra`;
+
+  // Today strip
+  document.getElementById('todayStrip').innerHTML = `
+    <span class="chip"><span class="k">Proteína</span>${proteina}</span>
+    <span class="chip"><span class="k">Verdura</span>${verdura}</span>
+    <span class="chip"><span class="k">Hidrato hoy</span>${hidratoNombre}</span>
+  `;
+
+  // Decide tomorrow's hidrato
+  let hidratoManana, prepManana, needsSwap;
+  if(hidratoHoy.reheatOk){
+    needsSwap = false;
+    hidratoManana = hidratoNombre;
+    prepManana = hidratoHoy.note ? `Recaliéntalo sin problema — ${hidratoHoy.note}` : 'Recaliéntalo sin problema, aguanta bien de un día para otro.';
+  } else {
+    needsSwap = true;
+    let opciones = HIDRATO_ALTERNATIVAS.filter(a => a.name !== hidratoNombre);
+    const elegido = opciones[Math.floor(Math.random()*opciones.length)];
+    hidratoManana = elegido.name;
+    prepManana = elegido.prep;
+  }
+
+  // Steps
+  const steps = [
+    `Cocina el <strong>doble de ${proteina.toLowerCase()}</strong> y el <strong>doble de ${verdura.toLowerCase()}</strong> de lo que necesitas para la cena de hoy — calcula ${racionTxt}.`,
+    `Guarda la ración extra en un tupper en cuanto se enfríe un poco, antes de sentarte a cenar.`,
+    needsSwap
+      ? `Mañana, en vez de repetir ${hidratoNombre.toLowerCase()}, prepara <strong>${hidratoManana.toLowerCase()}</strong>: ${prepManana}.`
+      : `Mañana, recalienta también el ${hidratoNombre.toLowerCase()} de hoy junto al resto: ${prepManana}`,
+    `Sirve la proteína y la verdura de ayer junto al hidrato de hoy. Comida lista sin cocinar desde cero.`,
+  ];
+  document.getElementById('stepsList').innerHTML = steps.map(s => `
+    <div class="step"><div class="num"></div><div class="txt">${s}</div></div>
+  `).join('');
+
+  // Flag
+  const flagBlock = document.getElementById('reheatFlag');
+  if(needsSwap){
+    flagBlock.innerHTML = `<div class="flag warn"><span class="icon">⚠️</span><div><strong>${hidratoNombre} no reaprovecha bien</strong>Se pone "zapatero" o pierde textura al recalentar. Por eso mañana cambiamos solo el hidrato — la proteína y la verdura sí se reutilizan tal cual.</div></div>`;
+  } else {
+    flagBlock.innerHTML = `<div class="flag ok"><span class="icon">✅</span><div><strong>${hidratoNombre} aguanta perfecto</strong>Puedes recalentarlo mañana sin que pierda textura ni sabor.</div></div>`;
+  }
+
+  // Tomorrow card
+  document.getElementById('tomorrowDish').textContent = `${hidratoManana} con ${proteina.toLowerCase()} y ${verdura.toLowerCase()}`;
+  document.getElementById('tomorrowNote').textContent = needsSwap
+    ? `Misma base de hoy, hidrato nuevo en menos de 5 minutos.`
+    : `Exactamente lo de hoy, recalentado — cero cocina de nuevo mañana.`;
+
+  const results = document.getElementById('results');
+  results.classList.add('show');
+  results.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+poblarSelects();
+</script>
+
+</body>
+</html>
