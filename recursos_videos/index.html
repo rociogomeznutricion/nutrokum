@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUTRIKU • Repositorio de Recursos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #090D16;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #F8FAFC;
+      line-height: 1.6;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: #0F172A;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 36px 24px;
+      position: relative;
+    }
+
+    /* Brillo decorativo */
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(15, 23, 42, 0) 70%);
+      pointer-events: none;
+    }
+
+    .header {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-logo {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #34D399 0%, #38BDF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13.5px;
+      color: #94A3B8;
+    }
+
+    /* Contenedor de la lista generada */
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .file-item {
+      background-color: #1E293B;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .file-item:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      transform: translateY(-2px);
+      background-color: #233044;
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .file-icon {
+      font-size: 20px;
+    }
+
+    .file-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #F8FAFC;
+      word-break: break-all;
+    }
+
+    .file-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.1);
+      color: #38BDF8;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .loading, .error-msg {
+      text-align: center;
+      color: #94A3B8;
+      font-size: 13.5px;
+      padding: 20px 0;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #64748B;
+      position: relative;
+      z-index: 2;
+      margin-top: -4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <header class="header">
+      <div class="brand-logo">NUTRIKU</div>
+      <p class="subtitle">📂 Archivos y Recursos Disponibles</p>
+    </header>
+
+    <!-- Aquí se inyectará la lista automáticamente -->
+    <div id="fileListContainer" class="file-list">
+      <div class="loading">Cargando recursos de la carpeta... ⚡</div>
+    </div>
+
+    <footer class="footer">
+      <p>NUTRIKU • Actualización automática mediante GitHub API</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Configura aquí los datos de tu repositorio de GitHub
+    const githubConfig = {
+      username: "TU_USUARIO_GITHUB", // Cambia por tu usuario o tu organización
+      repo: "NOMBRE_DEL_REPOSITORIO", // Cambia por el nombre de tu repositorio
+      path: "recursos"                // Carpeta exacta donde está este index.html
+    };
+
+    async function loadFolderContents() {
+      const container = document.getElementById('fileListContainer');
+      const url = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${githubConfig.path}`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("No se pudo conectar con la API de GitHub.");
+        
+        const files = await response.json();
+        
+        // Filtrar solo archivos HTML y PDF, excluyendo este propio index.html
+        const filteredFiles = files.filter(file => {
+          if (file.type !== 'file') return false;
+          const lowerName = file.name.toLowerCase();
+          if (lowerName === 'index.html') return false;
+          return lowerName.endsWith('.html') || lowerName.endsWith('.pdf');
+        });
+
+        if (filteredFiles.length === 0) {
+          container.innerHTML = `<div class="error-msg">No se encontraron archivos HTML o PDF en esta carpeta.</div>`;
+          return;
+        }
+
+        let htmlContent = '';
+        filteredFiles.forEach(file => {
+          const isPdf = file.name.toLowerCase().endsWith('.pdf');
+          const icon = isPdf ? '📄' : '🌐';
+          const badgeText = isPdf ? 'PDF' : 'HTML';
+          
+          // Limpiar un poco el nombre para que se vea más limpio (reemplazar guiones por espacios si quieres)
+          let displayName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+          // Capitalizar primera letra
+          displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+
+          htmlContent += `
+            <a href="${file.name}" class="file-item" target="_blank">
+              <div class="file-info">
+                <span class="file-icon">${icon}</span>
+                <span class="file-name">${displayName}</span>
+              </div>
+              <span class="file-badge">${badgeText}</span>
+            </a>
+          `;
+        });
+
+        container.innerHTML = htmlContent;
+
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = `<div class="error-msg">Error al cargar los archivos. Comprueba la configuración de usuario y repositorio en el script.</div>`;
+      }
+    }
+
+    loadFolderContents();
+  </script>
+
+</body>
+</html>
