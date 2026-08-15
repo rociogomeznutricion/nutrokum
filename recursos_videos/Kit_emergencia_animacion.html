@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUTRIKU • Construyendo el Kit de Emergencia</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --text-color: #f8fafc;
+      --accent: #34d399;
+      --panel-bg: #1e293b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      background: var(--panel-bg);
+      padding: 30px;
+      border-radius: 20px;
+    }
+
+    h1 { font-size: 1.5rem; margin-bottom: 10px; }
+    p.subtitle { color: #94a3b8; margin-bottom: 30px; font-size: 0.9rem; }
+
+    .kit-scene {
+      position: relative;
+      width: 280px;
+      height: 150px;
+      margin: 0 auto 30px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 15px;
+    }
+
+    .item {
+      width: 50px;
+      height: 50px;
+      background: #334155;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      opacity: 0.2;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .item.active {
+      opacity: 1;
+      background: #34d39933;
+      border: 1px solid var(--accent);
+      transform: translateY(-10px);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: white;
+      cursor: pointer;
+      font-size: 0.8rem;
+      border-radius: 8px;
+    }
+
+    button.active { border-color: var(--accent); color: var(--accent); }
+    .message { margin-top: 25px; color: #94a3b8; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <h1>Kit de Emergencia</h1>
+  <p class="subtitle">La estructura que sostiene tus días difíciles.</p>
+
+  <div class="kit-scene">
+    <div class="item" id="i1">🐟</div>
+    <div class="item" id="i2">🫘</div>
+    <div class="item" id="i3">🥦</div>
+    <div class="item" id="i4">⚡</div>
+  </div>
+
+  <div class="controls">
+    <button onclick="toggleItem('i1', this)">🐟 Proteína</button>
+    <button onclick="toggleItem('i2', this)">🫘 Legumbres</button>
+    <button onclick="toggleItem('i3', this)">🥦 Vegetales</button>
+    <button onclick="toggleItem('i4', this)">⚡ Energía</button>
+  </div>
+
+  <div class="message" id="msg">Selecciona los elementos para construir tu kit.</div>
+</div>
+
+<script>
+  function toggleItem(id, btn) {
+    const item = document.getElementById(id);
+    item.classList.toggle('active');
+    btn.classList.toggle('active');
+    
+    const count = document.querySelectorAll('.item.active').length;
+    const msg = document.getElementById('msg');
+    
+    if(count === 4) msg.innerText = "¡Kit listo! Ya no eres vulnerable al cansancio.";
+    else if(count > 0) msg.innerText = "Construyendo tu red de seguridad...";
+    else msg.innerText = "Selecciona los elementos para construir tu kit.";
+  }
+</script>
+</body>
+</html>

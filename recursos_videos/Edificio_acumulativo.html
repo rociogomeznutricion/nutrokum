@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUTRIKU • Construcción Progresiva del Cuerpo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-slate: #090D16;
+      --card-slate: #0F172A;
+      --border-color: #1E293B;
+      --accent-brick: #F472B6;   /* Ladrillos / Estructura */
+      --accent-pipes: #38BDF8;   /* Tuberías / Hidratación */
+      --accent-elec: #34D399;    /* Electricidad / Energía */
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 500px;
+      background-color: var(--card-slate);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: rgba(52, 211, 153, 0.1);
+      color: var(--accent-elec);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Contenedor del Edificio */
+    .building-stage {
+      position: relative;
+      width: 220px;
+      height: 320px;
+      margin: 0 auto 20px auto;
+      border-bottom: 4px solid #475569;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    /* Grúa animada superior */
+    .crane-container {
+      position: absolute;
+      top: -35px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      animation: moveCrane 4s ease-in-out infinite alternate;
+    }
+
+    /* Estructura del Edificio */
+    .building-frame {
+      width: 180px;
+      height: 260px;
+      border: 3px dashed #334155;
+      border-radius: 12px;
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 8px;
+      padding: 10px;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    /* Elementos de construcción individuales */
+    .floor-unit {
+      background: #1E293B;
+      border-radius: 6px;
+      opacity: 0.15;
+      transform: scale(0.9);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.1rem;
+      position: relative;
+    }
+
+    /* Estados acumulativos */
+    .floor-unit.has-brick {
+      background: rgba(244, 114, 182, 0.2);
+      border: 1px solid var(--accent-brick);
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .floor-unit.has-pipe {
+      background: rgba(56, 189, 248, 0.25);
+      border: 1px solid var(--accent-pipes);
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .floor-unit.has-elec {
+      background: rgba(52, 211, 153, 0.25);
+      border: 1px solid var(--accent-elec);
+      opacity: 1;
+      transform: scale(1);
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+    }
+
+    /* Panel de Control / Textos dinámicos */
+    .control-panel {
+      background: #111827;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 95px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .phase-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .phase-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* Botones de acción */
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      flex: 1;
+      background: #1E293B;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 10px 6px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      border-color: var(--text-muted);
+    }
+
+    button.active-brick { background: rgba(244, 114, 182, 0.15); border-color: var(--accent-brick); color: var(--accent-brick); }
+    button.active-pipe  { background: rgba(56, 189, 248, 0.15); border-color: var(--accent-pipes); color: var(--accent-pipes); }
+    button.active-elec  { background: rgba(52, 211, 153, 0.15); border-color: var(--accent-elec); color: var(--accent-elec); }
+
+    .reset-link {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-top: 4px;
+    }
+
+    .reset-link:hover {
+      color: var(--text-main);
+    }
+
+    .brand-footer {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+
+    @keyframes moveCrane {
+      0% { transform: translateX(-20px); }
+      100% { transform: translateX(20px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <span class="badge">🏗️ Arquitectura Corporal</span>
+    <h1>El Edificio NUTRIKU</h1>
+    <p class="subtitle">Construcción progresiva: sumando capas sin prohibiciones.</p>
+
+    <div class="building-stage">
+      <div class="crane-container">
+        <div style="font-size: 1.4rem;" id="craneIcon">🏗️</div>
+      </div>
+
+      <div class="building-frame" id="buildingGrid">
+        <!-- 8 celdas del edificio que irán sumando elementos -->
+        <div class="floor-unit" id="u0"></div>
+        <div class="floor-unit" id="u1"></div>
+        <div class="floor-unit" id="u2"></div>
+        <div class="floor-unit" id="u3"></div>
+        <div class="floor-unit" id="u4"></div>
+        <div class="floor-unit" id="u5"></div>
+        <div class="floor-unit" id="u6"></div>
+        <div class="floor-unit" id="u7"></div>
+      </div>
+    </div>
+
+    <div class="control-panel" id="controlPanel">
+      <div class="phase-title" id="phaseTitle" style="color: var(--text-main);">📌 Haz clic en los botones para construir</div>
+      <div class="phase-desc" id="phaseDesc">Sigue el orden lógico de NUTRIKU: primero estructura, luego flujo y por último energía vital.</div>
+    </div>
+
+    <div class="actions">
+      <button id="btnBrick" onclick="addLayer('brick')">1. 🧱 Ladrillos</button>
+      <button id="btnPipe" onclick="addLayer('pipe')">2. 🔧 Tuberías</button>
+      <button id="btnElec" onclick="addLayer('elec')">3. ⚡ Energía</button>
+    </div>
+
+    <button class="reset-link" onclick="resetBuilding()">Reiniciar construcción</button>
+
+    <div class="brand-footer">NUTRIKU • Método ARRANCA</div>
+  </div>
+
+  <script>
+    // Estado de cada uno de los 8 bloques (guardan qué capas tienen instaladas)
+    let buildingState = [
+      { brick: false, pipe: false, elec: false },
+      { brick: false, pipe: false, elec: false },
+      { brick: false, pipe: false, elec: false },
+      { brick: false, pipe: false, elec: false },
+      { brick: false, pipe: false, elec: false },
+      { brick: false, pipe: false, elec: false },
+      { brick: false, pipe: false, elec: false },
+      { brick: false, pipe: false, elec: false }
+    ];
+
+    function addLayer(layerType) {
+      if(layerType === 'brick') {
+        document.getElementById('btnBrick').classList.add('active-brick');
+        document.getElementById('craneIcon').innerText = '🧱';
+        document.getElementById('phaseTitle').style.color = 'var(--accent-brick)';
+        document.getElementById('phaseTitle').innerHTML = '🧱 Fase 1: Los Ladrillos (Proteína y Estructura)';
+        document.getElementById('phaseDesc').innerText = 'Levantamos la base sólida. Sin proteína y tejido estructural, el cuerpo carece de soporte y colapsa ante el estrés diario.';
+        
+        // Activar ladrillos en todas las unidades
+        buildingState.forEach(block => block.brick = true);
+      } 
+      else if(layerType === 'pipe') {
+        document.getElementById('btnPipe').classList.add('active-pipe');
+        document.getElementById('craneIcon').innerText = '🔧';
+        document.getElementById('phaseTitle').style.color = 'var(--accent-pipes)';
+        document.getElementById('phaseTitle').innerHTML = '🔧 Fase 2: Las Tuberías (Hidratación y Flujo)';
+        document.getElementById('phaseDesc').innerText = 'Instalamos las redes de agua y fluidos vitales. Permiten el transporte interno de nutrientes y la limpieza de residuos sin que el sistema falle.';
+        
+        buildingState.forEach(block => block.pipe = true);
+      } 
+      else if(layerType === 'elec') {
+        document.getElementById('btnElec').classList.add('active-elec');
+        document.getElementById('craneIcon').innerText = '⚡';
+        document.getElementById('phaseTitle').style.color = 'var(--accent-elec)';
+        document.getElementById('phaseTitle').innerHTML = '⚡ Fase 3: La Electricidad (Energía y Metabolismo)';
+        document.getElementById('phaseDesc').innerText = 'Conectamos la energía limpia (carbohidratos de calidad y grasas). El edificio inteligente cobra vida y rinde al máximo nivel.';
+        
+        buildingState.forEach(block => block.elec = true);
+      }
+
+      renderBuilding();
+    }
+
+    function renderBuilding() {
+      buildingState.forEach((block, index) => {
+        let el = document.getElementById('u' + index);
+        el.className = 'floor-unit';
+        
+        let icons = '';
+        if (block.brick) {
+          el.classList.add('has-brick');
+          icons += '🧱';
+        }
+        if (block.pipe) {
+          el.classList.add('has-pipe');
+          icons += '🔧';
+        }
+        if (block.elec) {
+          el.classList.add('has-elec');
+          icons += '⚡';
+        }
+        
+        el.innerText = icons;
+      });
+    }
+
+    function resetBuilding() {
+      buildingState = buildingState.map(() => ({ brick: false, pipe: false, elec: false }));
+      document.getElementById('btnBrick').className = '';
+      document.getElementById('btnPipe').className = '';
+      document.getElementById('btnElec').className = '';
+      document.getElementById('craneIcon').innerText = '🏗️';
+      document.getElementById('phaseTitle').style.color = 'var(--text-main)';
+      document.getElementById('phaseTitle').innerHTML = '📌 Haz clic en los botones para construir';
+      document.getElementById('phaseDesc').innerText = 'Sigue el orden lógico de NUTRIKU: primero estructura, luego flujo y por último energía vital.';
+      renderBuilding();
+    }
+  </script>
+</body>
+</html>

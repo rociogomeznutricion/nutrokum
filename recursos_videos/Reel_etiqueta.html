@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUTRIKU • Auditoría de Etiquetas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-slate: #090D16;
+      --card-slate: #0F172A;
+      --border-color: #1E293B;
+      --accent-red: #F43F5E;
+      --accent-green: #34D399;
+      --accent-blue: #38BDF8;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--card-slate);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: rgba(244, 63, 94, 0.1);
+      color: var(--accent-red);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Comparativa Frontal vs Trasera */
+    .compare-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-side {
+      background: #1E293B;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: left;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .card-side.fake {
+      border-color: rgba(244, 63, 94, 0.4);
+    }
+
+    .card-side.real {
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+
+    .side-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .fake .side-title { color: var(--accent-red); }
+    .real .side-title { color: var(--accent-green); }
+
+    .side-content {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Caja de Fórmula Matemática */
+    .formula-box {
+      background: #111827;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .formula-title {
+      font-size: 0.75rem;
+      color: var(--accent-blue);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .formula-math {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #F8FAFC;
+      letter-spacing: 0.03em;
+      background: rgba(56, 189, 248, 0.08);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px dashed rgba(56, 189, 248, 0.3);
+    }
+
+    /* Botón de acción interactivo */
+    .action-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #38BDF8 0%, #2563EB 100%);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+      transition: opacity 0.2s;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .brand-footer {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <span class="badge">🔍 Auditoría de Etiquetas</span>
+    <h1>El mito del "0% Grasa"</h1>
+    <p class="subtitle">Lo que el marketing esconde detrás de un envase bonito.</p>
+
+    <div class="compare-container">
+      <div class="card-side fake">
+        <div class="side-title">
+          <span>Etiqueta Frontal (Marketing)</span>
+          <span>❌</span>
+        </div>
+        <div class="side-content" style="color: #FDA4AF;">"0% Grasa" • "Fitness" • "Ligero"</div>
+      </div>
+
+      <div class="card-side real">
+        <div class="side-title">
+          <span>Etiqueta Trasera (Verdad)</span>
+          <span>✅</span>
+        </div>
+        <div class="side-content" style="color: #6EE7B7;" id="sugarText">15g de azúcar por cada 100g (¡Doble del límite!)</div>
+      </div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Fórmula de Calorías Reales 📐</div>
+      <div class="formula-math">Kcal = (G×9) + (P×4) + (C×4)</div>
+    </div>
+
+    <button class="action-btn" onclick="triggerAudit()">Simular Revelación de Ingredientes</button>
+
+    <div class="brand-footer">NUTRIKU • Método ARRANCA</div>
+  </div>
+
+  <script>
+    let audited = false;
+    function triggerAudit() {
+      const sugarEl = document.getElementById('sugarText');
+      audited = !audited;
+      if(audited) {
+        sugarEl.innerText = "¡Alarma! Azúcar oculto equivalente a más de un donut por porción.";
+        sugarEl.style.color = "#F43F5E";
+      } else {
+        sugarEl.innerText = "15g de azúcar por cada 100g (¡Doble del límite!)";
+        sugarEl.style.color = "#6EE7B7";
+      }
+    }
+  </script>
+</body>
+</html>

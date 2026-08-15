@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUTRIKU • Panel Comparativo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #F8FAFC;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .infographic-canvas {
+      width: 100%;
+      max-width: 540px;
+      background-color: #090D16;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 40px 28px;
+      position: relative;
+    }
+
+    /* Brillo decorativo superior */
+    .infographic-canvas::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(9, 13, 22, 0) 70%);
+      pointer-events: none;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38BDF8;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+
+    .title span {
+      background: linear-gradient(135deg, #F43F5E 0%, #38BDF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #94A3B8;
+      line-height: 1.4;
+    }
+
+    /* Tarjetas Comparativas (Mitades) */
+    .compare-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .compare-card {
+      background-color: #1E293B;
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .compare-card.fake {
+      border-left: 6px solid #F43F5E;
+    }
+
+    .compare-card.real {
+      border-left: 6px solid #34D399;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .card-type {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .fake .card-type { color: #F43F5E; }
+    .real .card-type { color: #34D399; }
+
+    .card-icon {
+      font-size: 20px;
+    }
+
+    .main-claim {
+      font-size: 18px;
+      font-weight: 700;
+      color: #F8FAFC;
+      margin-bottom: 12px;
+    }
+
+    .bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bullets li {
+      font-size: 14px;
+      color: #94A3B8;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .bullets li strong {
+      color: #E2E8F0;
+    }
+
+    /* Caja de Alerta / Truco */
+    .alert-box {
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      border-radius: 16px;
+      padding: 18px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .alert-icon {
+      font-size: 22px;
+    }
+
+    .alert-content h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FDA4AF;
+      margin-bottom: 4px;
+    }
+
+    .alert-content p {
+      font-size: 13px;
+      color: #94A3B8;
+      line-height: 1.4;
+    }
+
+    /* Footer destacado con gradiente y CTA */
+    .footer-cta {
+      background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.4);
+    }
+
+    .footer-quote {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background-color: #FFFFFF;
+      color: #0F172A;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+      transition: transform 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta-button:hover {
+      transform: scale(1.02);
+    }
+
+    .brand-mark {
+      text-align: center;
+      font-size: 11px;
+      color: #64748B;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
+      margin-top: -8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="infographic-canvas">
+    
+    <!-- Cabecera -->
+    <header class="header">
+      <div class="badge">🔍 Auditoría de Etiquetas</div>
+      <h1 class="title">El Espejismo de la <span>Etiqueta Frontal</span></h1>
+      <p class="subtitle">Lo que la industria te vende frente a lo que tu cuerpo realmente procesa en la parte trasera.</p>
+    </header>
+
+    <!-- Bloques Comparativos -->
+    <div class="compare-container">
+      
+      <!-- Tarjeta Frontal (Engaño) -->
+      <div class="compare-card fake">
+        <div class="card-top">
+          <span class="card-type">❌ Lo que ves delante</span>
+          <span class="card-icon">🏷️</span>
+        </div>
+        <div class="main-claim">"0% Grasa", "Fitness", "Alto en Fibra"</div>
+        <ul class="bullets">
+          <li><strong>Reclamo publicitario:</strong> Diseñado exclusivamente para atrapar tu atención visualmente en el lineal del supermercado.</li>
+          <li><strong>Omisión intencionada:</strong> Oculta deliberadamente los excesos de azúcares libres o aditivos de baja calidad.</li>
+        </ul>
+      </div>
+
+      <!-- Tarjeta Trasera (Realidad) -->
+      <div class="compare-card real">
+        <div class="card-top">
+          <span class="card-type">✅ Lo que descubres detrás</span>
+          <span class="card-icon">📋</span>
+        </div>
+        <div class="main-claim">Tabla nutricional e ingredientes reales</div>
+        <ul class="bullets">
+          <li><strong>Orden de predominio:</strong> Los ingredientes se listan de mayor a menor cantidad real en peso.</li>
+          <li><strong>Matemática pura:</strong> Revela las calorías reales mediante la densidad de macronutrientes sin filtros de marketing.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Caja de Advertencia -->
+    <div class="alert-box">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-content">
+        <h4>Regla de Oro NUTRIKU</h4>
+        <p>Si un envase necesita gritar en su portada lo saludable que es, desconfía. La verdadera calidad nutricional siempre se defiende sola en la lista de ingredientes.</p>
+      </div>
+    </div>
+
+    <!-- Pie de página con CTA -->
+    <div class="footer-cta">
+      <p class="footer-quote">"Deja de leer eslóganes comerciales y empieza a entrenar tu criterio nutricional."</p>
+      <a href="#" class="cta-button">Únete a la Comunidad NUTRIKU ⚡</a>
+    </div>
+
+    <div class="brand-mark">NUTRIKU • Método ARRANCA</div>
+
+  </div>
+
+</body>
+</html>
