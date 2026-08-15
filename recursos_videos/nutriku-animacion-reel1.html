@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NUTRIKU · Animación Reel 1 (Pantalla dividida)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F172A;
+    --navy-light:#16213A;
+    --green:#10B981;
+    --green-deep:#059669;
+    --chalk:#F8FAFC;
+    --red:#EF4444;
+    --amber:#FBBF24;
+    --grid: rgba(16,185,129,0.09);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    height:100%;
+    background:#000;
+    overflow:hidden;
+    font-family:'Poppins',sans-serif;
+  }
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  /* Formato cuadrado, pensado para ocupar la mitad de una pantalla dividida vertical */
+  .stage{
+    position:relative;
+    width:min(90vw, 90vh);
+    height:min(90vw, 90vh);
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/36px 36px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/36px 36px,
+      radial-gradient(ellipse at 50% 30%, #14243F 0%, var(--navy) 65%);
+    overflow:hidden;
+    cursor:pointer;
+    user-select:none;
+    -webkit-user-select:none;
+    border-radius:6px;
+  }
+
+  /* ---- shared element base ---- */
+  .el{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .5s ease, transform .6s ease;
+  }
+  .el.visible{opacity:1;}
+
+  /* ---- STEP 0: intro hint ---- */
+  .intro{
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    text-align:center;
+    padding:0 10%;
+  }
+  .intro .logo-mini{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--green);
+    font-size:13px;
+    letter-spacing:4px;
+    font-weight:700;
+    opacity:.85;
+  }
+  .intro h1{
+    color:var(--chalk);
+    font-size:clamp(18px,5vw,24px);
+    font-weight:700;
+    line-height:1.3;
+  }
+  .intro p{
+    color:#94A3B8;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    line-height:1.7;
+  }
+  .intro .tap-badge{
+    margin-top:8px;
+    padding:9px 18px;
+    border:1px solid var(--green);
+    border-radius:30px;
+    color:var(--green);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:.6; transform:scale(1);}
+    50%{opacity:1; transform:scale(1.04);}
+  }
+
+  /* ---- STEP 1-2: brain/code icon + headline ---- */
+  .headline{
+    top:6%;
+    left:6%;
+    right:6%;
+    text-align:center;
+  }
+  .headline span{
+    display:inline;
+    color:var(--chalk);
+    font-size:clamp(17px,5.4vw,24px);
+    font-weight:800;
+    line-height:1.25;
+    background:linear-gradient(180deg, #fff 0%, #E2E8F0 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+
+  .icon-wrap{
+    top:44%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(.9);
+    width:44%;
+    aspect-ratio:1/1;
+  }
+  .icon-wrap.visible{transform:translate(-50%,-50%) scale(1);}
+  .icon-wrap svg{width:100%; height:100%; overflow:visible;}
+  .draw-path{
+    fill:none;
+    stroke:var(--green);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:1400;
+    stroke-dashoffset:1400;
+  }
+  .icon-wrap.visible .draw-path{
+    animation:draw 1.6s ease forwards;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+
+  .xstrike{
+    top:44%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:44%;
+    aspect-ratio:1/1;
+  }
+  .xstrike svg{width:100%; height:100%; overflow:visible;}
+  .x-path{
+    fill:none;
+    stroke:var(--red);
+    stroke-width:6;
+    stroke-linecap:round;
+    stroke-dasharray:400;
+    stroke-dashoffset:400;
+  }
+  .xstrike.visible .x-path{
+    animation:draw 0.5s ease forwards;
+  }
+  .xstrike.visible .x-path.p2{animation-delay:.35s;}
+
+  /* ---- STEP 3: error crash ---- */
+  .error-screen{
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    background:radial-gradient(ellipse at 50% 50%, rgba(239,68,68,0.14) 0%, transparent 60%);
+  }
+  .error-screen .glitch-box{
+    border:2px solid var(--red);
+    border-radius:10px;
+    padding:18px 20px;
+    background:rgba(15,23,42,0.85);
+    text-align:center;
+    max-width:80%;
+  }
+  .error-screen .code{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--red);
+    font-size:clamp(14px,4.2vw,18px);
+    font-weight:700;
+    letter-spacing:1px;
+  }
+  .error-screen .msg{
+    margin-top:6px;
+    font-family:'JetBrains Mono',monospace;
+    color:var(--chalk);
+    font-size:clamp(11px,3.2vw,14px);
+    letter-spacing:.5px;
+  }
+  .error-screen.visible .glitch-box{
+    animation:shake .25s linear 2;
+  }
+  @keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-4px);}
+    50%{transform:translateX(4px);}
+    75%{transform:translateX(-2px);}
+    100%{transform:translateX(0);}
+  }
+
+  /* ---- STEP 4: credential ---- */
+  .credential{
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    background:radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.16) 0%, transparent 60%);
+  }
+  .credential .checkwrap{
+    width:64px;
+    height:64px;
+  }
+  .credential .checkwrap svg{width:100%;height:100%;}
+  .credential .circle{
+    fill:none;
+    stroke:var(--green);
+    stroke-width:4;
+    stroke-dasharray:220;
+    stroke-dashoffset:220;
+  }
+  .credential .check{
+    fill:none;
+    stroke:var(--green);
+    stroke-width:5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:60;
+    stroke-dashoffset:60;
+  }
+  .credential.visible .circle{ animation:draw .6s ease forwards; }
+  .credential.visible .check{ animation:draw .4s ease forwards; animation-delay:.55s; }
+  .credential .title{
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    color:var(--chalk);
+    font-size:clamp(15px,4.4vw,19px);
+    text-align:center;
+    padding:0 10%;
+    line-height:1.35;
+  }
+  .credential .sub{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--green);
+    font-size:11px;
+    letter-spacing:2px;
+  }
+
+  /* ---- STEP 5-9: house build ---- */
+  .house-group{
+    top:34%;
+    left:50%;
+    width:48%;
+    transform:translate(-50%,-50%) scale(1);
+    transition:transform 1s cubic-bezier(.2,.8,.2,1), top 1s ease;
+  }
+  .house-group.zoomed{
+    transform:translate(-50%,-50%) scale(.6);
+    top:34%;
+  }
+  .house-group svg{width:100%; overflow:visible; display:block;}
+  .house-path{
+    fill:none;
+    stroke:var(--chalk);
+    stroke-width:2.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+  }
+  .house-group.visible .house-path{
+    animation:draw 1.4s ease forwards;
+  }
+
+  .mat-icon{
+    top:0; left:0;
+    width:18%;
+    transform:scale(.7);
+  }
+  .mat-icon.visible{transform:scale(1);}
+  .mat-icon svg{width:100%; overflow:visible;}
+  .mat-icon .draw-path{stroke-width:3;}
+  .mat-icon.visible .draw-path{animation:draw .8s ease forwards;}
+  .mat-icon .lbl{
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%);
+    margin-top:5px;
+    width:32vw;
+    max-width:140px;
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:clamp(7px,2.1vw,10px);
+    letter-spacing:.5px;
+    line-height:1.3;
+    word-break:break-word;
+    overflow-wrap:break-word;
+    white-space:normal;
+  }
+
+  #brick{ left:8%; top:64%; }
+  #brick .draw-path{ stroke:var(--amber); }
+  #brick .lbl{ color:var(--amber); }
+
+  #bolt{ left:41%; top:64%; }
+  #bolt .draw-path{ stroke:var(--green); }
+  #bolt .lbl{ color:var(--green); }
+
+  #pipe{ left:74%; top:64%; }
+  #pipe .draw-path{ stroke:#60A5FA; }
+  #pipe .lbl{ color:#60A5FA; }
+
+  /* ---- STEP 9: logo (pantalla propia, sin solapes) ---- */
+  .logo-text{
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.14) 0%, transparent 62%);
+  }
+  .logo-text .icon-row{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    margin-bottom:10px;
+  }
+  .logo-text .icon-row span{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    color:#94A3B8;
+  }
+  .logo-text .m1{
+    font-family:'Poppins',sans-serif;
+    font-weight:800;
+    color:var(--chalk);
+    font-size:clamp(22px,7vw,30px);
+    letter-spacing:1px;
+    text-align:center;
+  }
+  .logo-text .m2{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    color:var(--green);
+    font-size:clamp(11px,3vw,13px);
+    letter-spacing:3px;
+  }
+
+  /* ---- STEP 10: CTA ---- */
+  .cta{
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(15,23,42,0.55);
+    backdrop-filter:blur(2px);
+  }
+  .cta h2{
+    color:var(--chalk);
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:clamp(19px,5.8vw,26px);
+    text-align:center;
+    padding:0 12%;
+    line-height:1.3;
+  }
+  .cta h2 .accent{ color:var(--green); }
+
+  /* ---- UI chrome (se oculta con el boton) ---- */
+  .ui-chrome{ transition:opacity .3s ease; }
+  body.clean .ui-chrome{ opacity:0 !important; pointer-events:none; }
+
+  .dots{
+    position:absolute;
+    bottom:12px;
+    left:0; right:0;
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    z-index:20;
+  }
+  .dots span{
+    width:6px; height:6px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.25);
+  }
+  .dots span.active{ background:var(--green); }
+
+  .step-hint{
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:20;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:#64748B;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .step-hint button{
+    pointer-events:auto;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.15);
+    color:#CBD5E1;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+
+  /* Boton de ocultar interfaz: SIEMPRE visible (aunque tenue) para poder reactivarlo con el dedo */
+  .toggle-ui-btn{
+    position:absolute;
+    top:8px;
+    right:8px;
+    z-index:30;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.2);
+    background:rgba(15,23,42,0.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    pointer-events:auto;
+    transition:opacity .3s ease, background .2s ease;
+  }
+  .toggle-ui-btn svg{ width:18px; height:18px; }
+  .toggle-ui-btn .eye-open{ stroke:#CBD5E1; }
+  .toggle-ui-btn .eye-closed{ stroke:#CBD5E1; display:none; }
+  body.clean .toggle-ui-btn{
+    opacity:0;
+    pointer-events:none;
+  }
+  body.clean.reveal-ready .toggle-ui-btn{
+    opacity:1;
+    pointer-events:auto;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  body.clean .toggle-ui-btn .eye-open{ display:none; }
+  body.clean .toggle-ui-btn .eye-closed{ display:block; }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage" data-step="0">
+
+  <!-- step hint bar -->
+  <div class="step-hint ui-chrome">
+    <span id="stepLabel">Paso 0/10</span>
+    <button id="restartBtn">⟲ Reiniciar</button>
+  </div>
+
+  <!-- BOTON OCULTAR/MOSTRAR INTERFAZ (siempre accesible, aunque tenue) -->
+  <button class="toggle-ui-btn" id="toggleUiBtn" title="Ocultar/mostrar interfaz">
+    <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+    <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.8 21.8 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 7 11 7a21.8 21.8 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+      <path d="M1 1l22 22"/>
+    </svg>
+  </button>
+
+  <!-- STEP 0 -->
+  <div class="el intro" data-show="0" data-hide="1">
+    <div class="logo-mini">NUTRIKU</div>
+    <h1>Toca la pantalla para avanzar<br>cada paso mientras narras</h1>
+    <p>El botón del ojo se oculta al pulsarlo.<br>Reaparece solo 3s después de terminar<br>toda la secuencia (paso 10)</p>
+    <div class="tap-badge">TOCA PARA EMPEZAR ▸</div>
+  </div>
+
+  <!-- STEP 1-2: headline + brain icon -->
+  <div class="el headline" data-show="1" data-hide="3">
+    <span>PROGRAMÉ MI CUERPO<br>COMO UN SOFTWARE</span>
+  </div>
+
+  <div class="el icon-wrap" data-show="1" data-hide="3">
+    <svg viewBox="0 0 200 200">
+      <path class="draw-path" d="M100,30 C60,30 40,60 40,90 C40,110 50,120 50,130 C50,145 60,150 75,150 L75,165 L125,165 L125,150 C140,150 150,145 150,130 C150,120 160,110 160,90 C160,60 140,30 100,30 Z"/>
+      <path class="draw-path" d="M70,70 L90,70 M70,90 L110,90 M70,110 L95,110 M110,70 L130,70 M120,90 L130,90 M105,110 L130,110"/>
+    </svg>
+  </div>
+
+  <div class="el xstrike" data-show="2" data-hide="3">
+    <svg viewBox="0 0 200 200">
+      <path class="x-path p1" d="M35,35 L165,165"/>
+      <path class="x-path p2" d="M165,35 L35,165"/>
+    </svg>
+  </div>
+
+  <!-- STEP 3: error -->
+  <div class="el error-screen" data-show="3" data-hide="4">
+    <div class="glitch-box">
+      <div class="code">ERROR 404</div>
+      <div class="msg">MOTIVACIÓN NO ENCONTRADA</div>
+    </div>
+  </div>
+
+  <!-- STEP 4: credential -->
+  <div class="el credential" data-show="4" data-hide="5">
+    <div class="checkwrap">
+      <svg viewBox="0 0 100 100">
+        <circle class="circle" cx="50" cy="50" r="35"/>
+        <path class="check" d="M32,52 L45,65 L70,35"/>
+      </svg>
+    </div>
+    <div class="sub">CREDENCIAL VERIFICADA</div>
+    <div class="title">Técnico Superior<br>en Dietética</div>
+  </div>
+
+  <!-- STEP 5-9: house -->
+  <div class="el house-group" data-show="5" data-hide="9">
+    <svg viewBox="0 0 240 200">
+      <path class="house-path" d="M20,110 L120,30 L220,110 L220,190 L20,190 Z M60,190 L60,130 L100,130 L100,190 M150,110 L150,70 L190,70 L190,110"/>
+    </svg>
+  </div>
+
+  <div class="el mat-icon" id="brick" data-show="6" data-hide="9">
+    <svg viewBox="0 0 100 100">
+      <path class="draw-path" d="M15,30 L85,30 L85,50 L15,50 Z M15,50 L85,50 L85,70 L15,70 Z M15,70 L85,70 L85,90 L15,90 Z M50,30 L50,50 M15,50 L15,70 M50,50 L50,70 M85,50 L85,70 M50,70 L50,90"/>
+    </svg>
+    <span class="lbl">LADRILLOS</span>
+  </div>
+
+  <div class="el mat-icon" id="bolt" data-show="7" data-hide="9">
+    <svg viewBox="0 0 100 100">
+      <path class="draw-path" d="M58,10 L28,55 L48,55 L40,90 L74,42 L52,42 Z"/>
+    </svg>
+    <span class="lbl">ELECTRICIDAD</span>
+  </div>
+
+  <div class="el mat-icon" id="pipe" data-show="8" data-hide="9">
+    <svg viewBox="0 0 100 100">
+      <path class="draw-path" d="M15,35 L55,35 C70,35 70,55 55,55 L35,55 C20,55 20,75 35,75 L85,75"/>
+    </svg>
+    <span class="lbl">AISLAMIENTO</span>
+  </div>
+
+  <!-- STEP 9: logo -->
+  <div class="el logo-text" data-show="9" data-hide="10">
+    <div class="icon-row">
+      <span>🧱 LADRILLOS</span>
+      <span>⚡ ELECTRICIDAD</span>
+      <span>🔧 AISLAMIENTO</span>
+    </div>
+    <div class="m1">MÉTODO ARRANCA</div>
+    <span class="m2">A · R · R · A · N · C · A</span>
+  </div>
+
+  <!-- STEP 10: CTA -->
+  <div class="el cta" data-show="10">
+    <h2>Sígueme,<br><span class="accent">esto solo empieza</span></h2>
+  </div>
+
+  <div class="dots ui-chrome" id="dots"></div>
+
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const stepLabel = document.getElementById('stepLabel');
+  const dotsWrap = document.getElementById('dots');
+  const TOTAL_STEPS = 10;
+  let step = 0;
+  let revealTimer = null;
+
+  for(let i=0;i<=TOTAL_STEPS;i++){
+    const d = document.createElement('span');
+    if(i===0) d.classList.add('active');
+    dotsWrap.appendChild(d);
+  }
+
+  function render(){
+    stage.dataset.step = step;
+    stepLabel.textContent = 'Paso ' + step + '/' + TOTAL_STEPS;
+    [...dotsWrap.children].forEach((d,i)=> d.classList.toggle('active', i===step));
+
+    document.querySelectorAll('.el').forEach(el=>{
+      const show = parseInt(el.dataset.show, 10);
+      const hideAttr = el.dataset.hide;
+      const hide = hideAttr !== undefined ? parseInt(hideAttr, 10) : null;
+      const isVisible = step >= show && (hide === null || step < hide);
+      el.classList.toggle('visible', isVisible);
+    });
+
+    document.querySelector('.house-group').classList.toggle('zoomed', step >= 9);
+
+    // Solo cuando se completa TODA la secuencia: esperar 3s y, si sigue oculta
+    // la interfaz, dejar reaparecer el botón para poder mostrarla de nuevo.
+    clearTimeout(revealTimer);
+    document.body.classList.remove('reveal-ready');
+    if(step === TOTAL_STEPS){
+      revealTimer = setTimeout(()=>{
+        if(document.body.classList.contains('clean')){
+          document.body.classList.add('reveal-ready');
+        }
+      }, 3000);
+    }
+  }
+
+  function next(){ if(step < TOTAL_STEPS){ step++; render(); } }
+  function prev(){ if(step > 0){ step--; render(); } }
+  function restart(){ step = 0; render(); }
+
+  stage.addEventListener('click', (e)=>{
+    if(e.target.closest('#restartBtn') || e.target.closest('#toggleUiBtn')) return;
+    next();
+  });
+
+  document.getElementById('restartBtn').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    restart();
+  });
+
+  document.getElementById('toggleUiBtn').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    document.body.classList.toggle('clean');
+    document.body.classList.remove('reveal-ready');
+    clearTimeout(revealTimer);
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.code === 'ArrowRight' || e.code === 'Space'){ e.preventDefault(); next(); }
+    if(e.code === 'ArrowLeft'){ prev(); }
+    if(e.code === 'KeyR'){ restart(); }
+    if(e.code === 'KeyH'){ document.body.classList.toggle('clean'); }
+  });
+
+  render();
+</script>
+
+</body>
+</html>

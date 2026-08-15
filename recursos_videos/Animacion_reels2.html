@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUTRIKU • Animación Reel Secuencial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-slate: #090D16;
+      --card-slate: #0F172A;
+      --border-color: #1E293B;
+      --accent-red: #F43F5E;
+      --accent-green: #34D399;
+      --accent-blue: #38BDF8;
+      --accent-brick: #F472B6;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 420px;
+      background-color: var(--card-slate);
+      border: 1px solid var(--border-color);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: rgba(56, 189, 248, 0.1);
+      color: var(--accent-blue);
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+      align-self: flex-start;
+    }
+
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    /* Contenedor tipo Canvas de las secuencias del reel */
+    .reel-stage {
+      background: #1E293B;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .stage-content {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      animation: fadeIn 0.4s ease forwards;
+      width: 100%;
+    }
+
+    .stage-content.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stage-time {
+      font-size: 0.7rem;
+      color: var(--accent-blue);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stage-main-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .visual-canvas-icon {
+      font-size: 2.5rem;
+      margin-bottom: 4px;
+    }
+
+    .highlight-red { color: var(--accent-red); }
+    .highlight-green { color: var(--accent-green); }
+    .highlight-brick { color: var(--accent-brick); }
+
+    /* Controles de reproducción */
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #38BDF8 0%, #2563EB 100%);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+      transition: opacity 0.2s;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .reset-btn {
+      background: #1E293B;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .reset-btn:hover {
+      color: var(--text-main);
+      background: #334155;
+    }
+
+    .brand-footer {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 1px;
+      margin-top: -4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <span class="badge">🎬 Simulador de Reel</span>
+    <h1>Guion: Fui Informática</h1>
+
+    <!-- Pantalla de etapas del Reel (Canvas Visual) -->
+    <div class="reel-stage" id="reelStage">
+      
+      <!-- 0:00 - 0:03 -->
+      <div class="stage-content active" id="stage-0">
+        <span class="stage-time">0:00 - 0:03</span>
+        <div class="visual-canvas-icon">💻🧠</div>
+        <div class="stage-main-text">"Fui informática. Intenté programar mi cuerpo como si fuera un software."</div>
+        <div style="font-size: 0.75rem; color: var(--accent-blue); font-weight: 700;">PROGRAMÉ MI CUERPO COMO UN SOFTWARE</div>
+      </div>
+
+      <!-- 0:03 - 0:08 -->
+      <div class="stage-content" id="stage-1">
+        <span class="stage-time">0:03 - 0:08</span>
+        <div class="visual-canvas-icon highlight-red">🧠❌</div>
+        <div class="stage-main-text">"Buscaba el algoritmo perfecto. La dieta sin errores. El control absoluto sobre cada caloría."</div>
+      </div>
+
+      <!-- 0:08 - 0:13 -->
+      <div class="stage-content" id="stage-2">
+        <span class="stage-time">0:08 - 0:13</span>
+        <div class="visual-canvas-icon">🖥️⚠️</div>
+        <div class="stage-main-text">"El resultado siempre era el mismo: un sistema colapsado por la frustración y el efecto rebote."</div>
+        <div style="font-size: 0.75rem; color: var(--accent-red); font-weight: 700;">ERROR 404: MOTIVACIÓN NO ENCONTRADA</div>
+      </div>
+
+      <!-- 0:13 - 0:20 -->
+      <div class="stage-content" id="stage-3">
+        <span class="stage-time">0:13 - 0:20</span>
+        <div class="visual-canvas-icon highlight-green">🔑✔️</div>
+        <div class="stage-main-text">"Harta de fracasar, decidí estudiar Dietética. Hoy soy Técnico Superior y esto es lo que aprendí:"</div>
+        <div style="font-size: 0.75rem; color: var(--accent-green); font-weight: 700;">TÉCNICO SUPERIOR EN DIETÉTICA ✔️</div>
+      </div>
+
+      <!-- 0:20 - 0:30 -->
+      <div class="stage-content" id="stage-4">
+        <span class="stage-time">0:20 - 0:30</span>
+        <div class="visual-canvas-icon highlight-brick">🏠⚡</div>
+        <div class="stage-main-text">"Tu cuerpo no es una máquina. Es un edificio en construcción."</div>
+        <div style="font-size: 0.75rem; color: var(--accent-brick); font-weight: 700;">LADRILLOS · ELECTRICIDAD · AISLAMIENTO</div>
+      </div>
+
+      <!-- 0:30 - 0:35 -->
+      <div class="stage-content" id="stage-5">
+        <span class="stage-time">0:30 - 0:35</span>
+        <div class="visual-canvas-icon">🏢✨</div>
+        <div class="stage-main-text">"Esta es la base de mi Método ARRANCA. Y en los próximos videos te lo voy a contar todo."</div>
+        <div style="font-size: 0.8rem; color: var(--accent-blue); font-weight: 800;">MÉTODO ARRANCA</div>
+      </div>
+
+      <!-- 0:35 - 0:38 (Cierre) -->
+      <div class="stage-content" id="stage-6">
+        <span class="stage-time">0:35 - 0:38 (Cierre)</span>
+        <div class="visual-canvas-icon highlight-green">😊📱</div>
+        <div class="stage-main-text highlight-green">"Sígueme si tú también estás cansada de tratar tu cuerpo como una máquina rota."</div>
+      </div>
+
+    </div>
+
+    <!-- Botones de control -->
+    <div class="controls">
+      <button class="action-btn" id="playBtn" onclick="startAnimation()">▶ Iniciar Animación</button>
+      <button class="reset-btn" onclick="resetAnimation()">🔄 Reiniciar</button>
+    </div>
+
+    <div class="brand-footer">NUTRIKU • Método ARRANCA</div>
+  </div>
+
+  <script>
+    let currentStage = 0;
+    const totalStages = 7;
+    let animationInterval = null;
+
+    // Duraciones aproximadas proporcionales para cada segmento del guion (en milisegundos)
+    const stageTimes = [3000, 5000, 5000, 7000, 10000, 5000, 3000];
+
+    function showStage(index) {
+      for (let i = 0; i < totalStages; i++) {
+        const el = document.getElementById(`stage-${i}`);
+        if (i === index) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      }
+    }
+
+    function runStep(index) {
+      if (index < totalStages) {
+        currentStage = index;
+        showStage(currentStage);
+        
+        animationInterval = setTimeout(() => {
+          runStep(index + 1);
+        }, stageTimes[index]);
+      } else {
+        document.getElementById('playBtn').innerText = "▶ Iniciar Animación";
+        document.getElementById('playBtn').disabled = false;
+      }
+    }
+
+    function startAnimation() {
+      if (animationInterval) clearTimeout(animationInterval);
+      currentStage = 0;
+      showStage(currentStage);
+
+      document.getElementById('playBtn').innerText = "Reproduciendo...";
+      document.getElementById('playBtn').disabled = true;
+
+      runStep(0);
+    }
+
+    function resetAnimation() {
+      if (animationInterval) clearTimeout(animationInterval);
+      currentStage = 0;
+      showStage(currentStage);
+      document.getElementById('playBtn').innerText = "▶ Iniciar Animación";
+      document.getElementById('playBtn').disabled = false;
+    }
+  </script>
+</body>
+</html>
