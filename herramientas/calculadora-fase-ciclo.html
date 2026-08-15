@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Fase del Ciclo — ARRANCA</title>
+<meta name="description" content="Descubre en qué fase de tu ciclo estás hoy y qué le viene bien a tu digestión esta semana.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F172A;
+    --navy-soft:#1E293B;
+    --green:#059669;
+    --green-bright:#10B981;
+    --paper:#F8FAF9;
+    --card:#FFFFFF;
+    --ink:#0F172A;
+    --ink-soft:#5B6472;
+    --line:#E4E9E7;
+    --amber:#D97706;
+    --amber-bg:#FEF3E2;
+    --red-bg:#FDECEC;
+    --green-bg:#E8F7F1;
+    --radius:16px;
+    --shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
+
+    /* season colors, one per phase */
+    --c-menstrual:#5B6EF5;
+    --c-menstrual-bg:#EEF0FE;
+    --c-folicular:#10B981;
+    --c-folicular-bg:#E8F7F1;
+    --c-ovulacion:#F59E0B;
+    --c-ovulacion-bg:#FEF3E2;
+    --c-lutea:#DC6B4E;
+    --c-lutea-bg:#FBEBE5;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  h1,h2,h3{ font-family:'Poppins', sans-serif; }
+
+  header.top{
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-soft) 100%);
+    color:#fff;
+    padding:28px 20px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::after{
+    content:"";
+    position:absolute;
+    right:-50px; top:-70px;
+    width:220px; height:220px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(16,185,129,.35), transparent 70%);
+  }
+  .brand-row{
+    display:flex; align-items:center; gap:10px;
+    font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    color:rgba(255,255,255,.7);
+    margin-bottom:14px;
+  }
+  .badge{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--green-bright);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:11px; color:var(--navy);
+    font-family:'Poppins',sans-serif;
+  }
+  header.top h1{
+    margin:0 0 8px;
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    max-width:340px;
+  }
+  header.top p{
+    margin:0;
+    color:rgba(255,255,255,.72);
+    font-size:14.5px;
+    max-width:380px;
+    position:relative; z-index:1;
+  }
+
+  main{
+    max-width:520px;
+    margin:-22px auto 0;
+    padding:0 16px;
+    position:relative;
+    z-index:2;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px 20px;
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+  .card h2{ font-size:15px; margin:0 0 4px; color:var(--navy); }
+  .card .sub{ font-size:13px; color:var(--ink-soft); margin:0 0 18px; }
+
+  .field{ margin-bottom:14px; }
+  .field label{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:13px; font-weight:600; color:var(--navy);
+    margin-bottom:6px;
+  }
+  .field label .hint{ font-weight:400; color:var(--ink-soft); font-size:11.5px; }
+  input[type=date], input[type=number]{
+    width:100%;
+    font-family:'Public Sans', sans-serif;
+    font-size:16px;
+    padding:11px 13px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FBFDFC;
+    color:var(--ink);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus{
+    outline:none;
+    border-color:var(--green-bright);
+    box-shadow:0 0 0 3px rgba(16,185,129,.15);
+  }
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+  button.calc{
+    width:100%;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:14px;
+    border-radius:12px;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    margin-top:6px;
+    transition:transform .12s ease, background .15s;
+  }
+  button.calc:hover{ background:#132038; }
+  button.calc:active{ transform:scale(.98); }
+
+  .remember-row{
+    display:flex; align-items:center; gap:8px;
+    font-size:12.5px; color:var(--ink-soft);
+    margin-top:12px;
+  }
+  .remember-row input{ width:auto; }
+
+  /* ---------- results ---------- */
+  #results{ display:none; }
+  #results.show{ display:block; animation:rise .35s ease; }
+  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .phase-hero{
+    border-radius:16px;
+    padding:24px 20px;
+    text-align:center;
+    margin-bottom:16px;
+  }
+  .phase-hero .season-icon{ font-size:34px; line-height:1; margin-bottom:8px; }
+  .phase-hero .season-name{
+    font-family:'Poppins', sans-serif; font-weight:800; font-size:12px;
+    text-transform:uppercase; letter-spacing:.08em; opacity:.75; margin-bottom:4px;
+  }
+  .phase-hero .phase-name{
+    font-family:'Poppins', sans-serif; font-weight:700; font-size:22px;
+    margin-bottom:6px;
+  }
+  .phase-hero .phase-desc{ font-size:13.5px; opacity:.85; max-width:340px; margin:0 auto; }
+
+  .stat-row{
+    display:flex; gap:10px; margin-bottom:16px;
+  }
+  .stat{
+    flex:1; background:var(--paper); border:1px solid var(--line);
+    border-radius:12px; padding:12px; text-align:center;
+  }
+  .stat .num{ font-family:'Poppins',sans-serif; font-weight:800; font-size:20px; color:var(--navy); }
+  .stat .lbl{ font-size:11px; color:var(--ink-soft); margin-top:2px; }
+
+  .timeline{
+    display:flex; height:10px; border-radius:6px; overflow:hidden;
+    margin-bottom:6px; position:relative;
+  }
+  .timeline .seg{ height:100%; }
+  .timeline .marker{
+    position:absolute; top:-4px; width:2px; height:18px;
+    background:var(--navy); transform:translateX(-1px);
+  }
+  .timeline-labels{
+    display:flex; justify-content:space-between; font-size:10.5px; color:var(--ink-soft);
+    margin-bottom:18px;
+  }
+
+  .rec-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px; }
+  .rec-block{
+    background:var(--paper); border:1px solid var(--line);
+    border-radius:12px; padding:13px;
+  }
+  .rec-block h3{
+    font-size:11.5px; margin:0 0 8px; color:var(--navy);
+    text-transform:uppercase; letter-spacing:.04em;
+  }
+  .rec-block ul{ margin:0; padding-left:16px; font-size:12.5px; color:var(--ink); }
+  .rec-block li{ margin-bottom:4px; }
+  .rec-block.avoid ul{ color:#8a4a3a; }
+
+  .verdict{
+    margin-top:16px;
+    padding:16px;
+    border-radius:12px;
+    background:var(--navy);
+    color:#fff;
+  }
+  .verdict .eyebrow{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--green-bright); font-weight:700; margin-bottom:6px;
+  }
+  .verdict p{ margin:0; font-size:13.5px; color:rgba(255,255,255,.85); }
+
+  .footnote{
+    font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:18px 24px 0; line-height:1.5;
+  }
+
+  @media (max-width:380px){
+    .phase-hero .phase-name{ font-size:19px; }
+    .rec-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand-row"><span class="badge">A</span> ARRANCA · Herramientas</div>
+  <h1>Calculadora de Fase del Ciclo</h1>
+  <p>Averigua en qué "estación" de tu ciclo estás hoy y qué le sienta mejor a tu digestión esta semana.</p>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>Tus datos</h2>
+    <p class="sub">Con el primer día de tu última regla es suficiente para una estimación.</p>
+
+    <div class="field">
+      <label for="lastPeriod">Primer día de tu última regla</label>
+      <input type="date" id="lastPeriod">
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label for="cycleLength">Duración media del ciclo <span class="hint">días</span></label>
+        <input type="number" id="cycleLength" min="18" max="45" value="28">
+      </div>
+      <div class="field">
+        <label for="periodLength">Duración media de la regla <span class="hint">días</span></label>
+        <input type="number" id="periodLength" min="1" max="10" value="5">
+      </div>
+    </div>
+
+    <button class="calc" onclick="calcular()">Calcular mi fase de hoy</button>
+
+    <label class="remember-row">
+      <input type="checkbox" id="rememberMe">
+      Recordar estos datos en este dispositivo
+    </label>
+  </section>
+
+  <section class="card" id="results">
+
+    <div class="phase-hero" id="phaseHero">
+      <div class="season-icon" id="seasonIcon">🌱</div>
+      <div class="season-name" id="seasonName">Primavera</div>
+      <div class="phase-name" id="phaseName">Fase Folicular</div>
+      <div class="phase-desc" id="phaseDesc"></div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="num" id="cycleDayNum">—</div>
+        <div class="lbl">Día del ciclo</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="daysToNext">—</div>
+        <div class="lbl" id="daysToNextLabel">Días para cambiar de fase</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="daysToPeriod">—</div>
+        <div class="lbl">Días para la próxima regla</div>
+      </div>
+    </div>
+
+    <div class="timeline" id="timeline"></div>
+    <div class="timeline-labels">
+      <span>Día 1</span>
+      <span id="timelineTotal">Día 28</span>
+    </div>
+
+    <div class="rec-grid">
+      <div class="rec-block">
+        <h3>✓ Te sienta bien</h3>
+        <ul id="goodList"></ul>
+      </div>
+      <div class="rec-block avoid">
+        <h3>✗ Mejor evitar</h3>
+        <ul id="avoidList"></ul>
+      </div>
+    </div>
+
+    <div class="verdict">
+      <div class="eyebrow">Para hoy</div>
+      <p id="verdictText"></p>
+    </div>
+  </section>
+
+  <p class="footnote">
+    Estimación orientativa para ciclos regulares (basada en una fase lútea media de ~14 días). No es un método anticonceptivo ni diagnóstico. Si usas anticoncepción hormonal, tienes SOP, estás en perimenopausia o tu ciclo es muy irregular, estos cálculos no van a ser precisos — consulta con tu ginecólogo/a o matrona.
+  </p>
+
+</main>
+
+<script>
+const PHASES = {
+  menstrual: {
+    name: 'Fase Menstrual',
+    season: 'Invierno', icon: '❄️',
+    color: 'var(--c-menstrual)', bg: 'var(--c-menstrual-bg)',
+    desc: 'Las prostaglandinas contraen el útero y, de paso, "arrastran" al intestino. Cólicos y tránsito más rápido son lo esperable.',
+    good: ['Comida calentita: cremas, caldos, guisos suaves', 'Infusión de jengibre o manzanilla amarga', 'Calor local en el abdomen', 'Hidratación constante'],
+    avoid: ['Ensaladas frías o crudos en exceso', 'Exceso de café (agrava los espasmos)', 'Ultraprocesados y azúcar blanco'],
+    verdict: 'Hoy tu intestino está más irritado de lo normal. Prioriza comida templada y suave, y no te alarmes si el tránsito va más rápido de lo habitual.'
+  },
+  folicular: {
+    name: 'Fase Folicular',
+    season: 'Primavera', icon: '🌱',
+    color: 'var(--c-folicular)', bg: 'var(--c-folicular-bg)',
+    desc: 'Los estrógenos suben de forma limpia. Tu digestión está en su mejor momento: ligera, rápida y eficiente.',
+    good: ['Fibra en abundancia', 'Ensaladas crudas y legumbres', 'Es tu mejor momento para recetas más elaboradas'],
+    avoid: ['No hay restricciones especiales esta semana', 'Aun así, mantén tu base de siempre sin excesos'],
+    verdict: 'Tu sistema digestivo está funcionando como una máquina bien engrasada. Aprovecha para variar y experimentar con más fibra.'
+  },
+  ovulacion: {
+    name: 'Ovulación',
+    season: 'Verano', icon: '☀️',
+    color: 'var(--c-ovulacion)', bg: 'var(--c-ovulacion-bg)',
+    desc: 'El pico de estrógenos puede generar una ligera hinchazón localizada al liberar el óvulo. No es que hayas engordado.',
+    good: ['Platos frescos y ricos en agua', 'Antioxidantes: frutos rojos, verduras de hoja verde, té verde'],
+    avoid: ['No hace falta eliminar nada en concreto', 'Observa si notas más hinchazón de lo normal, es fisiológico'],
+    verdict: 'Si notas el vientre un poco más hinchado hoy, es probable que sea por el pico hormonal de la ovulación, no por lo que has comido.'
+  },
+  lutea: {
+    name: 'Fase Lútea',
+    season: 'Otoño', icon: '🍂',
+    color: 'var(--c-lutea)', bg: 'var(--c-lutea-bg)',
+    desc: 'La progesterona relaja la musculatura intestinal: el tránsito se ralentiza. Es habitual notar estreñimiento, gases y más antojos de dulce.',
+    good: ['Grasas buenas: AOVE, aguacate, frutos secos', 'Fibra soluble: boniato o patata cocidos y enfriados, avena, chía remojada', 'Hidratación extra'],
+    avoid: ['Salvados secos o ultraprocesados "ricos en fibra"', 'Huecos largos sin comer (disparan los antojos)'],
+    verdict: 'Tu tránsito va más lento de lo normal esta semana. No dejes huecos de más de 5h sin comer e incluye grasa buena en al menos 2 comidas.'
+  }
+};
+
+function loadSaved(){
+  const saved = localStorage.getItem('arranca_ciclo');
+  if(saved){
+    try{
+      const data = JSON.parse(saved);
+      document.getElementById('lastPeriod').value = data.lastPeriod || '';
+      document.getElementById('cycleLength').value = data.cycleLength || 28;
+      document.getElementById('periodLength').value = data.periodLength || 5;
+      document.getElementById('rememberMe').checked = true;
+    }catch(e){}
+  }
+}
+
+function calcular(){
+  const lastPeriodVal = document.getElementById('lastPeriod').value;
+  const CL = parseInt(document.getElementById('cycleLength').value) || 28;
+  const PL = parseInt(document.getElementById('periodLength').value) || 5;
+
+  if(!lastPeriodVal){
+    alert('Introduce el primer día de tu última regla para calcular.');
+    return;
+  }
+
+  if(document.getElementById('rememberMe').checked){
+    localStorage.setItem('arranca_ciclo', JSON.stringify({lastPeriod:lastPeriodVal, cycleLength:CL, periodLength:PL}));
+  } else {
+    localStorage.removeItem('arranca_ciclo');
+  }
+
+  const lastPeriod = new Date(lastPeriodVal + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  let daysSinceStart = Math.floor((today - lastPeriod) / 86400000);
+
+  if(daysSinceStart < 0){
+    alert('La fecha de tu última regla no puede ser futura.');
+    return;
+  }
+
+  const cyclesPassed = Math.floor(daysSinceStart / CL);
+  const cycleDay = daysSinceStart - (cyclesPassed * CL) + 1; // 1-indexed
+  const nextPeriodInDays = CL - (cycleDay - 1);
+
+  // ovulation estimate: luteal phase ~14 days
+  let ovDay = CL - 14;
+  ovDay = Math.max(PL + 3, Math.min(CL - 3, ovDay)); // keep sane bounds
+  let ovStart = Math.max(PL + 2, ovDay - 1);
+  let ovEnd = Math.min(CL - 1, ovDay + 1);
+  if(ovEnd <= ovStart) ovEnd = ovStart + 1;
+
+  const boundaries = [
+    { key:'menstrual', start:1 },
+    { key:'folicular', start:PL+1 },
+    { key:'ovulacion', start:ovStart },
+    { key:'lutea', start:ovEnd+1 },
+  ].filter((b,i,arr) => i===0 || b.start > arr[i-1].start); // guard against inverted small cycles
+
+  let currentPhaseKey = boundaries[0].key;
+  let nextBoundaryDay = CL + 1; // wraps to next period
+  for(let i=0; i<boundaries.length; i++){
+    if(cycleDay >= boundaries[i].start){
+      currentPhaseKey = boundaries[i].key;
+      nextBoundaryDay = (i+1 < boundaries.length) ? boundaries[i+1].start : (CL+1);
+    }
+  }
+  const daysToNextPhase = nextBoundaryDay - cycleDay;
+
+  const phase = PHASES[currentPhaseKey];
+
+  // Hero
+  document.getElementById('phaseHero').style.background = phase.bg;
+  document.getElementById('phaseHero').style.color = phase.color;
+  document.getElementById('seasonIcon').textContent = phase.icon;
+  document.getElementById('seasonName').textContent = phase.season;
+  document.getElementById('phaseName').textContent = phase.name;
+  document.getElementById('phaseName').style.color = '#1a1a2e';
+  document.getElementById('phaseDesc').textContent = phase.desc;
+  document.getElementById('phaseDesc').style.color = '#3a3a4a';
+
+  // Stats
+  document.getElementById('cycleDayNum').textContent = cycleDay + '/' + CL;
+  document.getElementById('daysToNext').textContent = daysToNextPhase <= 0 ? '—' : daysToNextPhase;
+  document.getElementById('daysToNextLabel').textContent = daysToNextPhase <= 1 ? 'Cambia mañana' : 'Días para cambiar de fase';
+  document.getElementById('daysToPeriod').textContent = nextPeriodInDays;
+
+  // Timeline
+  const tl = document.getElementById('timeline');
+  const segs = [
+    { key:'menstrual', end: PL },
+    { key:'folicular', end: ovStart - 1 },
+    { key:'ovulacion', end: ovEnd },
+    { key:'lutea', end: CL },
+  ];
+  let prevEnd = 0;
+  tl.innerHTML = segs.map(s => {
+    const width = ((s.end - prevEnd) / CL * 100).toFixed(2);
+    prevEnd = s.end;
+    return `<span class="seg" style="width:${width}%; background:${PHASES[s.key].color}"></span>`;
+  }).join('') + `<span class="marker" style="left:${((cycleDay-1)/CL*100).toFixed(2)}%"></span>`;
+  document.getElementById('timelineTotal').textContent = 'Día ' + CL;
+
+  // Recommendations
+  document.getElementById('goodList').innerHTML = phase.good.map(x => `<li>${x}</li>`).join('');
+  document.getElementById('avoidList').innerHTML = phase.avoid.map(x => `<li>${x}</li>`).join('');
+  document.getElementById('verdictText').textContent = phase.verdict;
+
+  const results = document.getElementById('results');
+  results.classList.add('show');
+  results.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+loadSaved();
+</script>
+
+</body>
+</html>
