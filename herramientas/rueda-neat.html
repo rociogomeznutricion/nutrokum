@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rueda del NEAT — ARRANCA</title>
+<meta name="description" content="Gira la ruleta y deja que el azar elija tu reto de movimiento de hoy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F172A;
+    --navy-soft:#1E293B;
+    --green:#059669;
+    --green-bright:#10B981;
+    --paper:#F8FAF9;
+    --card:#FFFFFF;
+    --ink:#0F172A;
+    --ink-soft:#5B6472;
+    --line:#E4E9E7;
+    --amber:#D97706;
+    --green-bg:#E8F7F1;
+    --radius:16px;
+    --shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  h1,h2,h3{ font-family:'Poppins', sans-serif; }
+
+  header.top{
+    background:linear-gradient(160deg, var(--navy) 0%, var(--navy-soft) 100%);
+    color:#fff;
+    padding:28px 20px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::after{
+    content:"";
+    position:absolute;
+    right:-50px; top:-70px;
+    width:220px; height:220px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(16,185,129,.35), transparent 70%);
+  }
+  .brand-row{
+    display:flex; align-items:center; gap:10px;
+    font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    color:rgba(255,255,255,.7);
+    margin-bottom:14px;
+  }
+  .badge{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--green-bright);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:11px; color:var(--navy);
+    font-family:'Poppins',sans-serif;
+  }
+  header.top h1{
+    margin:0 0 8px;
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    max-width:340px;
+  }
+  header.top p{
+    margin:0;
+    color:rgba(255,255,255,.72);
+    font-size:14.5px;
+    max-width:380px;
+    position:relative; z-index:1;
+  }
+
+  main{
+    max-width:480px;
+    margin:-22px auto 0;
+    padding:0 16px;
+    position:relative;
+    z-index:2;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px 20px;
+    margin-bottom:16px;
+    border:1px solid var(--line);
+  }
+  .card h2{ font-size:15px; margin:0 0 4px; color:var(--navy); }
+  .card .sub{ font-size:13px; color:var(--ink-soft); margin:0 0 16px; }
+
+  /* level chips */
+  .level-row{
+    display:flex; gap:8px; margin-bottom:20px;
+  }
+  .level-chip{
+    flex:1;
+    padding:10px 6px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    background:#FBFDFC;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    text-align:center;
+    transition:all .15s;
+  }
+  .level-chip .lvl-name{ display:block; font-size:11px; opacity:.7; font-weight:500; margin-top:2px;}
+  .level-chip.active{
+    border-color:var(--green-bright);
+    background:var(--green-bg);
+    color:var(--navy);
+  }
+
+  /* wheel */
+  .wheel-zone{
+    display:flex; flex-direction:column; align-items:center;
+    padding:6px 0 4px;
+  }
+  .wheel-wrap{
+    position:relative;
+    width:270px; height:270px;
+    margin-bottom:20px;
+  }
+  .pointer{
+    position:absolute;
+    top:-4px; left:50%;
+    transform:translateX(-50%);
+    width:0; height:0;
+    border-left:13px solid transparent;
+    border-right:13px solid transparent;
+    border-top:22px solid var(--navy);
+    z-index:5;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));
+  }
+  .wheel{
+    width:100%; height:100%;
+    border-radius:50%;
+    position:relative;
+    border:6px solid #fff;
+    box-shadow:0 6px 20px rgba(15,23,42,.18), inset 0 0 0 2px var(--line);
+    transition:transform 4.2s cubic-bezier(0.15,0.65,0.1,1);
+  }
+  .seg-label{
+    position:absolute;
+    top:50%; left:50%;
+    width:0; height:0;
+    pointer-events:none;
+  }
+  .seg-label .seg-text{
+    position:absolute;
+    left:34px;
+    top:-8px;
+    width:92px;
+    text-align:left;
+    font-family:'Poppins', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    line-height:1.25;
+    color:#fff;
+    text-shadow:0 1px 1px rgba(0,0,0,.45), 0 0 3px rgba(0,0,0,.25);
+  }
+  .hub{
+    position:absolute; top:50%; left:50%;
+    width:44px; height:44px;
+    transform:translate(-50%,-50%);
+    background:#fff;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 2px 8px rgba(15,23,42,.2);
+    z-index:4;
+    font-size:18px;
+  }
+
+  button.spin{
+    width:100%;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:15px;
+    border-radius:12px;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    transition:transform .12s ease, background .15s, opacity .15s;
+  }
+  button.spin:hover{ background:#132038; }
+  button.spin:active{ transform:scale(.98); }
+  button.spin:disabled{ opacity:.55; cursor:not-allowed; }
+
+  .streak-row{
+    display:flex; justify-content:center; align-items:center; gap:6px;
+    margin-top:14px;
+    font-size:12.5px; color:var(--ink-soft);
+  }
+  .streak-row strong{ color:var(--navy); font-family:'Poppins',sans-serif; }
+
+  /* result */
+  #resultCard{ display:none; }
+  #resultCard.show{ display:block; animation:rise .35s ease; }
+  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .result-eyebrow{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--green); font-weight:700; margin-bottom:8px;
+  }
+  .result-title{
+    font-family:'Poppins', sans-serif; font-weight:700; font-size:19px;
+    color:var(--navy); margin:0 0 8px;
+  }
+  .result-desc{
+    font-size:14px; color:var(--ink); margin:0 0 18px; line-height:1.55;
+  }
+  .done-btn{
+    width:100%;
+    background:var(--green-bright);
+    color:#fff;
+    border:none;
+    padding:13px;
+    border-radius:12px;
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:background .15s, opacity .15s;
+  }
+  .done-btn:hover{ background:var(--green); }
+  .done-btn:disabled{ opacity:.6; cursor:default; background:#9CA3AF; }
+
+  .footnote{
+    font-size:11.5px; color:var(--ink-soft); text-align:center;
+    padding:18px 24px 0; line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand-row"><span class="badge">A</span> ARRANCA · Herramientas</div>
+  <h1>Rueda del NEAT</h1>
+  <p>No pienses en "quemar calorías". Piensa en no quedarte quieta. Elige tu nivel, gira y deja que el azar decida tu reto de hoy.</p>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>Elige tu nivel de hoy</h2>
+    <p class="sub">Puedes cambiarlo cualquier día — no hay nivel "correcto".</p>
+
+    <div class="level-row">
+      <div class="level-chip active" data-level="0" onclick="setLevel(0)">
+        Nivel 0<span class="lvl-name">Muy fácil</span>
+      </div>
+      <div class="level-chip" data-level="1" onclick="setLevel(1)">
+        Nivel 1<span class="lvl-name">Medio</span>
+      </div>
+      <div class="level-chip" data-level="2" onclick="setLevel(2)">
+        Nivel 2<span class="lvl-name">Activo</span>
+      </div>
+    </div>
+
+    <div class="wheel-zone">
+      <div class="wheel-wrap">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel"></div>
+        <div class="hub">🎯</div>
+      </div>
+      <button class="spin" id="spinBtn" onclick="girar()">Girar la rueda</button>
+      <div class="streak-row">
+        Retos completados: <strong id="streakCount">0</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="resultCard">
+    <div class="result-eyebrow">Tu reto de ahora mismo</div>
+    <div class="result-title" id="resultTitle"></div>
+    <p class="result-desc" id="resultDesc"></p>
+    <button class="done-btn" id="doneBtn" onclick="marcarHecho()">✓ Marcar como hecho</button>
+  </section>
+
+  <p class="footnote">
+    El NEAT es el movimiento de la vida cotidiana, no un sustituto del ejercicio estructurado. Si tienes una lesión, una condición médica o dudas sobre qué movimiento es adecuado para ti, consulta con tu fisioterapeuta o médico/a antes de forzar cualquier reto.
+  </p>
+
+</main>
+
+<script>
+const CHALLENGES = {
+  0: [
+    { t:'Aleja el mando', d:'Deja el mando a distancia lejos del sofá, para tener que levantarte a cambiar de canal o subir el volumen.' },
+    { t:'Botella pequeña', d:'Usa un vaso o botella pequeña de agua hoy, para tener que levantarte varias veces a rellenarla.' },
+    { t:'Papelera lejos', d:'Coloca la papelera de tu escritorio o habitación lejos de tu silla, para obligarte a levantarte.' },
+    { t:'Estira viendo la serie', d:'Mientras ves tu serie de hoy, haz 5 minutos de estiramientos suaves o usa un foam roller.' },
+    { t:'Cambia de postura', d:'Cada 30 minutos que estés sentada, ponte de pie 30 segundos y vuelve a sentarte.' },
+    { t:'Una vuelta a la casa', d:'Levántate ahora mismo y da una vuelta completa a tu casa o piso, sin motivo, solo por moverte.' },
+  ],
+  1: [
+    { t:'Camina al teléfono', d:'La próxima llamada que hagas o recibas, contéstala de pie y camina mientras hablas.' },
+    { t:'Equilibrio al cepillarte', d:'Cuando te laves los dientes hoy, hazlo apoyada en una sola pierna, alternando, para trabajar el equilibrio.' },
+    { t:'Juguetea con los pies', d:'La próxima vez que estés sentada 10 minutos seguidos, mueve o juguetea con los pies sin parar.' },
+    { t:'Un tramo de escaleras', d:'Sube y baja un tramo de escaleras dos veces seguidas, aunque tengas ascensor cerca.' },
+    { t:'Compra caminando', d:'Si hoy tienes que hacer algún recado o compra pequeña, ve andando en vez de en coche.' },
+    { t:'Estiramiento nocturno', d:'Antes de dormir hoy, dedica 5 minutos a estirar piernas y espalda.' },
+  ],
+  2: [
+    { t:'Nada de ascensor', d:'Hoy usa solo escaleras, en casa, en el trabajo o donde te muevas, sin excepción.' },
+    { t:'Ve andando', d:'Elige un trayecto que sueles hacer en coche o transporte y hazlo andando hoy, si el tiempo te lo permite.' },
+    { t:'8.000 pasos', d:'Ponte como objetivo llegar a 8.000 pasos hoy. Reparte el reto en pequeños paseos si hace falta.' },
+    { t:'Compra con peso', d:'Haz la compra y vuelve a casa cargando las bolsas caminando, en vez de usar el coche o pedirla a domicilio.' },
+    { t:'Paseo post-comida', d:'Después de tu comida principal de hoy, camina 15 minutos. Ayuda también a la digestión.' },
+    { t:'Baja antes de tiempo', d:'Si usas transporte público o coche, bájate una parada antes o aparca más lejos y camina el resto.' },
+  ]
+};
+
+const COLORS = ['#0F172A', '#10B981', '#1E293B', '#059669', '#132038', '#0D9488'];
+
+let currentLevel = 0;
+let currentRotation = 0;
+let spinning = false;
+let lastResultIndex = null;
+
+function buildWheel(level){
+  const wheel = document.getElementById('wheel');
+  const items = CHALLENGES[level];
+  const n = items.length;
+  const segAngle = 360 / n;
+
+  // conic gradient background
+  let gradientStops = [];
+  for(let i=0; i<n; i++){
+    const color = COLORS[i % COLORS.length];
+    gradientStops.push(`${color} ${i*segAngle}deg ${(i+1)*segAngle}deg`);
+  }
+  wheel.style.background = `conic-gradient(${gradientStops.join(',')})`;
+
+  // labels
+  const existingLabels = wheel.querySelectorAll('.seg-label');
+  existingLabels.forEach(l => l.remove());
+
+  items.forEach((item, i) => {
+    // centerAngle is measured clockwise from the top (12 o'clock),
+    // matching the conic-gradient's own angle convention.
+    const centerAngle = i*segAngle + segAngle/2;
+
+    // The label wrapper has zero size and sits exactly at the wheel's
+    // center. Its child (.seg-text) is offset along the wrapper's local
+    // +x axis, which by default points to the RIGHT (screen angle 90°).
+    // Rotating the wrapper by (centerAngle - 90) makes that local +x
+    // axis point toward the real segment center, so the text lines up
+    // with the matching color slice instead of sitting 90° off.
+    const label = document.createElement('div');
+    label.className = 'seg-label';
+    label.style.transform = `rotate(${centerAngle - 90}deg)`;
+
+    const text = document.createElement('span');
+    text.className = 'seg-text';
+    text.textContent = item.t;
+    label.appendChild(text);
+
+    wheel.appendChild(label);
+  });
+}
+
+function setLevel(level){
+  if(spinning) return;
+  currentLevel = level;
+  document.querySelectorAll('.level-chip').forEach(chip => {
+    chip.classList.toggle('active', parseInt(chip.dataset.level) === level);
+  });
+  currentRotation = 0;
+  document.getElementById('wheel').style.transition = 'none';
+  document.getElementById('wheel').style.transform = 'rotate(0deg)';
+  requestAnimationFrame(() => {
+    document.getElementById('wheel').style.transition = 'transform 4.2s cubic-bezier(0.15,0.65,0.1,1)';
+  });
+  document.getElementById('resultCard').classList.remove('show');
+  buildWheel(level);
+}
+
+function girar(){
+  if(spinning) return;
+  spinning = true;
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('resultCard').classList.remove('show');
+
+  const items = CHALLENGES[currentLevel];
+  const n = items.length;
+  const segAngle = 360 / n;
+
+  const chosenIndex = Math.floor(Math.random() * n);
+  const centerAngle = chosenIndex*segAngle + segAngle/2;
+  const jitter = (Math.random() - 0.5) * (segAngle * 0.6);
+  const targetPoint = centerAngle + jitter;
+
+  // R = final absolute rotation (mod 360) so that targetPoint aligns with pointer at top (0deg)
+  const R = (360 - targetPoint + 360) % 360;
+
+  const extraSpins = 6;
+  const currentMod = ((currentRotation % 360) + 360) % 360;
+  let delta = R - currentMod;
+  if(delta <= 0) delta += 360;
+
+  const newRotation = currentRotation + delta + 360*extraSpins;
+  currentRotation = newRotation;
+
+  const wheel = document.getElementById('wheel');
+  wheel.style.transform = `rotate(${newRotation}deg)`;
+
+  lastResultIndex = chosenIndex;
+
+  setTimeout(() => {
+    mostrarResultado(chosenIndex);
+    spinning = false;
+    document.getElementById('spinBtn').disabled = false;
+  }, 4300);
+}
+
+function mostrarResultado(index){
+  const item = CHALLENGES[currentLevel][index];
+  document.getElementById('resultTitle').textContent = item.t;
+  document.getElementById('resultDesc').textContent = item.d;
+  document.getElementById('doneBtn').disabled = false;
+  document.getElementById('doneBtn').textContent = '✓ Marcar como hecho';
+  const card = document.getElementById('resultCard');
+  card.classList.add('show');
+  card.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function marcarHecho(){
+  let count = parseInt(localStorage.getItem('arranca_neat_streak') || '0');
+  count += 1;
+  localStorage.setItem('arranca_neat_streak', count);
+  document.getElementById('streakCount').textContent = count;
+  document.getElementById('doneBtn').disabled = true;
+  document.getElementById('doneBtn').textContent = '✓ ¡Completado!';
+}
+
+function loadStreak(){
+  const count = parseInt(localStorage.getItem('arranca_neat_streak') || '0');
+  document.getElementById('streakCount').textContent = count;
+}
+
+buildWheel(0);
+loadStreak();
+</script>
+
+</body>
+</html>
