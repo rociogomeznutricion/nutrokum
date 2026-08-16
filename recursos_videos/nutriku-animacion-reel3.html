@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NUTRIKU · Animación Reel 3 · Interrogatorio a un ultraprocesado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F172A;
+    --green:#10B981;
+    --chalk:#F8FAFC;
+    --red:#EF4444;
+    --amber:#FBBF24;
+    --grid: rgba(16,185,129,0.09);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{ height:100%; background:#000; overflow:hidden; font-family:'Poppins',sans-serif; }
+  body{ display:flex; align-items:center; justify-content:center; }
+
+  .stage{
+    position:relative;
+    width:min(90vw, 90vh);
+    height:min(90vw, 90vh);
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/36px 36px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/36px 36px,
+      radial-gradient(ellipse at 50% 30%, #14243F 0%, var(--navy) 65%);
+    overflow:hidden;
+    cursor:pointer;
+    user-select:none;
+    -webkit-user-select:none;
+    border-radius:6px;
+  }
+
+  .el{ position:absolute; opacity:0; pointer-events:none; transition:opacity .5s ease; }
+  .el.visible{ opacity:1; }
+
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  @keyframes pulse{
+    0%,100%{opacity:.6; transform:scale(1);}
+    50%{opacity:1; transform:scale(1.04);}
+  }
+  @keyframes stampIn{
+    0%{ transform:scale(2.4) rotate(-10deg); opacity:0; }
+    55%{ transform:scale(.9) rotate(-4deg); opacity:1; }
+    75%{ transform:scale(1.06) rotate(-4deg); }
+    100%{ transform:scale(1) rotate(-4deg); opacity:1; }
+  }
+  @keyframes scanMove{
+    0%{ top:0%; opacity:0; }
+    10%{ opacity:1; }
+    90%{ opacity:1; }
+    100%{ top:100%; opacity:0; }
+  }
+  @keyframes dotsBlink{
+    0%,20%{opacity:0;} 50%{opacity:1;} 100%{opacity:0;}
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---- STEP 0: intro ---- */
+  .intro{
+    inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; text-align:center; padding:0 10%;
+  }
+  .intro .logo-mini{
+    font-family:'JetBrains Mono',monospace; color:var(--green);
+    font-size:13px; letter-spacing:4px; font-weight:700; opacity:.85;
+  }
+  .intro h1{ color:var(--chalk); font-size:clamp(18px,5vw,24px); font-weight:700; line-height:1.3; }
+  .intro p{ color:#94A3B8; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.7; }
+  .intro .tap-badge{
+    margin-top:8px; padding:9px 18px; border:1px solid var(--green); border-radius:30px;
+    color:var(--green); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1px;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+
+  /* ---- kicker de serie ---- */
+  .kicker{
+    top:6%; left:0; right:0; text-align:center;
+    font-family:'JetBrains Mono',monospace; color:var(--green);
+    font-size:clamp(10px,2.8vw,12px); letter-spacing:4px; font-weight:700;
+  }
+
+  /* ---- stamp genérico ---- */
+  .stamp{
+    display:inline-block;
+    border:4px solid var(--red);
+    border-radius:8px;
+    padding:12px 20px;
+    color:var(--red);
+    font-family:'JetBrains Mono',monospace;
+    font-weight:800;
+    letter-spacing:2px;
+    transform:rotate(-4deg);
+    text-align:center;
+    line-height:1.2;
+  }
+  .el.visible .stamp{ animation: stampIn .55s cubic-bezier(.2,.9,.3,1.1) forwards; }
+
+  /* ---- STEP 1: apertura de expediente ---- */
+  .case-open{
+    inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
+  }
+  .case-open .stamp{ font-size:clamp(16px,5vw,22px); }
+  .case-open .suspect{
+    color:var(--chalk); font-family:'JetBrains Mono',monospace;
+    font-size:clamp(11px,3.2vw,14px); text-align:center; letter-spacing:1px; line-height:1.6;
+    padding:0 6%;
+  }
+  .case-open .suspect b{ color:var(--amber); }
+
+  /* ---- STEP 2: escaneo de ingredientes ---- */
+  .scanning{
+    inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+  }
+  .scanning .folder{
+    position:relative;
+    width:42%; aspect-ratio:1.3/1;
+    border:2px solid rgba(248,250,252,0.35);
+    border-radius:6px;
+    overflow:hidden;
+    background:rgba(255,255,255,0.02);
+  }
+  .scanning .folder .lines{
+    position:absolute; left:12%; right:12%; top:20%;
+    display:flex; flex-direction:column; gap:14%;
+  }
+  .scanning .folder .lines div{ height:6%; background:rgba(248,250,252,0.18); border-radius:3px; }
+  .scanning .folder .scanbar{
+    position:absolute; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, transparent, var(--green), transparent);
+    box-shadow:0 0 12px var(--green);
+  }
+  .scanning.visible .folder .scanbar{
+    animation: scanMove 1.6s ease-in-out infinite;
+  }
+  .scanning .scan-text{
+    font-family:'JetBrains Mono',monospace; color:var(--green);
+    font-size:clamp(11px,3vw,13px); letter-spacing:2px;
+  }
+
+  /* ---- STEP 3: confesion 52% pavo ---- */
+  .confession{
+    inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  }
+  .confession .stamp{ font-size:clamp(24px,7.6vw,32px); }
+  .confession .rapsheet{
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .confession .rapsheet span{
+    font-family:'JetBrains Mono',monospace; color:#94A3B8; font-size:clamp(10px,2.8vw,12px);
+    letter-spacing:.5px; opacity:0;
+    animation: fadeUp .4s ease forwards;
+  }
+  .confession.visible .rapsheet span:nth-child(1){ animation-delay:.15s; }
+  .confession.visible .rapsheet span:nth-child(2){ animation-delay:.35s; }
+  .confession.visible .rapsheet span:nth-child(3){ animation-delay:.55s; }
+
+  /* ---- STEP 4/5: veredictos ---- */
+  .verdict{
+    inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  }
+  .verdict.warn{ background:radial-gradient(ellipse at 50% 50%, rgba(251,191,36,0.14) 0%, transparent 60%); }
+  .verdict.good{ background:radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.16) 0%, transparent 60%); }
+  .verdict .icowrap{ width:64px; height:64px; }
+  .verdict .icowrap svg{ width:100%; height:100%; overflow:visible; }
+  .verdict.warn .vpath{
+    fill:none; stroke:var(--amber); stroke-width:4; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:220; stroke-dashoffset:220;
+  }
+  .verdict.warn.visible .vpath{ animation:draw .7s ease forwards; }
+  .verdict.good .circle{
+    fill:none; stroke:var(--green); stroke-width:4; stroke-dasharray:220; stroke-dashoffset:220;
+  }
+  .verdict.good .check{
+    fill:none; stroke:var(--green); stroke-width:5; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:60; stroke-dashoffset:60;
+  }
+  .verdict.good.visible .circle{ animation:draw .6s ease forwards; }
+  .verdict.good.visible .check{ animation:draw .4s ease forwards; animation-delay:.55s; }
+  .verdict .label{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:2px; }
+  .verdict.warn .label{ color:var(--amber); }
+  .verdict.good .label{ color:var(--green); }
+  .verdict .title{
+    font-family:'Poppins',sans-serif; font-weight:800; color:var(--chalk);
+    font-size:clamp(18px,5.6vw,25px); text-align:center; padding:0 8%; line-height:1.3;
+  }
+
+  /* ---- STEP 6: CTA ---- */
+  .cta{
+    inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(15,23,42,0.55); backdrop-filter:blur(2px);
+  }
+  .cta h2{
+    color:var(--chalk); font-family:'Poppins',sans-serif; font-weight:700;
+    font-size:clamp(19px,5.8vw,26px); text-align:center; padding:0 10%; line-height:1.3;
+  }
+  .cta h2 .accent{ color:var(--green); }
+
+  /* ---- UI chrome ---- */
+  .ui-chrome{ transition:opacity .3s ease; }
+  body.clean .ui-chrome{ opacity:0 !important; pointer-events:none; }
+
+  .dots{ position:absolute; bottom:12px; left:0; right:0; display:flex; justify-content:center; gap:6px; z-index:20; }
+  .dots span{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.25); }
+  .dots span.active{ background:var(--green); }
+
+  .step-hint{
+    position:absolute; top:10px; left:10px; z-index:20;
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:#64748B;
+    display:flex; align-items:center; gap:8px;
+  }
+  .step-hint button{
+    pointer-events:auto; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15);
+    color:#CBD5E1; font-family:'JetBrains Mono',monospace; font-size:10px; padding:6px 10px;
+    border-radius:6px; cursor:pointer;
+  }
+
+  .toggle-ui-btn{
+    position:absolute; top:8px; right:8px; z-index:30;
+    width:40px; height:40px; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.2); background:rgba(15,23,42,0.55);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    pointer-events:auto; transition:opacity .3s ease, background .2s ease;
+  }
+  .toggle-ui-btn svg{ width:18px; height:18px; }
+  .toggle-ui-btn .eye-open{ stroke:#CBD5E1; }
+  .toggle-ui-btn .eye-closed{ stroke:#CBD5E1; display:none; }
+  body.clean .toggle-ui-btn{ opacity:0; pointer-events:none; }
+  body.clean.reveal-ready .toggle-ui-btn{
+    opacity:1; pointer-events:auto; animation:pulse 1.6s ease-in-out infinite;
+  }
+  body.clean .toggle-ui-btn .eye-open{ display:none; }
+  body.clean .toggle-ui-btn .eye-closed{ display:block; }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage" data-step="0">
+
+  <div class="step-hint ui-chrome">
+    <span id="stepLabel">Paso 0/6</span>
+    <button id="restartBtn">⟲ Reiniciar</button>
+  </div>
+
+  <button class="toggle-ui-btn" id="toggleUiBtn" title="Ocultar/mostrar interfaz">
+    <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+    <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.8 21.8 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 7 11 7a21.8 21.8 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+      <path d="M1 1l22 22"/>
+    </svg>
+  </button>
+
+  <!-- STEP 0 -->
+  <div class="el intro" data-show="0" data-hide="1">
+    <div class="logo-mini">NUTRIKU</div>
+    <h1>Toca la pantalla para avanzar<br>cada paso mientras narras</h1>
+    <p>El botón del ojo se oculta al pulsarlo.<br>Reaparece solo 3s después de terminar<br>toda la secuencia (paso 6)</p>
+    <div class="tap-badge">TOCA PARA EMPEZAR ▸</div>
+  </div>
+
+  <!-- kicker de serie, persiste desde el paso 1 -->
+  <div class="el kicker" data-show="1" data-hide="6">EXPEDIENTE NUTRIKU</div>
+
+  <!-- STEP 1: apertura del expediente -->
+  <div class="el case-open" data-show="1" data-hide="2">
+    <div class="stamp">EXPEDIENTE #04</div>
+    <div class="suspect">SOSPECHOSO:<br><b>PECHUGA DE PAVO FIAMBRE</b></div>
+  </div>
+
+  <!-- STEP 2: escaneo de ingredientes -->
+  <div class="el scanning" data-show="2" data-hide="3">
+    <div class="folder">
+      <div class="lines">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="scanbar"></div>
+    </div>
+    <div class="scan-text">ANALIZANDO INGREDIENTES...</div>
+  </div>
+
+  <!-- STEP 3: confesion 52% pavo -->
+  <div class="el confession" data-show="3" data-hide="4">
+    <div class="stamp">52% PAVO</div>
+    <div class="rapsheet">
+      <span>+ Fécula de patata</span>
+      <span>+ Dextrosa</span>
+      <span>+ Proteína de guisante</span>
+    </div>
+  </div>
+
+  <!-- STEP 4: veredicto culpable de engaño -->
+  <div class="el verdict warn" data-show="4" data-hide="5">
+    <div class="icowrap">
+      <svg viewBox="0 0 100 100">
+        <circle class="vpath" cx="42" cy="42" r="26"/>
+        <path class="vpath" d="M60,60 L85,85"/>
+      </svg>
+    </div>
+    <div class="label">VEREDICTO</div>
+    <div class="title">Culpable de engaño,<br>no de veneno</div>
+  </div>
+
+  <!-- STEP 5: kit de emergencia -->
+  <div class="el verdict good" data-show="5" data-hide="6">
+    <div class="icowrap">
+      <svg viewBox="0 0 100 100">
+        <circle class="circle" cx="50" cy="50" r="35"/>
+        <path class="check" d="M32,52 L45,65 L70,35"/>
+      </svg>
+    </div>
+    <div class="label">BUSCA 90%+ DE PAVO REAL</div>
+    <div class="title">Kit de emergencia<br>NUTRIKU ✅</div>
+  </div>
+
+  <!-- STEP 6: CTA -->
+  <div class="el cta" data-show="6">
+    <h2>Sígueme para el<br><span class="accent">próximo expediente 🔍</span></h2>
+  </div>
+
+  <div class="dots ui-chrome" id="dots"></div>
+
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const stepLabel = document.getElementById('stepLabel');
+  const dotsWrap = document.getElementById('dots');
+  const TOTAL_STEPS = 6;
+  let step = 0;
+  let revealTimer = null;
+
+  for(let i=0;i<=TOTAL_STEPS;i++){
+    const d = document.createElement('span');
+    if(i===0) d.classList.add('active');
+    dotsWrap.appendChild(d);
+  }
+
+  function render(){
+    stage.dataset.step = step;
+    stepLabel.textContent = 'Paso ' + step + '/' + TOTAL_STEPS;
+    [...dotsWrap.children].forEach((d,i)=> d.classList.toggle('active', i===step));
+
+    document.querySelectorAll('.el').forEach(el=>{
+      const show = parseInt(el.dataset.show, 10);
+      const hideAttr = el.dataset.hide;
+      const hide = hideAttr !== undefined ? parseInt(hideAttr, 10) : null;
+      const isVisible = step >= show && (hide === null || step < hide);
+      el.classList.toggle('visible', isVisible);
+    });
+
+    clearTimeout(revealTimer);
+    document.body.classList.remove('reveal-ready');
+    if(step === TOTAL_STEPS){
+      revealTimer = setTimeout(()=>{
+        if(document.body.classList.contains('clean')){
+          document.body.classList.add('reveal-ready');
+        }
+      }, 3000);
+    }
+  }
+
+  function next(){ if(step < TOTAL_STEPS){ step++; render(); } }
+  function prev(){ if(step > 0){ step--; render(); } }
+  function restart(){ step = 0; render(); }
+
+  stage.addEventListener('click', (e)=>{
+    if(e.target.closest('#restartBtn') || e.target.closest('#toggleUiBtn')) return;
+    next();
+  });
+
+  document.getElementById('restartBtn').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    restart();
+  });
+
+  document.getElementById('toggleUiBtn').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    document.body.classList.toggle('clean');
+    document.body.classList.remove('reveal-ready');
+    clearTimeout(revealTimer);
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.code === 'ArrowRight' || e.code === 'Space'){ e.preventDefault(); next(); }
+    if(e.code === 'ArrowLeft'){ prev(); }
+    if(e.code === 'KeyR'){ restart(); }
+    if(e.code === 'KeyH'){ document.body.classList.toggle('clean'); }
+  });
+
+  render();
+</script>
+
+</body>
+</html>
