@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NUTRIKU — Rocío Gómez · Descifrando la nutrición</title>
+<meta name="description" content="Método ARRANCA, comunidad y contenido de Rocío Gómez: Técnico Superior en Dietética con raíces en informática. Alimentación consciente, sin dietas, sin culpa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F6EEDC;
+    --cream-soft:#FBF7EE;
+    --paper:#EFE6D2;
+    --ink:#22301A;
+    --green:#4A6B32;
+    --green-deep:#2C401E;
+    --green-bright:#7FA24E;
+    --mint:#7FE0B5;
+    --terminal:#141B12;
+    --terminal-line:#1F2B1B;
+    --code:#8FE3A8;
+    --amber:#C98A3A;
+    --line: rgba(34,48,26,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Poppins',sans-serif;
+    font-weight:400;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Playfair Display',serif;
+    margin:0 0 0.4em 0;
+    color:var(--green-deep);
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+  section{padding:88px 0;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .eyebrow::before{content:"//";color:var(--amber);}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(246,238,220,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1080px;margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:'Playfair Display',serif;font-weight:700;font-size:21px;
+    color:var(--green-deep);text-decoration:none;
+  }
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 3px rgba(127,224,181,0.25);}
+  .navlinks{display:flex;gap:28px;font-size:14.5px;}
+  .navlinks a{text-decoration:none;color:var(--ink);opacity:0.75;transition:opacity .2s;}
+  .navlinks a:hover{opacity:1;}
+  .navlinks{display:none;}
+  @media(min-width:760px){.navlinks{display:flex;}}
+
+  /* HERO */
+  .hero{padding-top:64px;}
+  .hero-grid{display:grid;grid-template-columns:1fr;gap:48px;align-items:center;}
+  @media(min-width:900px){.hero-grid{grid-template-columns:1.05fr 0.95fr;gap:56px;}}
+  .kicker{
+    font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.1em;
+    color:var(--green);text-transform:uppercase;margin-bottom:18px;
+  }
+  .hero h1{font-size:clamp(34px,5vw,54px);line-height:1.06;font-weight:700;}
+  .hero h1 em{font-style:italic;color:var(--green);}
+  .hero p.lead{font-size:18px;color:var(--green-deep);opacity:0.85;max-width:46ch;margin:20px 0 30px;}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px;}
+  .btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13.5px;letter-spacing:0.02em;
+    padding:14px 22px;border-radius:3px;
+    text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+    border:1px solid transparent;transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--green-deep);color:var(--cream-soft);box-shadow:0 6px 0 rgba(44,64,30,0.2);}
+  .btn-primary:hover{box-shadow:0 8px 0 rgba(44,64,30,0.2);}
+  .btn-ghost{background:transparent;border:1px solid var(--green-deep);color:var(--green-deep);}
+  .btn-ghost:hover{background:var(--green-deep);color:var(--cream-soft);}
+
+  /* TERMINAL */
+  .terminal{
+    background:var(--terminal);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(20,27,18,0.45), 0 0 0 1px rgba(127,224,181,0.08);
+  }
+  .term-bar{
+    display:flex;align-items:center;gap:8px;
+    padding:12px 16px;background:var(--terminal-line);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .term-dot{width:10px;height:10px;border-radius:50%;}
+  .term-dot.r{background:#E5675C;} .term-dot.y{background:#E5B85C;} .term-dot.g{background:#5CE5A0;}
+  .term-title{margin-left:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9FB39A;}
+  .term-body{padding:24px 22px 30px;font-family:'JetBrains Mono',monospace;font-size:13.5px;color:#B9E8C9;min-height:280px;}
+  .term-body .muted{color:#5F7A63;}
+  .term-body .k{color:#E5B85C;}
+  .term-body .s{color:#F6EEDC;}
+  .term-body .fn{color:#7FE0B5;}
+  .term-line{margin:0 0 6px;white-space:pre-wrap;}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--code);vertical-align:-2px;animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* SOBRE MI */
+  .about{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .about-grid{display:grid;grid-template-columns:1fr;gap:44px;}
+  @media(min-width:880px){.about-grid{grid-template-columns:0.85fr 1.15fr;align-items:start;}}
+  .badge-wrap{display:flex;justify-content:center;}
+  .badge{
+    width:230px;height:230px;border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #5C7C42, var(--green-deep));
+    display:flex;align-items:center;justify-content:center;
+    position:relative;box-shadow:0 20px 40px -12px rgba(44,64,30,0.35);
+  }
+  .badge::before{
+    content:"";position:absolute;inset:14px;border:1px dashed rgba(246,238,220,0.35);border-radius:50%;
+  }
+  .badge svg{width:96px;height:96px;}
+  .about h2{font-size:32px;}
+  blockquote{
+    margin:22px 0;padding:20px 24px;
+    border-left:3px solid var(--green);
+    background:var(--cream-soft);
+    font-style:italic;font-size:16.5px;color:var(--green-deep);
+    border-radius:0 6px 6px 0;
+  }
+  .tag-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
+  .tag{
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    padding:7px 12px;border:1px solid var(--line);border-radius:20px;
+    background:var(--cream-soft);color:var(--green-deep);
+  }
+
+  /* METODO */
+  .method h2{font-size:34px;text-align:center;}
+  .method .lead-center{text-align:center;max-width:60ch;margin:0 auto 46px;color:var(--green-deep);opacity:0.85;}
+  .arranca{
+    background:var(--terminal);border-radius:10px;padding:8px 0 8px;
+    box-shadow:0 20px 50px -20px rgba(20,27,18,0.4);
+  }
+  .arranca-row{
+    display:grid;grid-template-columns:56px 1fr;gap:0;
+    padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.05);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .arranca-row:last-child{border-bottom:none;}
+  .arranca-letter{color:var(--mint);font-size:20px;font-weight:600;}
+  .arranca-name{color:var(--cream-soft);font-size:15px;font-weight:600;margin-bottom:4px;}
+  .arranca-desc{color:#9FB39A;font-size:13.5px;line-height:1.55;}
+
+  /* BOOK */
+  .book{background:var(--green-deep);color:var(--cream-soft);}
+  .book .eyebrow{color:var(--mint);}
+  .book .eyebrow::before{color:var(--mint);}
+  .book-grid{display:grid;grid-template-columns:1fr;gap:44px;align-items:center;}
+  @media(min-width:880px){.book-grid{grid-template-columns:0.8fr 1.2fr;}}
+  .cover-mock{
+    aspect-ratio:2/3;max-width:280px;margin:0 auto;
+    background:var(--cream);
+    border-radius:4px;
+    box-shadow:0 30px 60px -15px rgba(0,0,0,0.5);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:26px;position:relative;
+    border:1px solid rgba(255,255,255,0.15);
+  }
+  .cover-ring{
+    width:70px;height:70px;border-radius:50%;border:1.5px solid var(--green);
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+  }
+  .cover-mock h3{font-size:26px;color:var(--green-deep);margin-bottom:6px;line-height:1.15;}
+  .cover-mock p{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--green);margin:0;}
+  .soon-ribbon{
+    position:absolute;top:16px;right:-30px;transform:rotate(35deg);
+    background:var(--amber);color:#241505;font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:0.08em;padding:4px 34px;font-weight:600;
+  }
+  .book h2{color:var(--cream-soft);font-size:32px;}
+  .book p{color:#C9D9C2;font-size:16px;max-width:52ch;}
+  .book-list{list-style:none;padding:0;margin:22px 0 0;display:flex;flex-direction:column;gap:10px;}
+  .book-list li{display:flex;gap:10px;font-size:14.5px;color:#C9D9C2;}
+  .book-list li::before{content:"✓";color:var(--mint);font-weight:700;}
+
+  /* CARDS: skool / ig / amazon */
+  .cards{display:grid;grid-template-columns:1fr;gap:22px;}
+  @media(min-width:840px){.cards{grid-template-columns:repeat(3,1fr);}}
+  .card{
+    background:var(--cream-soft);border:1px solid var(--line);border-radius:10px;
+    padding:30px 26px;display:flex;flex-direction:column;gap:14px;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 34px -18px rgba(44,64,30,0.35);}
+  .card-icon{
+    width:44px;height:44px;border-radius:9px;background:var(--green-deep);
+    display:flex;align-items:center;justify-content:center;color:var(--mint);
+  }
+  .card h3{font-size:20px;margin-bottom:2px;}
+  .card p{font-size:14.5px;color:var(--ink);opacity:0.8;flex-grow:1;}
+  .card a.card-link{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--green-deep);
+    text-decoration:none;border-bottom:1px solid var(--green);padding-bottom:2px;align-self:flex-start;
+  }
+
+  footer{
+    background:var(--terminal);color:#9FB39A;padding:50px 0 30px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+  }
+  .footer-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:flex-start;}
+  .footer-brand{color:var(--cream-soft);font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
+  .footer-links{display:flex;gap:22px;flex-wrap:wrap;}
+  .footer-links a{color:#9FB39A;text-decoration:none;}
+  .footer-links a:hover{color:var(--mint);}
+  .footer-bottom{margin-top:34px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08);font-size:11.5px;color:#5F7A63;}
+
+  ::selection{background:var(--mint);color:var(--green-deep);}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#top" class="brand"><span class="dot"></span>NUTRIKU</a>
+    <div class="navlinks">
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#metodo">Método ARRANCA</a>
+      <a href="#libro">El libro</a>
+      <a href="#comunidad">Comunidad</a>
+      <a href="#recomendados">Recomendados</a>
+    </div>
+    <a href="https://www.skool.com/nutriku-5886" target="_blank" rel="noopener" class="btn btn-primary" style="padding:10px 18px;">Unirme →</a>
+  </div>
+</nav>
+
+<header id="top" class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="reveal in">
+        <div class="kicker">Rocío Gómez · Nutriku</div>
+        <h1>Deja de programar<br>tu cuerpo. Empieza<br>a <em>escucharlo</em>.</h1>
+        <p class="lead">Técnico Superior en Dietética con raíces en informática. Aquí no hay dietas de folio ni algoritmos de restricción — hay un método para construir tu propio manual de alimentación consciente.</p>
+        <div class="cta-row">
+          <a href="https://www.skool.com/nutriku-5886" target="_blank" rel="noopener" class="btn btn-primary">Entrar a la comunidad</a>
+          <a href="#metodo" class="btn btn-ghost">Conocer el Método ARRANCA</a>
+        </div>
+      </div>
+      <div class="reveal in">
+        <div class="terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title">rocio@nutriku — ~/expediente_nutricional.md</span>
+          </div>
+          <div class="term-body" id="termBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="about" id="sobre-mi">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="badge-wrap">
+          <div class="badge">
+            <svg viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="62" r="20" stroke="#F6EEDC" stroke-width="2"/>
+              <line x1="65" y1="77" x2="82" y2="94" stroke="#F6EEDC" stroke-width="3" stroke-linecap="round"/>
+              <path d="M38 55 Q45 40 50 30 Q55 40 62 55" stroke="#7FE0B5" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle cx="50" cy="26" r="3" fill="#7FE0B5"/>
+              <path d="M42 60 h4 M46 65 h5 M42 70 h6" stroke="#7FE0B5" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="eyebrow">Sobre mí</div>
+        <h2>De la informática a la dietética, sin perder la lógica por el camino</h2>
+        <blockquote>
+          "Pasé años intentando programar mi cuerpo como si fuera un software. Como informática, buscaba el algoritmo perfecto, la dieta sin errores y el control absoluto sobre cada caloría. El resultado siempre era el mismo: un sistema colapsado por la frustración y el efecto rebote."
+        </blockquote>
+        <p>Harta de fracasar, decidí estudiar Dietética para entender por qué las "reglas lógicas" no funcionaban conmigo. Hoy, como Técnico Superior en Dietética, mi misión es ayudarte a salir de ese mismo bucle. No te traigo una hoja de cálculo: te traigo la paz que yo encontré cuando dejé de tratar a mi cuerpo como una máquina y empecé a tratarlo como a un ser humano.</p>
+        <div class="tag-row">
+          <span class="tag">Técnico Superior en Dietética</span>
+          <span class="tag">Ex-informática</span>
+          <span class="tag">Sin dietas restrictivas</span>
+          <span class="tag">Sin culpa</span>
+          <span class="tag">Método ARRANCA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="method" id="metodo">
+  <div class="wrap">
+    <div class="eyebrow" style="justify-content:center;">El sistema</div>
+    <h2>Método ARRANCA</h2>
+    <p class="lead-center">Un manual de instrucciones personalizado, no una dieta genérica. Cada letra es una pieza del código que reescribe tu relación con la comida.</p>
+    <div class="arranca">
+      <div class="arranca-row reveal">
+        <div class="arranca-letter">A</div>
+        <div><div class="arranca-name">Aprender</div><div class="arranca-desc">Entender el porqué de los alimentos, no seguir un folio a ciegas. La educación nutricional es la base de la libertad.</div></div>
+      </div>
+      <div class="arranca-row reveal">
+        <div class="arranca-letter">R</div>
+        <div><div class="arranca-name">Realismo</div><div class="arranca-desc">Adaptar el método a tu horario, tu vida y tu realidad — no al revés.</div></div>
+      </div>
+      <div class="arranca-row reveal">
+        <div class="arranca-letter">R</div>
+        <div><div class="arranca-name">Rutinas</div><div class="arranca-desc">Hábitos automáticos que no dependen de la fuerza de voluntad ni de un lunes ideal.</div></div>
+      </div>
+      <div class="arranca-row reveal">
+        <div class="arranca-letter">A</div>
+        <div><div class="arranca-name">Alimentación</div><div class="arranca-desc">El pilar central: nutrir el cuerpo como el combustible que necesita para vivir.</div></div>
+      </div>
+      <div class="arranca-row reveal">
+        <div class="arranca-letter">N</div>
+        <div><div class="arranca-name">NEAT</div><div class="arranca-desc">El movimiento diario que no es "deporte" pero sí es salud. Sedentario + 1h de gym sigue siendo sedentario.</div></div>
+      </div>
+      <div class="arranca-row reveal">
+        <div class="arranca-letter">C</div>
+        <div><div class="arranca-name">Constancia</div><div class="arranca-desc">Un 20% sostenido en el tiempo vence a un 100% de una semana seguido de un 0%.</div></div>
+      </div>
+      <div class="arranca-row reveal">
+        <div class="arranca-letter">A</div>
+        <div><div class="arranca-name">Avance</div><div class="arranca-desc">Medir el progreso en energía, digestión y sensaciones — no solo en una báscula.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="book" id="libro">
+  <div class="wrap">
+    <div class="book-grid">
+      <div class="reveal">
+        <div class="cover-mock">
+          <div class="soon-ribbon">PRÓXIMAMENTE</div>
+          <div class="cover-ring">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3 Q15 8 12 13 Q9 8 12 3Z" stroke="#4A6B32" stroke-width="1.4"/><circle cx="12" cy="17" r="1.4" fill="#4A6B32"/></svg>
+          </div>
+          <h3>Método<br>ARRANCA</h3>
+          <p>Rocío Gómez</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="eyebrow">Primer libro</div>
+        <h2>El primer libro con mi método, escrito desde cero</h2>
+        <p>Método ARRANCA llega pronto a Amazon. Es la guía completa para dejar de hacer dieta para siempre y construir tu propio manual de alimentación consciente: sin restricción, sin culpa, sin "el lunes empiezo".</p>
+        <ul class="book-list">
+          <li>Las 7 letras del método, explicadas paso a paso</li>
+          <li>Ciclo hormonal, digestión, sueño y estrés sin tecnicismos</li>
+          <li>Recetas y estrategias de cocina realista (airfryer, horno, sartén)</li>
+          <li>20 mitos MITO/REALIDAD desmontados con rigor</li>
+        </ul>
+        <div class="cta-row" style="margin-top:26px;">
+          <a href="https://www.skool.com/nutriku-5886" target="_blank" rel="noopener" class="btn" style="background:var(--mint);color:var(--green-deep);">Avísame en la comunidad</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="comunidad">
+  <div class="wrap">
+    <div class="eyebrow">Dónde encontrarme</div>
+    <h2 style="font-size:32px;margin-bottom:36px;">Tres sitios, un mismo sistema</h2>
+    <div class="cards">
+      <div class="card reveal">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+        </div>
+        <h3>Comunidad Skool</h3>
+        <p>Seis cursos, contenido semanal y mecánicas gamificadas para que dejes de improvisar y sigas el sistema paso a paso, con acompañamiento real.</p>
+        <a class="card-link" href="https://www.skool.com/nutriku-5886" target="_blank" rel="noopener">skool.com/nutriku-5886 →</a>
+      </div>
+      <div class="card reveal">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </div>
+        <h3>Instagram</h3>
+        <p>El día a día del método, contenido de proceso y las historias reales detrás del Método ARRANCA y de Expediente Nutriku.</p>
+        <a class="card-link" href="https://www.instagram.com/nutriku" target="_blank" rel="noopener">@nutriku →</a>
+      </div>
+      <div class="card reveal" id="recomendados">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2l1.5 5h9L18 2"/><path d="M3.5 7h17l-1.6 12a2 2 0 01-2 1.7H7.1a2 2 0 01-2-1.7L3.5 7z"/></svg>
+        </div>
+        <h3>Lista de recomendados</h3>
+        <p>Los utensilios, alimentos y marcas que uso de verdad en mi cocina de "kit nutricional de emergencia" — sin postureo, solo lo funcional.</p>
+        <a class="card-link" href="https://www.amazon.es/hz/wishlist/ls/1CLV528EWHCER?ref_=wl_share&tag=nutriku-21" target="_blank" rel="noopener">Ver lista en Amazon →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div>
+      <div class="footer-brand">NUTRIKU</div>
+      <p style="max-width:34ch;color:#7C9179;margin-top:8px;">Alimentación consciente, sin dietas, sin culpa. Método ARRANCA · Expediente Nutriku · Comunidad.</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.skool.com/nutriku-5886" target="_blank" rel="noopener">Skool</a>
+      <a href="https://www.instagram.com/nutriku" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.amazon.es/hz/wishlist/ls/1CLV528EWHCER?ref_=wl_share&tag=nutriku-21" target="_blank" rel="noopener">Recomendados</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    © <span id="year"></span> Nutriku — Rocío Gómez. www.nutriku.com
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // typewriter terminal
+  const termBody = document.getElementById('termBody');
+  const lines = [
+    {t:"$ whoami", cls:"muted"},
+    {t:"Rocío Gómez — Técnico Superior en Dietética", cls:"s"},
+    {t:"$ cat perfil.txt", cls:"muted"},
+    {t:"> Ex-informática. Ahora traduzco cuerpos, no código.", cls:"s"},
+    {t:"$ ./metodo_arranca --run", cls:"muted"},
+    {t:"[fn] compilando manual de alimentación consciente...", cls:"fn"},
+    {t:"[ok] 0 dietas restrictivas encontradas", cls:"code"},
+    {t:"[ok] 0 errores de culpa detectados", cls:"code"},
+    {t:"> proceso: constancia > perfección", cls:"s"},
+  ];
+  let li = 0, ci = 0;
+  function typeNext(){
+    if(li >= lines.length){
+      const cur = document.createElement('span');
+      cur.className='cursor';
+      termBody.appendChild(cur);
+      return;
+    }
+    const line = lines[li];
+    if(ci === 0){
+      const p = document.createElement('p');
+      p.className = 'term-line ' + (line.cls || '');
+      p.id = 'line'+li;
+      termBody.appendChild(p);
+    }
+    const p = document.getElementById('line'+li);
+    if(ci <= line.t.length){
+      p.textContent = line.t.slice(0, ci);
+      ci++;
+      setTimeout(typeNext, line.t.startsWith('$')||line.t.startsWith('>') ? 24 : 14);
+    } else {
+      li++; ci = 0;
+      setTimeout(typeNext, 220);
+    }
+  }
+  typeNext();
+
+  // scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
