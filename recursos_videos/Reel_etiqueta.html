@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-slate: #090D16;
+      --bg-slate: #0F172A; /* Fondo general igualado al color del antiguo cuadrado */
       --card-slate: #0F172A;
       --border-color: #1E293B;
       --accent-red: #F43F5E;
@@ -40,11 +40,11 @@
     .wrapper {
       width: 100%;
       max-width: 480px;
-      background-color: var(--card-slate);
-      border: 1px solid var(--border-color);
+      background-color: transparent; /* Sin fondo propio para fundirse con el body */
+      border: none;                  /* Sin borde exterior */
       border-radius: 24px;
       padding: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      box-shadow: none;              /* Sin sombra exterior */
       text-align: center;
     }
 
