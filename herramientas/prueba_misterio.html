@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expediente Murdoku - El Misterio Nutricional</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --error: #ef4444;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text);
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      line-height: 1.6;
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 25px;
+      margin-bottom: 35px;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .intro-box {
+      background: rgba(30, 41, 59, 0.7);
+      border-left: 4px solid var(--accent);
+      padding: 18px 20px;
+      margin-bottom: 30px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .chapter {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .chapter h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .chapter p {
+      margin-bottom: 14px;
+      color: #cbd5e1;
+    }
+
+    .puzzle-box {
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px dashed var(--accent);
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .puzzle-box strong {
+      display: block;
+      color: var(--accent);
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .puzzle-box p {
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 15px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .input-group {
+        flex-direction: row;
+      }
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 15px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    button {
+      background: var(--accent);
+      color: #0f172a;
+      font-weight: 700;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background: var(--accent-hover);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .msg {
+      font-weight: 600;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    .success-msg {
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .error-msg {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .vault-section {
+      background: #020617;
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 40px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+    }
+
+    .vault-section h2 {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .code-display {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 6px;
+      color: var(--accent);
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      word-break: break-all;
+    }
+
+    .vault-status {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>EXPEDIENTE MURDOKU</h1>
+    <p>Capítulo Cero: El Génesis de la Mente Viva</p>
+  </div>
+
+  <div class="intro-box">
+    <p><strong>Mapeo de Evidencias:</strong> Resuelve cada acertijo nutricional para desbloquear los fragmentos del código encriptado del Dr. Murdoku. Al completar el código de esta fase previa, obtendrás acceso a la clave final para la edición impresa.</p>
+  </div>
+
+  <!-- CAPÍTULO 1 -->
+  <div class="chapter" id="chap1">
+    <h2>I. La Desaparición del Dr. Murdoku</h2>
+    <p>
+      El laboratorio de nutrición avanzada está vacío. Sobre la mesa, solo queda una taza de té verde a medio terminar y un cuaderno abierto. El Dr. Murdoku no ha huido; ha dejado una ruta de pistas. Decía que la mayoría de las personas alimentan su cuerpo, pero matan de hambre a la máquina que gobierna todo: el cerebro.
+    </p>
+    <p>
+      Para encontrar la fórmula que estaba desarrollando, debes reescribir sus pasos. Cada acertijo resuelto te entregará un fragmento del código final.
+    </p>
+
+    <div class="puzzle-box">
+      <strong>Acertijo 1: El Combustible del Pensamiento</strong>
+      <p>"Represento menos del 2% de tu peso corporal, pero consumo el 20% de tu energía diaria. Mi combustible favorito viaja en la sangre, pero si me falta oxígeno o micronutrientes clave, la niebla mental te impedirá ver la respuesta. ¿Qué órgano soy?"</p>
+      <div class="input-group">
+        <input type="text" id="ans1" placeholder="Escribe tu respuesta aquí...">
+        <button onclick="checkPuzzle(1, 'cerebro', 'MRD')">Desbloquear Fragmento</button>
+      </div>
+      <div id="feedback1" class="msg hidden"></div>
+    </div>
+  </div>
+
+  <!-- CAPÍTULO 2 -->
+  <div class="chapter" id="chap2">
+    <h2>II. La Clave de los Micronutrientes</h2>
+    <p>
+      En las notas de Murdoku, el foco cambia de los órganos a las moléculas. Para mantener la agudeza mental que requiere resolver este misterio, el cuerpo necesita catalizadores específicos.
+    </p>
+
+    <div class="puzzle-box">
+      <strong>Acertijo 2: El Mineral Silencioso</strong>
+      <p>"Sin mí, las señales eléctricas de tus neuronas se vuelven lentas. Apoyo el descanso profundo y reduzco la fatiga. Me encuentras en las semillas de calabaza y el cacao puro. Mi número atómico es el 12. ¿De qué mineral hablo?"</p>
+      <div class="input-group">
+        <input type="text" id="ans2" placeholder="Escribe tu respuesta aquí...">
+        <button onclick="checkPuzzle(2, 'magnesio', 'NUT')">Desbloquear Fragmento</button>
+      </div>
+      <div id="feedback2" class="msg hidden"></div>
+    </div>
+  </div>
+
+  <!-- BÓVEDA DEL CÓDIGO -->
+  <div class="vault-section">
+    <h2>Bóveda de Progreso</h2>
+    <p>Reúne todos los fragmentos para revelar el código que desbloquea la fórmula secreta de Murdoku.</p>
+    <div class="code-display" id="vault-code">___ - ___ - ___</div>
+    <p id="vault-status" class="vault-status">Completa los retos de cada capítulo para avanzar.</p>
+  </div>
+
+  <script>
+    /** @type {Record<number, string>} */
+    var codeParts = { 1: "___", 2: "___", 3: "___" };
+
+    /**
+     * @param {number} chapterNum
+     * @param {string} correctAnswer
+     * @param {string} codeFragment
+     * @returns {void}
+     */
+    function checkPuzzle(chapterNum, correctAnswer, codeFragment) {
+      var inputEl = document.getElementById('ans' + chapterNum);
+      var feedbackEl = document.getElementById('feedback' + chapterNum);
+
+      if (!inputEl || !feedbackEl) return;
+
+      var inputVal = inputEl.value.trim().toLowerCase();
+
+      if (inputVal === correctAnswer.toLowerCase()) {
+        feedbackEl.textContent = '¡Correcto! Fragmento obtenido: [ ' + codeFragment + ' ]';
+        feedbackEl.className = 'msg success-msg';
+        codeParts[chapterNum] = codeFragment;
+        updateVault();
+      } else {
+        feedbackEl.textContent = 'Respuesta incorrecta. Revisa tus conocimientos o lee atentamente la pista.';
+        feedbackEl.className = 'msg error-msg';
+      }
+    }
+
+    /**
+     * @returns {void}
+     */
+    function updateVault() {
+      var vaultCodeEl = document.getElementById('vault-code');
+      var vaultStatusEl = document.getElementById('vault-status');
+
+      if (!vaultCodeEl || !vaultStatusEl) return;
+
+      var codeArray = [codeParts[1], codeParts[2], codeParts[3]];
+      vaultCodeEl.textContent = codeArray.join(' - ');
+
+      if (codeParts[1] !== '___' && codeParts[2] !== '___') {
+        vaultStatusEl.textContent = '¡Has desbloqueado la fase previa del Código Murdoku! Guarda este avance y reserva la edición impresa para acceder al capítulo final y resolver el misterio completo.';
+        vaultStatusEl.style.color = '#10b981';
+      }
+    }
+  </script>
+
+</body>
+</html>
