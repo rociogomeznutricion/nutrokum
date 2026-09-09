@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NUTRIKU · Cartas de Situaciones Reales · ARRANCA</title>
+<style>
+:root{--navy:#071b3a;--blue:#08b9d6;--cyan:#19d7e8;--white:#fff;--muted:#64748b;--bg:#f4f8fc;--line:#dbe5ef;--soft:#eaf9fc;--shadow:0 14px 40px rgba(7,27,58,.10)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--navy)}
+header{background:linear-gradient(135deg,var(--navy),#0b315f);color:#fff;padding:28px 20px}
+.wrap{max-width:1120px;margin:auto}.brand{font-weight:900;letter-spacing:2px;color:var(--cyan);font-size:20px}.tag{font-size:11px;letter-spacing:2px;opacity:.8}.headrow{display:flex;justify-content:space-between;gap:20px;align-items:end}.headrow h1{margin:8px 0 5px;font-size:34px}.headrow p{margin:0;color:#d9e7f4}.badge{background:rgba(255,255,255,.1);padding:10px 14px;border:1px solid rgba(255,255,255,.18);border-radius:14px;white-space:nowrap}
+main{padding:24px 20px 50px}.toolbar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);display:flex;gap:10px;flex-wrap:wrap;align-items:center}.toolbar label{font-size:13px;font-weight:800}.toolbar select,.toolbar input{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;color:var(--navy);min-width:180px}button{border:0;border-radius:11px;padding:11px 15px;font-weight:850;cursor:pointer;font-size:14px}.primary{background:var(--navy);color:#fff}.random{background:var(--cyan);color:var(--navy)}.ghost{background:#eef4f8;color:var(--navy)}
+.stats{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}.stat{background:#fff;border:1px solid var(--line);border-radius:13px;padding:10px 14px}.stat strong{display:block;font-size:18px}.stat span{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:15px;margin-top:18px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:0 7px 24px rgba(7,27,58,.06);cursor:pointer;transition:.18s}.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.level{display:inline-block;font-size:10px;font-weight:900;padding:5px 8px;border-radius:999px;background:var(--soft);color:#08788a}.cat{font-size:11px;color:var(--muted);font-weight:800;margin-top:10px}.card h3{margin:7px 0;font-size:18px}.card p{font-size:13px;line-height:1.45;color:#475569;margin:0}.card .foot{display:flex;justify-content:space-between;margin-top:14px;font-size:11px;color:var(--muted);font-weight:800}
+#modal{display:none;position:fixed;inset:0;background:rgba(2,12,29,.62);z-index:20;padding:18px;overflow:auto}.modalbox{max-width:760px;margin:4vh auto;background:#fff;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.3);overflow:hidden}.mhead{background:linear-gradient(135deg,var(--navy),#0c396b);color:#fff;padding:23px}.mhead small{color:var(--cyan);font-weight:900;letter-spacing:1px}.mhead h2{margin:7px 0 3px;font-size:28px}.mhead p{margin:0;color:#d9e7f4}.mbody{padding:22px}.mission{background:var(--soft);border-left:5px solid var(--cyan);padding:15px;border-radius:12px;margin-bottom:18px}.mission strong{display:block;margin-bottom:5px}.section{margin-top:18px}.section h4{margin:0 0 9px;font-size:14px}.steps{display:grid;gap:9px}.step{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfdff}.step b{display:block;margin-bottom:4px}.prompt{background:#f8fafc;border:1px dashed #b8c7d6;padding:14px;border-radius:12px;font-size:14px}.notes{width:100%;min-height:105px;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;resize:vertical}.actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px;flex-wrap:wrap}.result{margin-top:15px;padding:15px;border-radius:13px;background:#eefaf2;border:1px solid #bde7c8;display:none}.history{margin-top:25px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.history h3{margin-top:0}.histrow{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}.empty{color:var(--muted);font-size:13px}
+@media(max-width:650px){.headrow{display:block}.badge{display:inline-block;margin-top:15px}.headrow h1{font-size:27px}.toolbar>*{width:100%}.toolbar select,.toolbar input{min-width:0;width:100%}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">NUTRIKU</div><div class="tag">DESCIFRANDO LA NUTRICIÓN</div>
+<div class="headrow"><div><h1>🎭 Cartas de Situaciones Reales</h1><p>Entrena decisiones nutricionales en contextos de vida real.</p></div><div class="badge">MÉTODO ARRANCA · PROFESIONAL</div></div>
+</div></header>
+<main><div class="wrap">
+<div class="toolbar">
+<label for="cat">Filtrar:</label><select id="cat" onchange="render()"><option value="Todas">Todas</option></select>
+<select id="level" onchange="render()"><option value="Todos">Todos los niveles</option><option value="1">Nivel 1 · Fácil</option><option value="2">Nivel 2 · Intermedio</option><option value="3">Nivel 3 · Avanzado</option><option value="4">Nivel 4 · Desafío</option></select>
+<input id="search" oninput="render()" placeholder="Buscar situación...">
+<button class="random" onclick="randomCard()">🎲 Elegir situación al azar</button>
+<button class="ghost" onclick="resetFilters()">↺ Ver todas</button>
+</div>
+<div class="stats"><div class="stat"><strong id="total">0</strong><span>situaciones</span></div><div class="stat"><strong id="shown">0</strong><span>mostradas</span></div><div class="stat"><strong id="done">0</strong><span>trabajadas</span></div></div>
+<div id="grid" class="grid"></div>
+<div class="history"><h3>📋 Registro de sesiones</h3><div id="history" class="empty">Todavía no has trabajado ninguna carta.</div></div>
+</div></main>
+
+<div id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="modalbox">
+<div class="mhead"><small id="mcat"></small><h2 id="mtitle"></h2><p id="mlevel"></p></div>
+<div class="mbody">
+<div class="mission"><strong>🎯 Situación</strong><span id="msituation"></span></div>
+<div class="section"><h4>🧠 Tu misión profesional</h4><div class="steps" id="steps"></div></div>
+<div class="section"><h4>💬 Pregunta clave para la clienta</h4><div class="prompt" id="question"></div></div>
+<div class="section"><h4>👩‍⚕️ Qué observar</h4><div class="prompt" id="observe"></div></div>
+<div class="section"><h4>📝 Notas profesionales</h4><textarea id="notes" class="notes" placeholder="Registra evidencias: qué decidió, qué criterio utilizó, dónde necesitó ayuda..."></textarea></div>
+<div class="actions"><button class="ghost" onclick="closeModal()">Cerrar</button><button class="primary" onclick="completeCard()">✅ Marcar como trabajada</button></div>
+<div id="result" class="result"></div>
+</div></div></div>
+
+<script>
+const cards = [
+["Compra de última hora","Compra y organización",1,"Sales del trabajo y recuerdas que no tienes nada preparado para cenar.","Resuelve una cena completa comprando solo lo necesario y sin convertir la situación en un problema.","Piensa qué necesitas realmente. / Prioriza alimentos que te permitan montar una comida sencilla. / Explica por qué eliges cada producto.","¿Qué comprarías ahora mismo y por qué?","Que no busque una compra perfecta; que priorice, simplifique y razone."],
+["Llegas tarde a casa","Días sin tiempo",1,"Son las 21:30, estás cansada y no quieres cocinar.","Construye una opción realista en 10 minutos con productos del supermercado.","Elige una proteína o base. / Añade lo que complete la comida. / Valora una alternativa todavía más rápida.","¿Cuál sería tu Plan B si no quisieras cocinar nada?","Capacidad para tener alternativas prácticas sin sentir que ha 'fallado'."],
+["Nevera prácticamente vacía","Imprevistos",2,"Solo tienes huevos, un yogur y poco más en casa.","Decide qué comprarías para resolver las próximas 24 horas.","Haz una lista mínima. / Evita comprar por impulso. / Justifica qué alimentos te dan más posibilidades.","¿Qué tres compras te darían más opciones?","Que piense en posibilidades de combinación y no en recetas cerradas."],
+["Te has olvidado de hacer la compra","Imprevistos",2,"Mañana tienes un día completo de trabajo y no tienes comida preparada.","Diseña una solución para mañana con el mínimo esfuerzo.","Piensa en compra rápida, comida transportable y cena. / Prevé un Plan B.","¿Cómo resolverías mañana sin depender de pedir comida?","Anticipación y capacidad de crear planes alternativos."],
+["Desayuno en una cafetería","Comer fuera",1,"Vas con prisa y tienes que desayunar fuera de casa.","Elige una opción que encaje contigo sin buscar una opción 'perfecta'.","Mira las opciones disponibles. / Decide según hambre, tiempo y contexto. / Explica tu elección.","¿Qué criterios utilizarías para elegir?","Que utilice contexto y criterio, no reglas rígidas."],
+["Comida de trabajo","Comer fuera",2,"Tienes una comida de trabajo y no puedes elegir el restaurante.","Gestiona la comida utilizando lo que haya disponible.","Identifica qué puedes controlar. / Revisa opciones. / Decide sin pedir permiso.","¿Qué parte de esta situación puedes controlar realmente?","Flexibilidad y separación entre controlable/no controlable."],
+["Cena improvisada con amigos","Social",2,"Tus amigos proponen cenar fuera esta noche y no estaba previsto.","Decide cómo gestionarías la situación sin compensaciones posteriores.","Piensa antes de llegar. / Elige según preferencias y contexto. / Continúa con normalidad al día siguiente.","¿Qué NO harías antes o después de esta cena?","Que no aparezcan compensaciones, culpa ni pensamiento de 'ya que'."],
+["Cumpleaños familiar","Social",2,"Hay comida, tarta y picoteo durante varias horas.","Practica una decisión flexible en un evento familiar.","Decide qué quieres realmente. / Come con atención. / Acepta que no controlas todo lo que se sirve.","¿Cómo disfrutarías sin convertir el evento en un examen?","Flexibilidad y capacidad de disfrutar sin abandonar el criterio."],
+["Fin de semana fuera","Viajes",3,"Te vas dos días de viaje y no sabes dónde vas a comer.","Crea un mini plan flexible para desayuno, comida, cena y snacks.","Identifica incertidumbres. / Prepara 1–2 recursos. / Define cómo decidirás sobre la marcha.","¿Qué llevarías contigo para tener un Plan B?","Que prepare herramientas, no un menú rígido."],
+["Hotel con buffet","Viajes",2,"El desayuno del hotel tiene muchísimas opciones.","Construye un desayuno que te resulte satisfactorio.","Explora. / Elige según hambre y preferencias. / No conviertas el buffet en 'todo lo que pueda'.","¿Cómo decidirías qué poner en tu plato?","Autorregulación y elección consciente."],
+["Viaje largo en coche","Viajes",2,"Tienes cuatro horas de carretera y quieres evitar llegar con hambre extrema.","Organiza comida y bebida para el trayecto.","Piensa qué necesitas realmente. / Elige opciones transportables. / Prevé un imprevisto.","¿Qué llevarías si no supieras cuándo podrás parar?","Planificación flexible."],
+["Semana con cero tiempo","Días sin tiempo",3,"Esta semana tienes trabajo extra y no podrás cocinar como siempre.","Construye un sistema Plan A / Plan B / Plan C.","Elige 2 comidas rápidas. / 2 opciones de compra preparada. / 1 solución de emergencia.","¿Qué mantendrías aunque la semana se complique?","Que priorice lo esencial y reduzca fricción."],
+["Llegas agotada","Días sin tiempo",2,"Has tenido un día horrible y lo último que quieres es cocinar.","Resuelve la cena sin exigir una versión ideal de ti misma.","Evalúa hambre y recursos. / Decide una opción suficientemente buena. / Evita compensar mañana.","¿Qué sería una solución suficientemente buena hoy?","Realismo y ausencia de perfeccionismo."],
+["No te gusta cocinar","Hábitos",2,"La cocina saludable te parece demasiado laboriosa.","Diseña tres comidas con muy poca preparación.","Busca combinaciones simples. / Utiliza alimentos prácticos. / Reduce pasos innecesarios.","¿Cómo harías que comer bien requiriera menos esfuerzo?","Que adapte el sistema a la persona."],
+["No tienes táperes","Organización",1,"Mañana necesitas llevar comida pero no tienes recipientes preparados.","Resuelve la comida con los recursos disponibles.","Busca una alternativa realista. / Decide qué prepararías o comprarías.","¿Qué harías si no puedes cocinar esta noche?","Capacidad de adaptación."],
+["Mercadona lleno y poco tiempo","Compra y organización",2,"Tienes 12 minutos para comprar algo para cenar.","Haz una compra exprés de máximo 5 productos.","Prioriza. / Evita recorrer pasillos sin objetivo. / Explica tus elecciones.","¿Qué cinco productos buscarías primero?","Priorización y reducción de decisiones."],
+["Presupuesto muy ajustado","Compra y organización",3,"Esta semana dispones de 25 € para varias comidas.","Haz una compra priorizando rendimiento, versatilidad y necesidades reales.","Define prioridades. / Compara productos. / Busca alimentos que permitan varias comidas.","¿Dónde gastarías más y dónde ahorrarías?","Que el criterio incluya economía y contexto."],
+["Producto nuevo que no conoces","Etiquetas",2,"Encuentras un producto que nunca has comprado y el envase tiene muchos reclamos.","Decide si lo comprarías utilizando la información disponible.","Mira denominación. / Etiqueta. / Ingredientes cuando sean relevantes. / Reclamos.","¿Qué información mirarías antes de decidir?","Transferencia del criterio a productos nuevos."],
+["'PROTEICO' en grande","Marketing",2,"Ves dos productos: uno anuncia 'PROTEICO' en grande y otro no.","Investiga si el reclamo cambia realmente tu decisión.","No te quedes en el frontal. / Busca información relevante. / Decide según tu objetivo.","¿Qué tendría que aportar ese reclamo para ser útil?","Que diferencie marketing de información útil."],
+["'LIGHT' no significa lo mismo para todo","Etiquetas",3,"Dos productos llevan mensajes relacionados con 'light' o '0%'.","Explica qué información necesitas antes de decidir.","Identifica qué se ha reducido o modificado. / Mira la tabla nutricional si procede. / Considera el uso real.","¿Qué pregunta te harías antes de comprarlo?","Que no interprete un reclamo como una valoración global del alimento."],
+["Comparar dos panes","Compra y etiquetas",2,"Tienes dos panes y quieres decidir cuál comprar habitualmente.","Haz una comparación razonada sin buscar un ganador universal.","Define primero para qué lo quieres. / Compara información relevante. / Decide según contexto.","¿Qué hace que uno sea mejor opción PARA TI?","Que evite el 'mejor producto' sin contexto."],
+["Comparar dos yogures","Compra y etiquetas",2,"Dos yogures parecen similares, pero tienen composiciones diferentes.","Elige uno y defiende tu decisión.","Compara información relevante. / Ten en cuenta ingredientes y uso. / Justifica.","¿Qué dato ha pesado más en tu decisión?","Que la decisión sea razonada."],
+["Picoteo viendo una serie","Entorno",1,"Por la noche te apetece picar mientras ves una serie.","Decide qué necesitas y cómo organizarías el picoteo.","Diferencia hambre, hábito y deseo. / Decide cantidad y formato. / Sin prohibiciones automáticas.","¿Qué haría que esta situación fuera más fácil para ti?","Que explore el contexto en lugar de demonizar el snack."],
+["Hambre entre reuniones","Días sin tiempo",1,"Tienes 10 minutos entre dos reuniones y notas hambre.","Elige una opción que puedas resolver rápidamente.","Busca algo disponible. / Prioriza practicidad. / Evita esperar hasta estar desbordada.","¿Qué llevarías habitualmente en tu kit de emergencia?","Prevención y uso de recursos."],
+["Has pedido comida a domicilio","Imprevistos",1,"Llegas tarde y decides pedir comida.","Construye un pedido satisfactorio sin pensar que has 'estropeado' el día.","Mira opciones. / Decide según hambre y preferencias. / Come y continúa normalmente.","¿Cómo evitarías entrar en el 'mañana empiezo'?","Continuidad y ausencia de pensamiento todo-o-nada."],
+["Restaurante con carta enorme","Comer fuera",2,"Hay muchas opciones y tardas mucho en decidir.","Utiliza un método sencillo para elegir sin sobreanalizar.","Define qué te apetece. / Mira 2–3 opciones. / Decide.","¿Qué criterio usarías para cerrar la decisión?","Que reduzca la sobredecisión."],
+["Invitación a comer sin avisar","Imprevistos",2,"Te invitan a comer y no puedes saber el menú hasta llegar.","Resuelve la incertidumbre sin ansiedad.","Acepta lo que no controlas. / Decide con la información disponible. / No compenses.","¿Qué harías si la comida no fuese como esperabas?","Tolerancia a la incertidumbre."],
+["Un día entero fuera de casa","Organización",3,"Sales a las 8:00 y vuelves a las 22:00.","Diseña una estrategia para no depender de improvisar todo el día.","Identifica puntos críticos. / Lleva recursos. / Prevé comida fuera y Plan B.","¿Cuáles serían tus dos momentos más difíciles?","Que planifique puntos de decisión, no un menú perfecto."],
+["Domingo sin planificación","Organización",2,"Es domingo por la tarde y no tienes nada preparado para la semana.","Crea una preparación mínima de 30 minutos.","Elige qué merece la pena dejar preparado. / No intentes cocinar toda la semana.","¿Qué dos cosas prepararías para facilitarte la semana?","Que optimice esfuerzo/beneficio."],
+["Cambio de turno","Trabajo",3,"Tu horario cambia esta semana y tus horarios habituales dejan de servir.","Adapta tu sistema de comidas al nuevo horario.","Identifica nuevos puntos de hambre. / Cambia horarios. / Prevé comida transportable.","¿Qué parte de tu rutina tendrías que modificar primero?","Capacidad de adaptar el sistema."],
+["Comida familiar con presión","Social",3,"Un familiar insiste en que comas más o menos de lo que quieres.","Practica una respuesta que mantenga tus decisiones sin conflicto innecesario.","Identifica tus límites. / Responde con calma. / No conviertas la conversación en una discusión nutricional.","¿Qué podrías responder sin justificarte demasiado?","Autonomía también en el entorno social."],
+["Vacaciones","Viajes",3,"Te vas una semana de vacaciones y quieres disfrutar sin perder tus hábitos básicos.","Define tres principios flexibles para la semana.","Elige qué quieres mantener. / Permite excepciones. / No planifiques cada comida.","¿Qué tres cosas sí quieres cuidar y qué cosas vas a dejar abiertas?","Flexibilidad y priorización."],
+["'Ya que he empezado...'","Pensamiento",3,"Comes algo que no estaba previsto y piensas que ya has perdido el día.","Interrumpe el pensamiento todo-o-nada.","Detecta el pensamiento. / Busca una decisión siguiente normal. / Continúa.","¿Cuál sería tu siguiente decisión si no tuvieras que compensar?","Capacidad de volver al criterio inmediatamente."],
+["Día malo emocionalmente","Contexto personal",3,"Has tenido un día emocionalmente difícil y tu alimentación suele desorganizarse.","Construye una respuesta de cuidado y mínima exigencia.","Identifica necesidades. / Reduce decisiones. / Busca una comida sencilla y suficiente.","¿Qué necesitas para ponértelo fácil hoy?","Que no convierta una dificultad emocional en un juicio moral."],
+["Supermercado sin productos habituales","Compra",2,"Tu marca habitual no está disponible.","Resuelve la compra sin bloquearte.","Busca equivalentes. / Compara información relevante. / Decide con criterio suficiente.","¿Qué información necesitas para elegir una alternativa?","Transferencia y autonomía."],
+["Comer en casa de otra persona","Social",2,"No sabes qué se va a cocinar hasta que llegas.","Practica flexibilidad ante una comida que no controlas.","Observa opciones. / Come según hambre y preferencias. / No intentes controlar todo.","¿Qué sí puedes decidir en esta situación?","Diferenciar controlable/no controlable."],
+["Snack en máquina expendedora","Días sin tiempo",1,"Tienes hambre y solo hay una máquina expendedora.","Toma una decisión suficientemente buena con las opciones disponibles.","Mira lo que hay. / Decide según hambre y contexto. / Evita el 'no hay nada saludable'.","¿Cómo elegirías si tu objetivo fuera resolver la situación, no hacerlo perfecto?","Practicidad y flexibilidad."],
+["Desayuno sin hambre","Hábitos",2,"Es la hora habitual de desayunar pero hoy no tienes hambre.","Razona qué harías sin aplicar una regla automática.","Considera horario, necesidades posteriores y contexto. / Decide.","¿Qué información de tu propio contexto necesitas para decidir?","Autoconocimiento y flexibilidad."],
+["Comida muy tarde","Rutinas",2,"La comida se retrasa varias horas por una reunión.","Evita llegar a la comida con hambre extrema.","Detecta el problema. / Decide si necesitas una opción intermedia. / Prepara un Plan B.","¿Qué llevarías para prevenir esta situación?","Anticipación."],
+["Evento de varios días","Eventos",4,"Tienes un fin de semana completo de celebraciones.","Diseña una estrategia que permita disfrutar y mantener criterio.","Identifica momentos clave. / Decide qué quieres priorizar. / Evita compensaciones.","¿Qué significa para ti 'gestionar' el fin de semana?","Autonomía en situaciones complejas."],
+["La clienta pregunta '¿puedo comer esto?'","Autonomía",4,"Durante la sesión te enseña un producto y espera una respuesta sí/no.","Devuelve la decisión a la clienta mediante preguntas.","Pide que explique qué sabe. / Pregunta qué busca. / Haz que compare. / Solo intervén cuando sea necesario.","¿Qué te hace pensar que esta es una buena opción para ti?","Reducir dependencia de validación profesional."],
+["Decidir sin preguntarte","Autonomía",4,"La clienta tiene que elegir entre tres productos nuevos sin poder preguntarte.","Haz que decida y defienda su elección.","Debe explicar criterio. / Debe reconocer incertidumbre. / Debe proponer alternativa.","¿Qué elegirías y qué evidencia apoya tu decisión?","La habilidad máxima: decidir sin necesitar aprobación."],
+["Cambio inesperado de plan","Imprevistos",3,"Habías preparado una comida, pero surge una reunión y no puedes comerla.","Resuelve el cambio sin sentir que el plan se ha roto.","Identifica alternativas. / Reorganiza. / Continúa con normalidad.","¿Qué opciones tienes ahora?","Flexibilidad operativa."],
+["Quedan sobras en la nevera","Cocina",1,"Tienes restos de varias comidas y quieres evitar desperdiciarlos.","Construye una comida nueva utilizando lo disponible.","Inventaría recursos. / Combina. / Añade solo lo necesario.","¿Qué podrías montar con lo que ya tienes?","Creatividad práctica y aprovechamiento."],
+["Cocinar para la familia","Familia",3,"Tienes que preparar una comida que guste a varias personas con necesidades y preferencias diferentes.","Diseña una comida base flexible.","Crea una base común. / Permite modificaciones sencillas. / Evita cocinar cuatro platos diferentes.","¿Cómo harías una comida adaptable para todos?","Diseño de sistemas familiares sostenibles."],
+["Semana con niños enfermos","Familia e imprevistos",4,"Durante varios días tienes menos tiempo y más responsabilidades familiares.","Construye un sistema mínimo viable para comer.","Define lo imprescindible. / Prepara recursos rápidos. / Usa compra y comida preparada estratégicamente.","¿Qué eliminarías temporalmente de tu rutina?","Priorización en contextos exigentes."],
+["Comer sola en un restaurante","Comer fuera",1,"Tienes que comer sola y te cuesta decidir qué pedir.","Practica una elección basada en preferencias y hambre.","Mira la carta. / Elige sin compararte con nadie. / Disfruta de la experiencia.","¿Qué te apetecería realmente hoy?","Autonomía y conexión con preferencias."],
+["Cena después de entrenar","Contexto",2,"Terminas tarde una actividad física y tienes hambre.","Construye una cena práctica sin depender de una receta concreta.","Evalúa recursos. / Decide combinación. / Prioriza suficiencia y practicidad.","¿Qué componentes buscarías en tu cena?","Aplicación del criterio al contexto."],
+["Día de reuniones seguidas","Trabajo",3,"Tienes reuniones de 9:00 a 17:00 con solo pequeños huecos.","Diseña un kit de alimentación para ese día.","Identifica huecos. / Prepara opciones transportables. / Prevé un Plan B.","¿Qué llevarías para no depender de la improvisación?","Planificación contextual."],
+["Producto viral de redes","Marketing",3,"Todo el mundo recomienda un producto como 'imprescindible'.","Decide si realmente tiene sentido para ti.","Separa popularidad de utilidad. / Revisa información. / Decide según tus necesidades.","¿Qué tendría que demostrar para convencerte?","Pensamiento crítico ante marketing social."],
+["Oferta 2x1","Compra",1,"Ves una oferta 2x1 de un producto que sueles comprar.","Decide si realmente compensa.","Valora consumo real, almacenamiento y precio. / No compres solo por descuento.","¿La oferta te hace ahorrar o te hace comprar más?","Criterio económico y conductual."],
+["Compra con hambre","Compra y contexto",2,"Entras al supermercado con mucha hambre y sin lista.","Evita que el hambre decida por ti.","Haz una pausa. / Define prioridades. / Compra con una lista mínima.","¿Qué harías diferente si hubieras venido preparada?","Diseño del entorno y prevención."],
+["Solo quedan 10 minutos","Días sin tiempo",2,"Tienes 10 minutos para resolver una comida antes de salir.","Construye la solución más eficiente posible.","Usa recursos disponibles. / Reduce pasos. / Decide sin perfeccionismo.","¿Qué comida podrías resolver en menos de 10 minutos?","Eficiencia."],
+["Una comida no salió como esperabas","Cocina",1,"Preparaste algo y no te gusta el resultado.","Resuelve la situación sin tirar toda la comida ni pedir otra automáticamente.","Identifica qué puede rescatarse. / Ajusta. / Aprende para la próxima.","¿Qué podrías modificar ahora?","Resolución de problemas."],
+["Fin de mes","Presupuesto",3,"El presupuesto de alimentación está muy ajustado hasta final de mes.","Prioriza una compra práctica y flexible.","Revisa lo disponible. / Compra básicos versátiles. / Reduce compras impulsivas.","¿Qué alimentos te permiten construir más comidas con menos gasto?","Planificación económica."],
+["Cena de empresa","Social y trabajo",3,"Hay menú cerrado y no puedes elegir todo.","Gestiona la situación con lo que haya.","Identifica lo que sí puedes decidir. / Come con normalidad. / Evita compensar.","¿Qué decisiones siguen estando en tus manos?","Autonomía dentro de límites reales."],
+["'No sé qué comprar'","Compra",1,"Entras al supermercado y no sabes por dónde empezar.","Construye una lista por categorías y usos, no por recetas cerradas.","Piensa en desayunos, comidas, cenas, recursos rápidos y snacks si los necesitas.","¿Qué necesitas tener en casa para que tu semana sea más fácil?","Organización basada en necesidades."],
+["Tu Plan B","Autonomía",4,"Tu plan habitual ha fallado por completo.","Crea un Plan B y un Plan C para la misma situación.","Formula alternativas realistas. / Ordénalas por esfuerzo. / Elige según contexto.","¿Qué harías si tu primera opción tampoco fuese posible?","Robustez del sistema."],
+["La decisión perfecta no existe","Autonomía",4,"Hay tres opciones razonables y ninguna es claramente superior.","Elige una y acepta que una decisión suficientemente buena también es válida.","Define el criterio principal. / Decide. / No sigas buscando indefinidamente.","¿Qué hace que una decisión sea suficientemente buena?","Evitar parálisis por análisis."],
+["Prueba final: tú decides","Autonomía",4,"Te damos una situación nueva que nunca has practicado.","Resuélvela explicando tu razonamiento de principio a fin.","Identifica contexto. / Define objetivo. / Busca opciones. / Decide. / Propón alternativa.","¿Qué criterio estás utilizando y cómo lo aplicarías a otra situación?","Transferencia completa y autonomía."]
+];
+
+let current=null;
+const KEY="nutriku_arranca_cartas_v1";
+function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function init(){
+ const cats=[...new Set(cards.map(x=>x[1]))].sort();
+ const sel=document.getElementById("cat");
+ cats.forEach(c=>sel.insertAdjacentHTML("beforeend",`<option>${esc(c)}</option>`));
+ document.getElementById("total").textContent=cards.length; render(); historyRender();
+}
+function render(){
+ const cat=document.getElementById("cat").value, lev=document.getElementById("level").value, q=document.getElementById("search").value.toLowerCase().trim();
+ const list=cards.map((x,i)=>({...{x},i})).filter(o=>(cat==="Todas"||o.x[1]===cat)&&(lev==="Todos"||String(o.x[2])===lev)&&(!q||o.x.join(" ").toLowerCase().includes(q)));
+ document.getElementById("shown").textContent=list.length;
+ document.getElementById("grid").innerHTML=list.length?list.map(o=>cardHTML(o.x,o.i)).join(""):`<div class="empty">No hay situaciones con esos filtros.</div>`;
+}
+function cardHTML(x,i){return `<div class="card" onclick="openCard(${i})"><span class="level">NIVEL ${x[2]}</span><div class="cat">${esc(x[1])}</div><h3>${esc(x[0])}</h3><p>${esc(x[3])}</p><div class="foot"><span>🎭 Situación</span><span>Ver misión →</span></div></div>`}
+function openCard(i){
+ current=i;const x=cards[i];
+ document.getElementById("mcat").textContent=x[1].toUpperCase();
+ document.getElementById("mtitle").textContent=x[0];
+ document.getElementById("mlevel").textContent="Nivel "+x[2]+" · Entrenamiento de autonomía ARRANCA";
+ document.getElementById("msituation").textContent=x[3];
+ const parts=x[4].split(". ").filter(Boolean);
+ const steps=x[4].includes("/")?x[4].split("/").map(s=>s.trim()):[x[4]];
+ document.getElementById("steps").innerHTML=steps.map((s,n)=>`<div class="step"><b>${n+1}. ${esc(s)}</b></div>`).join("");
+ document.getElementById("question").textContent=x[5];
+ document.getElementById("observe").textContent=x[6];
+ document.getElementById("notes").value="";
+ document.getElementById("result").style.display="none";
+ document.getElementById("modal").style.display="block"; document.body.style.overflow="hidden";
+}
+function closeModal(){document.getElementById("modal").style.display="none";document.body.style.overflow=""}
+function completeCard(){
+ if(current===null)return;
+ const x=cards[current], notes=document.getElementById("notes").value.trim();
+ const data=JSON.parse(localStorage.getItem(KEY)||"[]");
+ data.unshift({title:x[0],cat:x[1],level:x[2],date:new Date().toLocaleString("es-ES"),notes});
+ localStorage.setItem(KEY,JSON.stringify(data.slice(0,100)));
+ document.getElementById("result").style.display="block";
+ document.getElementById("result").innerHTML="<strong>✅ Situación registrada.</strong><br>Utiliza las notas para guardar evidencias de autonomía, no solo si la respuesta fue correcta.";
+ historyRender();
+}
+function historyRender(){
+ const data=JSON.parse(localStorage.getItem(KEY)||"[]");
+ document.getElementById("done").textContent=data.length;
+ const el=document.getElementById("history");
+ if(!data.length){el.className="empty";el.innerHTML="Todavía no has trabajado ninguna carta.";return}
+ el.className="";
+ el.innerHTML=data.slice(0,12).map((d,i)=>`<div class="histrow"><span><strong>${esc(d.title)}</strong><br><small>${esc(d.cat)} · Nivel ${d.level} · ${esc(d.date)}</small></span><span>✓</span></div>`).join("");
+}
+function randomCard(){
+ const cat=document.getElementById("cat").value, lev=document.getElementById("level").value, q=document.getElementById("search").value.toLowerCase().trim();
+ const pool=cards.map((x,i)=>i).filter(i=>(cat==="Todas"||cards[i][1]===cat)&&(lev==="Todos"||String(cards[i][2])===lev)&&(!q||cards[i].join(" ").toLowerCase().includes(q)));
+ if(!pool.length){alert("No hay situaciones que coincidan con los filtros actuales.");return}
+ openCard(pool[Math.floor(Math.random()*pool.length)]);
+}
+function resetFilters(){document.getElementById("cat").value="Todas";document.getElementById("level").value="Todos";document.getElementById("search").value="";render()}
+init();
+</script>
+</body>
+</html>
