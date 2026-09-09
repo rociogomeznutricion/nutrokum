@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supermercado Virtual ARRANCA · NUTRIKU</title>
+<style>
+:root{--navy:#071b33;--blue:#00b8d9;--cyan:#22d3ee;--bg:#f4f8fb;--card:#fff;--muted:#617286;--line:#dbe6ef;--ok:#138a63;--warn:#d88a00}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--navy)}
+header{background:linear-gradient(135deg,var(--navy),#0a3154);color:white;padding:28px 20px}
+.wrap{max-width:1180px;margin:auto}.brand{font-weight:900;letter-spacing:2px;color:var(--cyan)}h1{margin:7px 0;font-size:clamp(26px,4vw,42px)}.sub{margin:0;color:#d7e7f3}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;margin:18px 0;box-shadow:0 5px 18px #0b29400b}
+.topgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px}.stat{background:#ffffff;border-radius:14px;padding:14px;color:var(--navy);border:1px solid #dbe6ef}.stat span{color:#617286}.stat b{font-size:24px;display:block;color:var(--navy)}
+input,select,button{font:inherit}input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:white}button{border:0;border-radius:10px;padding:11px 14px;cursor:pointer;font-weight:800}.primary{background:var(--blue);color:white}.dark{background:var(--navy);color:white}.ghost{background:#eef5f8;color:var(--navy)}.danger{background:#fff0f0;color:#a33}
+.controls{display:flex;gap:10px;flex-wrap:wrap}.controls>*{flex:1;min-width:160px}
+.categories{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.cat{background:#edf7fa;color:#075b70}.cat.active{background:var(--navy);color:white}
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:15px}.product{background:white;border:1px solid var(--line);border-radius:16px;padding:15px;display:flex;flex-direction:column;gap:10px}.emoji{font-size:35px}.tag{display:inline-block;font-size:11px;font-weight:800;background:#e9f8f5;color:#087453;border-radius:99px;padding:5px 8px;margin:2px}.price{font-size:20px;font-weight:900}.meta{font-size:13px;color:var(--muted);line-height:1.45}.product button{margin-top:auto}
+.layout{display:grid;grid-template-columns:2fr 1fr;gap:18px}.cart{position:sticky;top:12px;align-self:start}.cartitem{border-bottom:1px solid var(--line);padding:10px 0}.cartitem:last-child{border:0}.qty{display:flex;align-items:center;gap:7px;margin-top:6px}.qty button{padding:4px 9px}.total{font-size:25px;font-weight:900;margin:12px 0}
+.challenge{background:linear-gradient(135deg,#071b33,#0d4564);color:white}.challenge strong{color:var(--cyan)}.progress{height:10px;background:#dfe9ef;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--cyan);width:0%;transition:.3s}
+.exercise{background:#f8fbfc;border:1px dashed #a9c5d3;border-radius:14px;padding:14px;margin-top:12px}.exercise h3{margin-top:0}.choice{border:1px solid var(--line);padding:12px;border-radius:12px;margin:7px 0;cursor:pointer}.choice.selected{border:2px solid var(--blue);background:#effcff}.feedback{padding:12px;border-radius:12px;margin-top:10px;display:none}.good{background:#e9f8f2;color:#096848}.bad{background:#fff5e6;color:#895700}
+textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:10px;padding:11px;resize:vertical}
+footer{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+@media(max-width:800px){.layout,.topgrid{grid-template-columns:1fr}.cart{position:static}}
+
+.modal{display:none;position:fixed;inset:0;background:#071b3399;z-index:20;padding:18px;overflow:auto}.modal.show{display:flex;align-items:center;justify-content:center}.modalbox{background:white;max-width:850px;width:100%;border-radius:20px;padding:25px;position:relative;box-shadow:0 20px 60px #0004}.close{position:absolute;right:12px;top:10px;background:#edf4f7;font-size:24px;padding:5px 11px}.labelhead{display:flex;justify-content:space-between;gap:15px;border-bottom:1px solid var(--line);padding-bottom:12px;font-size:22px;font-weight:900}.labelhead small{font-size:13px;color:var(--muted);font-weight:500}.nutri{border:2px solid var(--navy);margin:18px 0;padding:12px}.nutri>small{display:block;color:var(--muted);margin:4px 0 8px}.nutri div{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line);font-size:14px}.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.comparecard{border:1px solid var(--line);border-radius:14px;padding:13px}.comparecard div{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}@media(max-width:700px){.labelhead{display:block}.labelhead small{display:block;margin-top:5px}}
+
+.profnav{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.profnav button.active{background:var(--navy);color:white}.hidden{display:none!important}
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.scenario{border:1px solid var(--line);border-radius:15px;padding:15px;cursor:pointer;background:#fff}.scenario:hover{border-color:var(--blue)}.scenario.selected{border:2px solid var(--blue);background:#effcff}
+.scenario .difficulty{font-size:11px;font-weight:900;letter-spacing:.5px;color:#087453}.scoregrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.scorecard{border:1px solid var(--line);border-radius:14px;padding:14px}.scorecard b{font-size:28px;display:block}.skillbar{height:8px;background:#e6eef3;border-radius:99px;overflow:hidden;margin-top:7px}.skillbar i{display:block;height:100%;background:var(--cyan)}
+.prof-table{width:100%;border-collapse:collapse}.prof-table th,.prof-table td{padding:9px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.prof-table th{background:#f1f7fa}.result{border-radius:16px;padding:18px;background:#f5fbfd}.result h2{margin-top:0}.pill{display:inline-block;border-radius:99px;padding:5px 9px;background:#e8f7f5;color:#086a50;font-weight:800;font-size:12px;margin:2px}
+.mission{background:linear-gradient(135deg,#eefbfe,#f7fbfd);border:1px solid #bfe6ef;border-radius:16px;padding:18px;margin-top:14px}.missionhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.missiontitle{font-size:21px;font-weight:900;margin:0}.missiontag{display:inline-block;background:var(--navy);color:white;border-radius:99px;padding:6px 10px;font-size:11px;font-weight:900}.missiongrid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:14px}.missionbox{background:white;border:1px solid var(--line);border-radius:13px;padding:13px}.missionbox h4{margin:0 0 7px}.missionbox ul{margin:8px 0 0 18px;padding:0}.missionsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.step{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px;font-size:12px}.step b{display:block;margin-bottom:3px}.step.done{border-color:var(--ok);background:#effaf5}.missionactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.challenge-status{margin-top:12px;background:#071b33;color:white;border-radius:12px;padding:12px}.challenge-status strong{color:var(--cyan)}.challenge-progress{height:9px;background:#dbe8ee;border-radius:99px;overflow:hidden;margin-top:8px}.challenge-progress i{display:block;height:100%;width:0;background:var(--cyan);transition:.25s}.scenario.selected{box-shadow:0 0 0 3px #22d3ee22}.scenario.locked{opacity:.65}.prohint{background:#f8fbfc;border-left:4px solid var(--cyan);padding:10px 12px;border-radius:8px;margin-top:10px;font-size:13px}@media(max-width:800px){.missiongrid{grid-template-columns:1fr}.missionsteps{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">NUTRIKU · DESCIFRANDO LA NUTRICIÓN</div>
+<h1>SUPERMERCADO VIRTUAL <span style="color:#22d3ee">ARRANCA</span></h1>
+<p class="sub">Entrena la habilidad de comprar con criterio. No buscamos la compra perfecta: buscamos que puedas explicar tus decisiones.</p>
+</div></header>
+
+<main class="wrap">
+<section class="panel challenge">
+<h2 style="margin-top:0">🎯 RETO DE HOY</h2>
+<p id="challengeHeaderText"><strong>Presupuesto: 50 €</strong> · Resuelve una compra para una semana realista. Elige productos que encajen con tu vida y después tendrás que defender tus decisiones.</p>
+<div class="topgrid">
+<div class="stat"><span>Presupuesto</span><b id="budget">50,00 €</b></div>
+<div class="stat"><span>Gastado</span><b id="spent">0,00 €</b></div>
+<div class="stat"><span>Productos</span><b id="count">0</b></div>
+</div>
+</section>
+
+
+<section class="panel">
+<div class="profnav">
+<button id="btnClient" class="dark" onclick="mode('client')">👤 Modo cliente</button>
+<button id="btnPro" class="ghost" onclick="mode('pro')">🧠 Modo profesional</button>
+</div>
+<div id="proPanel" class="hidden">
+<h2>🧠 Modo Profesional ARRANCA</h2>
+<p>Primero eliges una situación real. Después la clienta <b>hace la compra</b> dentro del supermercado. Tú observas cómo piensa, no solo qué compra.</p>
+<div class="controls">
+<input id="clientName" placeholder="Nombre / iniciales de la clienta">
+<select id="skillFocus">
+<option value="auto">Habilidad a evaluar automáticamente</option>
+<option>Hace una compra con criterio</option><option>Compara productos</option><option>Lee una etiqueta</option><option>Detecta reclamos de marketing</option><option>Tiene opciones para días sin tiempo</option><option>Organiza su semana</option><option>Resuelve imprevistos</option><option>Explica por qué toma sus decisiones</option>
+</select>
+</div>
+<h3>🎯 1. Elige la situación que quieres entrenar</h3>
+<div class="scenario-grid" id="scenarios"></div>
+<div id="selectedScenario" class="exercise">Selecciona un reto para ver la misión completa.</div>
+<div id="missionPanel" class="mission hidden"></div>
+</div>
+</section>
+<section class="panel">
+<div class="controls">
+<input id="search" placeholder="🔎 Buscar producto...">
+<select id="sort"><option value="default">Orden recomendado</option><option value="price">Precio menor</option><option value="protein">Proteína mayor</option><option value="kcal">Menos kcal</option></select>
+<button class="ghost" onclick="compare()">⚖️ Comparar mi selección</button><button class="ghost" onclick="resetAll()">Reiniciar actividad</button>
+</div>
+<div class="categories" id="cats"></div>
+</section>
+
+<div class="layout">
+<section>
+<div class="products" id="products"></div>
+
+<section class="panel exercise">
+<h3>🧠 Antes de mirar la solución</h3>
+<p>Elige un producto que hayas añadido y explica tu decisión.</p>
+<textarea id="reason" placeholder="He elegido este producto porque..."></textarea>
+<button class="primary" style="margin-top:8px" onclick="saveReason()">Guardar mi razonamiento</button>
+</section>
+
+<section class="panel">
+<h2>🔍 Entrenamiento de criterio</h2>
+<p>Selecciona una respuesta. Después pulsa “Ver feedback”.</p>
+<div id="quiz"></div>
+<button class="dark" onclick="checkQuiz()">Ver feedback</button>
+<div id="feedback" class="feedback"></div>
+</section>
+
+<section class="panel">
+<h2>📝 Reflexión final</h2>
+<label>¿Qué has mirado para decidir? ¿Qué has aprendido? ¿Qué harías diferente en una compra real?</label>
+<textarea id="reflection" placeholder="Escribe aquí..."></textarea>
+<button class="primary" style="margin-top:8px" onclick="saveReflection()">Guardar reflexión</button>
+</section>
+</section>
+
+<aside class="panel cart">
+<h2 style="margin-top:0">🛒 Mi compra</h2>
+<div id="cart"></div>
+<div class="total" id="cartTotal">0,00 €</div>
+<div id="budgetMsg" class="meta"></div>
+<button class="primary" style="width:100%;margin-top:8px" onclick="finish()">Finalizar compra</button>
+</aside>
+</div>
+</main>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="modalbox"><button class="close" onclick="closeModal()">×</button><div id="modalBody"></div></div></div>
+<section id="evaluationPanel" class="panel hidden">
+<h2>📊 Evaluación de autonomía</h2>
+<p>Valora lo que has observado. No evalúes si eligió “el producto correcto”, sino si <b>sabe tomar y justificar una decisión reutilizable</b>.</p>
+<table class="prof-table">
+<thead><tr><th>Indicador</th><th>Puntuación 1–5</th></tr></thead>
+<tbody id="evaluationRows"></tbody>
+</table>
+<div class="controls" style="margin-top:12px">
+<textarea id="proNotes" placeholder="Observaciones profesionales: qué ha hecho sola, dónde ha dudado, qué criterio necesita reforzar..."></textarea>
+</div>
+<button class="dark" onclick="calculateEvaluation()">Generar evaluación</button>
+<div id="evaluationResult" class="result hidden" style="margin-top:15px"></div>
+</section>
+<footer><b>NUTRIKU · MÉTODO ARRANCA</b><br>El objetivo no es que memorices qué comprar. Es que aprendas a decidir por ti misma.</footer>
+
+<script>
+const products=[
+{id:1,n:"Yogur natural",brand:"Hacendado",cat:"Lácteos",e:"🥛",p:1.69,unit:"125 g x 4",k:61,f:3.2,sat:2.1,c:4.0,sug:4.0,prot:3.8,salt:.10,ing:"Leche, fermentos lácticos.",claims:["Sin azúcar añadido"],note:"Producto sencillo. Los azúcares proceden de la leche."},
+{id:2,n:"Yogur natural alto en proteína",brand:"Hacendado",cat:"Lácteos",e:"🥣",p:2.39,unit:"160 g x 4",k:73,f:.2,sat:.1,c:5.0,sug:4.5,prot:10,salt:.12,ing:"Leche, proteínas lácteas, fermentos.",claims:["PROTEÍNAS"],note:"Más proteína, pero no significa automáticamente que sea mejor para todas las personas."},
+{id:3,n:"Yogur sabor fresa 0%",brand:"Hacendado",cat:"Lácteos",e:"🍓",p:1.99,unit:"125 g x 4",k:52,f:.2,sat:.1,c:6.8,sug:6.2,prot:4,salt:.12,ing:"Leche desnatada, fruta, edulcorantes, fermentos.",claims:["0% materia grasa"],note:"0% se refiere a la característica indicada; hay que mirar el resto de la información."},
+{id:4,n:"Copos de avena",brand:"Hacendado",cat:"Cereales",e:"🌾",p:1.35,unit:"500 g",k:367,f:6.5,sat:1.2,c:60,sug:1.0,prot:13,salt:.02,ing:"100% copos de avena.",claims:["Integral"],note:"Un ingrediente. Buena opción para combinar según el contexto."},
+{id:5,n:"Cereales chocolate",brand:"Hacendado",cat:"Cereales",e:"🥣",p:2.49,unit:"375 g",k:405,f:8,sat:4.5,c:76,sug:24,prot:7,salt:.60,ing:"Cereales, azúcar, cacao, aceite de girasol…",claims:["Con vitaminas"],note:"El reclamo frontal no sustituye la lectura de la tabla."},
+{id:6,n:"Pan integral 100%",brand:"Hacendado",cat:"Pan",e:"🍞",p:1.65,unit:"500 g",k:245,f:3.5,sat:.6,c:41,sug:3.0,prot:9,salt:1.1,ing:"Harina integral de trigo, agua, levadura, sal.",claims:["100% integral"],note:"Interesa comprobar ingredientes y composición, no solo el frontal."},
+{id:7,n:"Pan de molde estilo fitness",brand:"Hacendado",cat:"Pan",e:"🥪",p:2.79,unit:"450 g",k:255,f:4.2,sat:.7,c:39,sug:3.2,prot:10,salt:1.15,ing:"Harina de trigo, agua, proteínas, semillas, aceite…",claims:["FIT","PROTEICO"],note:"Fitness es un reclamo comercial. Hay que comparar con otros panes equivalentes."},
+{id:8,n:"Pechuga de pollo",brand:"Hacendado",cat:"Proteínas",e:"🍗",p:6.49,unit:"500 g",k:110,f:1.5,sat:.4,c:0, sug:0,prot:23,salt:.12,ing:"Pechuga de pollo.",claims:[],note:"Fuente de proteína. La decisión también depende del precio, cantidad y uso."},
+{id:9,n:"Huevos",brand:"Hacendado",cat:"Proteínas",e:"🥚",p:2.45,unit:"12 ud",k:143,f:9.5,sat:3.1,c:.7,sug:.4,prot:12.5,salt:.35,ing:"Huevo.",claims:[],note:"Alimento básico y versátil."},
+{id:10,n:"Atún al natural",brand:"Hacendado",cat:"Proteínas",e:"🐟",p:3.25,unit:"3 latas",k:116,f:.8,sat:.2,c:0,sug:0,prot:26,salt:.90,ing:"Atún, agua, sal.",claims:["Al natural"],note:"Compara también la sal y el peso escurrido."},
+{id:11,n:"Lentejas cocidas",brand:"Hacendado",cat:"Legumbres",e:"🫘",p:1.29,unit:"570 g",k:94,f:.4,sat:.1,c:12,sug:.5,prot:6.8,salt:.45,ing:"Lentejas, agua, sal.",claims:["Listas para consumir"],note:"Solución práctica: el alimento puede ser útil precisamente porque ahorra tiempo."},
+{id:12,n:"Garbanzos cocidos",brand:"Hacendado",cat:"Legumbres",e:"🫘",p:1.19,unit:"570 g",k:119,f:2.2,sat:.3,c:15,sug:.5,prot:6.2,salt:.50,ing:"Garbanzos, agua, sal.",claims:["Listos para consumir"],note:"Opción rápida para construir comidas."},
+{id:13,n:"Verduras congeladas",brand:"Hacendado",cat:"Verduras",e:"🥦",p:2.29,unit:"1 kg",k:45,f:.4,sat:.1,c:6,sug:3,prot:2.5,salt:.05,ing:"Brócoli, zanahoria, judía verde, guisante.",claims:["Sin conservantes"],note:"El formato congelado puede ser una herramienta de organización."},
+{id:14,n:"Ensalada preparada",brand:"Hacendado",cat:"Verduras",e:"🥗",p:2.49,unit:"300 g",k:28,f:.3,sat:.1,c:4,sug:2,prot:1.5,salt:.04,ing:"Lechuga, tomate, zanahoria, maíz.",claims:["Lista para consumir"],note:"Conveniencia también es criterio cuando facilita cumplir el sistema."},
+{id:15,n:"Plátanos",brand:"Hacendado",cat:"Fruta",e:"🍌",p:1.79,unit:"1 kg aprox.",k:89,f:.3,sat:.1,c:23,sug:12,prot:1.1,salt:0,ing:"Plátano.",claims:[],note:"Fruta fresca. El valor por 100 g no debe interpretarse aislado del alimento completo."},
+{id:16,n:"Manzanas",brand:"Hacendado",cat:"Fruta",e:"🍎",p:2.19,unit:"1 kg",k:52,f:.2,sat:0,c:14,sug:10,prot:.3,salt:0,ing:"Manzana.",claims:[],note:"Fruta fresca."},
+{id:17,n:"Aceite de oliva virgen extra",brand:"Hacendado",cat:"Despensa",e:"🫒",p:6.49,unit:"500 ml",k:824,f:91,sat:14,c:0,sug:0,prot:0,salt:0,ing:"Aceite de oliva virgen extra.",claims:["Virgen extra"],note:"Producto muy energético; la cantidad y el uso importan."},
+{id:18,n:"Tomate triturado",brand:"Hacendado",cat:"Despensa",e:"🍅",p:1.25,unit:"400 g",k:29,f:.2,sat:0,c:4.8,sug:3.5,prot:1.4,salt:.20,ing:"Tomate, sal, corrector de acidez.",claims:["100% natural"],note:"Natural es un mensaje; mira ingredientes y tabla para valorar el producto."},
+{id:19,n:"Salsa barbacoa",brand:"Hacendado",cat:"Salsas",e:"🍖",p:1.89,unit:"300 ml",k:120,f:.5,sat:.1,c:27,sug:22,prot:1,salt:1.4,ing:"Tomate, azúcar, vinagre, especias, sal…",claims:["Sin colorantes"],note:"El uso previsto importa: una salsa puede encajar como acompañamiento."},
+{id:20,n:"Mayonesa",brand:"Hacendado",cat:"Salsas",e:"🥫",p:2.35,unit:"450 ml",k:635,f:70,sat:10,c:2,sug:1.5,prot:1,salt:1.0,ing:"Aceite de girasol, huevo, agua, vinagre, sal.",claims:[],note:"Más grasa y energía por 100 g; la cantidad utilizada es relevante."},
+{id:21,n:"Patatas",brand:"Hacendado",cat:"Despensa",e:"🥔",p:2.25,unit:"2 kg",k:77,f:.1,sat:0,c:17,sug:.8,prot:2,salt:0,ing:"Patata.",claims:[],note:"Alimento básico y versátil."},
+{id:22,n:"Arroz",brand:"Hacendado",cat:"Despensa",e:"🍚",p:1.65,unit:"1 kg",k:360,f:.8,sat:.2,c:79,sug:0,prot:7,salt:0,ing:"Arroz.",claims:[],note:"La elección depende del uso, preferencias y contexto."},
+{id:23,n:"Pizza congelada",brand:"Hacendado",cat:"Rápido",e:"🍕",p:3.49,unit:"400 g",k:230,f:9,sat:4,c:27,sug:3.5,prot:10,salt:1.4,ing:"Harina, tomate, queso, jamón, aceite…",claims:["Lista en minutos"],note:"Puede ser una solución puntual. Evalúa cómo encaja en la situación real."},
+{id:24,n:"Hummus",brand:"Hacendado",cat:"Rápido",e:"🫓",p:2.15,unit:"200 g",k:240,f:19,sat:2.8,c:9,sug:.7,prot:6,salt:.95,ing:"Garbanzos, aceite, tahini, limón, sal.",claims:["Fuente de fibra"],note:"Solución práctica para acompañar comidas o montar opciones rápidas."},
+{id:25,n:"Chocolate negro",brand:"Hacendado",cat:"Snacks",e:"🍫",p:2.49,unit:"100 g",k:560,f:43,sat:27,c:35,sug:18,prot:8,salt:.02,ing:"Pasta de cacao, azúcar, manteca de cacao, cacao.",claims:["85% cacao"],note:"El porcentaje de cacao no convierte el producto en una opción sin energía."},
+{id:26,n:"Patatas fritas",brand:"Hacendado",cat:"Snacks",e:"🥔",p:1.75,unit:"150 g",k:535,f:34,sat:3.2,c:50,sug:.5,prot:6,salt:1.2,ing:"Patata, aceite de girasol, sal.",claims:[],note:"Producto para valorar según contexto, cantidad y preferencias."},
+{id:27,n:"Leche semidesnatada",brand:"Hacendado",cat:"Lácteos",e:"🥛",p:1.15,unit:"1 L",k:47,f:1.6,sat:1.1,c:4.7,sug:4.7,prot:3.2,salt:.10,ing:"Leche semidesnatada.",claims:[],note:"Los azúcares son principalmente lactosa propia de la leche."},
+{id:28,n:"Bebida de avena",brand:"Hacendado",cat:"Bebidas",e:"🥤",p:1.45,unit:"1 L",k:45,f:1.5,sat:.3,c:6.6,sug:3.8,prot:1.0,salt:.10,ing:"Agua, avena, aceite de girasol, sal.",claims:["Sin lactosa"],note:"No es equivalente nutricionalmente a la leche en todos sus componentes."},
+{id:29,n:"Refresco cola zero",brand:"Hacendado",cat:"Bebidas",e:"🥤",p:.55,unit:"2 L",k:.3,f:0,sat:0,c:0,sug:0,prot:0,salt:.02,ing:"Agua carbonatada, edulcorantes, aromas, acidulante.",claims:["Zero azúcar"],note:"Zero azúcar describe una característica; no resume toda la valoración del producto."},
+{id:30,n:"Zumo de naranja",brand:"Hacendado",cat:"Bebidas",e:"🍊",p:1.65,unit:"1 L",k:42,f:.1,sat:0,c:9,sug:8.5,prot:.6,salt:0,ing:"Zumo de naranja.",claims:["100% fruta"],note:"El formato y el contexto de consumo importan."},
+{id:31,n:"Galletas de avena",brand:"Hacendado",cat:"Snacks",e:"🍪",p:1.89,unit:"400 g",k:470,f:20,sat:4,c:65,sug:21,prot:7,salt:.65,ing:"Harina de trigo, avena, azúcar, aceite de girasol…",claims:["Con avena"],note:"Que contenga avena no basta para definir el producto."},
+{id:32,n:"Queso fresco batido",brand:"Hacendado",cat:"Lácteos",e:"🥣",p:1.85,unit:"500 g",k:65,f:.2,sat:.1,c:4,sug:4,prot:9,salt:.10,ing:"Leche desnatada, fermentos.",claims:["Alto en proteína"],note:"Buena oportunidad para comparar con yogures según el uso que quieras darle."}
+];
+
+let cat="Todos",cart={},selectedProduct=null;
+let selectedScenario=null;
+let challengeStarted=false;
+let activeBudget=50;
+const cats=["Todos",...new Set(products.map(x=>x.cat))];
+
+function euro(x){return x.toLocaleString("es-ES",{style:"currency",currency:"EUR"})}
+function n(x){return Number(x).toLocaleString("es-ES",{maximumFractionDigits:1})}
+function renderCats(){document.getElementById("cats").innerHTML=cats.map(x=>`<button class="cat ${x==cat?'active':''}" onclick="setCat('${x}')">${x}</button>`).join("")}
+function renderProducts(){
+ const q=document.getElementById("search").value.toLowerCase(),s=document.getElementById("sort").value;
+ let arr=products.filter(x=>(cat=="Todos"||x.cat==cat)&&(`${x.n} ${x.brand} ${x.info||""} ${x.claims.join(" ")}`).toLowerCase().includes(q));
+ if(s=="price")arr.sort((a,b)=>a.p-b.p); if(s=="protein")arr.sort((a,b)=>b.prot-a.prot); if(s=="kcal")arr.sort((a,b)=>a.k-b.k);
+ document.getElementById("products").innerHTML=arr.map(x=>`
+ <article class="product">
+  <div class="emoji">${x.e}</div>
+  <div><h3 style="margin:0 0 3px">${x.n}</h3><div class="meta">${x.brand} · ${x.unit}</div>
+  ${x.claims.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+  <div class="meta"><b>${n(x.k)} kcal</b> · P ${n(x.prot)} g · HC ${n(x.c)} g · Grasas ${n(x.f)} g · Sal ${n(x.salt)} g<br><small>por 100 g/ml</small></div>
+  <div class="price">${euro(x.p)}</div>
+  <div class="controls"><button class="primary" onclick="add(${x.id})">Añadir</button><button class="ghost" onclick="details(${x.id})">Ver etiqueta</button></div>
+ </article>`).join("")||"<p>No hay productos que coincidan.</p>";
+}
+function add(id){cart[id]=(cart[id]||0)+1;renderCart();save();updateChallengeProgress()}
+function remove(id){if(cart[id])cart[id]--;if(cart[id]<=0)delete cart[id];renderCart();save();updateChallengeProgress()}
+function renderCart(){
+ let ids=Object.keys(cart),total=ids.reduce((a,id)=>a+products.find(x=>x.id==id).p*cart[id],0),count=ids.reduce((a,id)=>a+cart[id],0);
+ document.getElementById("cart").innerHTML=ids.length?ids.map(id=>{let x=products.find(y=>y.id==id);return `<div class="cartitem"><b>${x.e} ${x.n}</b><div class="meta">${euro(x.p)} · ${cart[id]} ud.</div><div class="qty"><button class="ghost" onclick="remove(${id})">−</button><span>${cart[id]}</span><button class="ghost" onclick="add(${id})">+</button></div></div>`}).join(""):"<p class='meta'>Aún no has añadido productos.</p>";
+ document.getElementById("cartTotal").textContent=euro(total);document.getElementById("spent").textContent=euro(total);document.getElementById("count").textContent=count;
+ document.getElementById("budgetMsg").innerHTML=total>activeBudget?"⚠️ <b>Presupuesto superado.</b> Revisa qué decisiones quieres mantener y cuáles cambiarías.":`Te quedan <b>${euro(activeBudget-total)}</b> del presupuesto.`;
+}
+function setCat(x){cat=x;renderCats();renderProducts()}
+document.getElementById("search").oninput=renderProducts;document.getElementById("sort").onchange=renderProducts;
+
+function details(id){
+ const x=products.find(y=>y.id==id);selectedProduct=x;
+ document.getElementById("modal").classList.add("show");
+ document.getElementById("modalBody").innerHTML=`
+ <div class="labelhead"><span>${x.e} ${x.n}</span><small>${x.brand} · ${x.unit}</small></div>
+ <div class="nutri"><b>Información nutricional</b><small>Valores simulados para entrenamiento · por 100 g/ml</small>
+ ${[["Energía",x.k+" kcal"],["Grasas",x.f+" g"],["de las cuales saturadas",x.sat+" g"],["Hidratos de carbono",x.c+" g"],["de los cuales azúcares",x.sug+" g"],["Proteínas",x.prot+" g"],["Sal",x.salt+" g"]].map(r=>`<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")}</div>
+ <h3>Ingredientes</h3><p>${x.ing}</p>
+ <h3>Lo que comunica el envase</h3><p>${x.claims.length?x.claims.join(" · "):"Sin reclamo destacado."}</p>
+ <div class="exercise"><b>Pregunta ARRANCA:</b><br>¿Qué dato de esta etiqueta te parece realmente relevante para decidir? ¿Y qué dato no debería hacerte decidir por sí solo?</div>`;
+}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function compare(){
+ let ids=Object.keys(cart).map(Number);
+ if(ids.length<2){alert("Añade al menos 2 productos para comparar.");return}
+ let xs=ids.slice(0,4).map(id=>products.find(x=>x.id==id));
+ document.getElementById("modal").classList.add("show");
+ document.getElementById("modalBody").innerHTML=`<h2>⚖️ Comparador ARRANCA</h2><p>Comparar tiene sentido cuando los productos cumplen una función parecida.</p>
+ <div class="compare">${xs.map(x=>`<div class="comparecard"><h3>${x.e} ${x.n}</h3><div class="meta">${x.unit} · ${euro(x.p)}</div><hr><div><b>${n(x.k)}</b> kcal</div><div>Grasas: <b>${n(x.f)} g</b></div><div>Saturadas: <b>${n(x.sat)} g</b></div><div>HC: <b>${n(x.c)} g</b></div><div>Azúcares: <b>${n(x.sug)} g</b></div><div>Proteínas: <b>${n(x.prot)} g</b></div><div>Sal: <b>${n(x.salt)} g</b></div><hr><small>${x.claims.join(" · ")}</small></div>`).join("")}</div>
+ <div class="exercise"><b>Reto:</b> ¿Cuál elegirías para una situación concreta? No busques “el ganador universal”. Explica qué dato hace que tu elección tenga sentido.</div>`;
+}
+function saveReason(){localStorage.setItem("arranca_reason",document.getElementById("reason").value);alert("Razonamiento guardado en este dispositivo.")}
+function saveReflection(){localStorage.setItem("arranca_reflection",document.getElementById("reflection").value);alert("Reflexión guardada en este dispositivo.")}
+function save(){localStorage.setItem("arranca_cart",JSON.stringify(cart))}
+function load(){try{cart=JSON.parse(localStorage.getItem("arranca_cart")||"{}")}catch{}document.getElementById("reason").value=localStorage.getItem("arranca_reason")||"";document.getElementById("reflection").value=localStorage.getItem("arranca_reflection")||""}
+function resetAll(){if(confirm("¿Reiniciar toda la actividad?")){cart={};["arranca_cart","arranca_reason","arranca_reflection"].forEach(x=>localStorage.removeItem(x));document.getElementById("reason").value="";document.getElementById("reflection").value="";renderCart()}}
+function finish(){
+ let total=Object.keys(cart).reduce((a,id)=>a+products.find(x=>x.id==id).p*cart[id],0);
+ alert(`COMPRA FINALIZADA\n\nTotal: ${euro(total)}\nPresupuesto: ${euro(activeBudget)}\n\nDEBRIEF PROFESIONAL\n1. ¿Qué has elegido y por qué?\n2. ¿Qué información has utilizado?\n3. ¿Qué producto has dudado más en elegir?\n4. ¿Qué cambiarías si tu presupuesto fuese menor?\n5. ¿Qué decisión podrías tomar ahora sin preguntarme?`);
+}
+renderCats();renderProducts();load();renderCart();updateHeader();updateStartButton();
+
+const scenarios=[
+{id:1,budget:50,title:"🛒 Compra inteligente",difficulty:"NIVEL 1",text:"Construye una compra básica para una semana que realmente encaje con tu vida.",skills:["Hace una compra con criterio","Compara productos"],target:8,goal:"8 productos",why:"Queremos observar si priorizas necesidades, variedad, precio, practicidad y uso real en lugar de buscar una compra perfecta.",steps:["Elige productos que usarías de verdad.","Compara al menos 2 productos equivalentes.","Revisa una etiqueta antes de decidir.","Al terminar, explica 3 decisiones."]},
+{id:2,budget:15,title:"🥣 Desayuno con criterio",difficulty:"NIVEL 1",text:"Elige 3 productos para montar desayunos prácticos y que te apetezca repetir.",skills:["Hace una compra con criterio","Compara productos","Lee una etiqueta"],target:3,goal:"3 productos",why:"No buscamos el desayuno nutricionalmente perfecto: buscamos que puedas construir una opción práctica y justificarla.",steps:["Elige 3 productos.","Abre al menos 1 etiqueta.","Piensa en sabor, uso y saciedad según tu contexto.","Explica por qué los has elegido."]},
+{id:3,budget:10,title:"🔍 Batalla de yogures",difficulty:"NIVEL 2",text:"Compara los yogures disponibles y decide cuál comprarías para una situación concreta.",skills:["Compara productos","Lee una etiqueta","Detecta reclamos de marketing"],target:3,goal:"3 yogures comparados",why:"El objetivo es que aprendas a comparar productos equivalentes y a explicar qué información te ha hecho decidir.",steps:["Añade 3 yogures.","Abre sus etiquetas.","Compara datos relevantes por 100 g.","Elige uno y defiende la decisión."]},
+{id:4,budget:10,title:"🏷️ No te engañe el envase",difficulty:"NIVEL 2",text:"Elige un producto cuyo frontal te llame la atención y comprueba si el reclamo cambia tu decisión.",skills:["Lee una etiqueta","Detecta reclamos de marketing"],target:1,goal:"1 producto analizado",why:"Entrenamos la capacidad de separar lo que comunica el envase de la información que realmente necesitas para decidir.",steps:["Elige 1 producto con un reclamo.","Abre la etiqueta.","Identifica qué es marketing y qué es información útil.","Decide si mantienes o cambias tu elección."]},
+{id:5,budget:35,title:"⏱️ Semana sin tiempo",difficulty:"NIVEL 3",text:"Construye una compra para una semana con trabajo, cansancio y poco tiempo para cocinar.",skills:["Tiene opciones para días sin tiempo","Organiza su semana","Hace una compra con criterio"],target:7,goal:"7 productos",why:"Una alimentación sostenible necesita soluciones para los días malos. Observamos si sabes diseñar un Plan B.",steps:["Incluye alimentos básicos.","Incluye al menos 2 soluciones rápidas.","Piensa en qué usarías cuando no puedas cocinar.","Explica tu Plan B."]},
+{id:6,budget:25,title:"💶 Presupuesto limitado",difficulty:"NIVEL 3",text:"Tienes 25 €. No puedes comprar todo. Prioriza lo que más utilidad tendrá para ti.",skills:["Hace una compra con criterio","Compara productos","Explica por qué toma sus decisiones"],target:6,goal:"6 productos sin superar 25 €",why:"Entrenamos priorización. No se trata de comprar 'lo más saludable', sino de decidir qué necesitas y qué puedes dejar fuera.",steps:["Empieza por lo prioritario.","Compara alternativas cuando sea útil.","Controla el presupuesto.","Explica qué has sacrificado y por qué."]},
+{id:7,budget:20,title:"🚨 Nevera vacía",difficulty:"NIVEL 4",text:"Llegas tarde a casa y no tienes comida preparada. Compra recursos para resolver futuros imprevistos.",skills:["Tiene opciones para días sin tiempo","Resuelve imprevistos"],target:5,goal:"5 recursos de emergencia",why:"Buscamos que tengas un sistema de rescate para los días en los que tu Plan A desaparece.",steps:["Elige 5 recursos.","Piensa en cuánto tardarías en usarlos.","Combina productos para crear al menos 2 comidas.","Explica tu estrategia de emergencia."]},
+{id:8,budget:50,title:"🧠 Tú decides",difficulty:"NIVEL 5",text:"Haz una compra libre. Nadie te dice qué comprar: al final tendrás que defender tus decisiones.",skills:["Explica por qué toma sus decisiones","Continúa sin depender de un menú","Hace una compra con criterio"],target:8,goal:"8 productos",why:"Es la prueba de transferencia: queremos comprobar si puedes aplicar el criterio sin que nadie te marque el camino.",steps:["Compra libremente.","Usa etiquetas y comparaciones cuando lo necesites.","No pidas validación: decide primero.","Defiende 3 decisiones y una duda que hayas resuelto sola."]}
+];
+
+function mode(x){
+ document.getElementById("proPanel").classList.toggle("hidden",x!=="pro");
+ document.getElementById("btnPro").classList.toggle("active",x==="pro");
+ document.getElementById("btnClient").classList.toggle("active",x==="client");
+ if(x==="pro") renderScenarios();
+}
+function renderScenarios(){
+ const box=document.getElementById("scenarios"); if(!box)return;
+ box.innerHTML=scenarios.map(s=>`<article class="scenario ${selectedScenario&&selectedScenario.id===s.id?'selected':''}" data-scenario-id="${s.id}" onclick="selectScenario(${s.id})">
+ <div class="difficulty">${s.difficulty}</div><h3>${s.title}</h3><p class="meta">${s.text}</p><div>${s.skills.map(k=>`<span class="pill">${k}</span>`).join(' ')}</div></article>`).join('');
+}
+function updateHeader(){
+ document.getElementById("budget").textContent=euro(activeBudget);
+ const h=document.getElementById("challengeHeaderText");
+ if(selectedScenario) h.innerHTML=`<strong>${selectedScenario.title} · ${euro(activeBudget)}</strong> · ${selectedScenario.text}`;
+ else h.innerHTML=`<strong>Presupuesto: ${euro(activeBudget)}</strong> · Selecciona un reto en modo profesional para comenzar.`;
+}
+function selectScenario(id){
+ const chosen=scenarios.find(s=>s.id===Number(id)); if(!chosen)return;
+ selectedScenario=chosen; challengeStarted=false; activeBudget=chosen.budget; cart={}; save(); renderCart(); updateHeader(); renderScenarios();
+ document.getElementById("selectedScenario").innerHTML=`<b>Reto seleccionado: ${chosen.title}</b><br>${chosen.text}<br><br><b>Objetivo:</b> ${chosen.goal}<br><b>Habilidades:</b> ${chosen.skills.join(' · ')}<div class="prohint">💡 <b>Antes de iniciar:</b> no le digas qué productos debe elegir. Tu trabajo es observar cómo razona y pedirle que explique sus decisiones.</div>`;
+ const panel=document.getElementById("missionPanel"); panel.classList.add("hidden"); panel.innerHTML="";
+ updateStartButton();
+}
+function updateStartButton(){
+ let b=document.getElementById("startChallengeBtn");
+ if(!b)return;
+ b.disabled=!selectedScenario || challengeStarted;
+ b.textContent=challengeStarted?"🚀 Reto en marcha":"▶️ Iniciar reto";
+}
+function startChallenge(){
+ if(!selectedScenario){alert("Primero selecciona uno de los retos.");return;}
+ challengeStarted=true;
+ const s=selectedScenario;
+ const panel=document.getElementById("missionPanel");
+ panel.classList.remove("hidden");
+ panel.innerHTML=`<div class="missionhead"><div><p class="missiontitle">🚀 ${s.title}</p><div class="meta">${s.text}</div></div><span class="missiontag">${s.difficulty}</span></div>
+ <div class="missiongrid"><div class="missionbox"><h4>🎯 Tu misión</h4><p>${s.why}</p><p><b>Objetivo práctico:</b> ${s.goal}</p></div><div class="missionbox"><h4>🧑‍⚕️ Para la profesional</h4><p>Deja que la clienta explore. Pregunta <b>“¿por qué?”</b> antes de corregir. Registra decisiones y dudas que haya resuelto por sí misma.</p></div></div>
+ <div class="missionsteps">${s.steps.map((x,i)=>`<div class="step" id="step${i}"><b>${i+1}. ${x}</b><span>En progreso</span></div>`).join('')}</div>
+ <div class="challenge-status"><div><strong>Progreso:</strong> <span id="challengeProgressText">0 / ${s.target}</span> · ${s.goal}</div><div class="challenge-progress"><i id="challengeProgressBar"></i></div><div id="challengeProgressHint" style="font-size:12px;margin-top:7px;opacity:.9">Añade productos al carrito para completar la parte práctica.</div></div>
+ <div class="missionactions"><button class="dark" type="button" onclick="completeChallenge()">✅ He terminado el reto</button><button class="ghost" type="button" onclick="showChallengeHelp()">💬 Ver preguntas para la clienta</button></div>`;
+ updateStartButton();
+ setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),50);
+ updateChallengeProgress();
+}
+function updateChallengeProgress(){
+ if(!selectedScenario||!challengeStarted)return;
+ const s=selectedScenario, count=Object.values(cart).reduce((a,b)=>a+b,0);
+ const done=Math.min(count,s.target), pct=Math.min(100,Math.round(done/s.target*100));
+ const t=document.getElementById("challengeProgressText"), bar=document.getElementById("challengeProgressBar"), hint=document.getElementById("challengeProgressHint");
+ if(t)t.textContent=`${done} / ${s.target}`;
+ if(bar)bar.style.width=pct+"%";
+ if(hint)hint.textContent=count>=s.target?"✅ Objetivo de productos alcanzado. Ahora toca explicar las decisiones.":`Añade ${s.target-count} producto${s.target-count===1?'':'s'} más para completar el objetivo práctico.`;
+ for(let i=0;i<s.steps.length;i++){const el=document.getElementById("step"+i);if(el)el.classList.toggle("done",pct>=((i+1)/s.steps.length)*100);}
+}
+function showChallengeHelp(){
+ if(!selectedScenario)return;
+ const questions=["¿Qué necesitabas resolver con esta compra?","¿Por qué has elegido este producto y no otro?","¿Qué dato has mirado para comparar?","¿Qué reclamo del envase te ha llamado la atención?","¿Qué harías si este producto no estuviera disponible?","Si tuvieras que reducir el gasto, ¿qué cambiarías y por qué?","¿Qué decisión has tomado sin necesitar que te la validara?"];
+ document.getElementById("modal").classList.add("show"); document.getElementById("modalBody").innerHTML=`<h2>💬 Preguntas ARRANCA</h2><p>Utiliza preguntas, no respuestas. Deja que la clienta razone antes de intervenir.</p><ol>${questions.map(q=>`<li style="margin:9px 0">${q}</li>`).join('')}</ol><div class="exercise"><b>Regla:</b> si la clienta pregunta “¿puedo comprar esto?”, responde primero: <b>“¿Tú qué valorarías para decidirlo?”</b></div>`;
+}
+function completeChallenge(){
+ if(!selectedScenario)return;
+ const s=selectedScenario, count=Object.values(cart).reduce((a,b)=>a+b,0);
+ if(count<s.target){ if(!confirm(`Aún llevas ${count} de ${s.target} productos. ¿Quieres terminar igualmente y evaluar lo observado?`))return; }
+ document.getElementById("evaluationPanel").classList.remove("hidden");
+ document.getElementById("evaluationPanel").scrollIntoView({behavior:'smooth',block:'start'});
+ renderEvaluationRows();
+}
+function renderEvaluationRows(){
+ const indicators=["Toma decisiones sin pedir validación constante","Compara productos equivalentes","Utiliza información de la etiqueta","Distingue marketing de información útil","Adapta la compra a su contexto real","Justifica sus decisiones","Propone alternativas cuando cambia el contexto","Puede aplicar el criterio a un producto nuevo"];
+ document.getElementById("evaluationRows").innerHTML=indicators.map((x,i)=>`<tr><td>${x}</td><td><select id="score${i}"><option value="">—</option>${[1,2,3,4,5].map(v=>`<option value="${v}">${v}</option>`).join('')}</select></td></tr>`).join('');
+}
+
+function calculateEvaluation(){
+ let vals=[];
+ for(let i=0;i<8;i++){let el=document.getElementById("score"+i);let v=el?Number(el.value):0;if(v)vals.push(v)}
+ if(vals.length<8){alert("Completa las 8 puntuaciones para generar la evaluación.");return}
+ let avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+ let level=avg<2?"Dependencia":avg<3?"En transición":avg<4?"Autonomía en desarrollo":"Autonomía consolidada";
+ let client=document.getElementById("clientName").value||"Cliente/a";
+ let focus=document.getElementById("skillFocus").value;
+ if(focus==="auto" && selectedScenario)focus=selectedScenario.skills[0];
+ let note=document.getElementById("proNotes").value;
+ let total=Object.keys(cart).reduce((a,id)=>a+products.find(x=>x.id==id).p*cart[id],0);
+ let result=document.getElementById("evaluationResult"); result.classList.remove("hidden");
+ result.innerHTML=`<h2>${level}</h2><div class="scoregrid"><div class="scorecard"><span>Media</span><b>${avg.toFixed(1)}/5</b></div><div class="scorecard"><span>Cliente/a</span><b style="font-size:18px">${client}</b></div><div class="scorecard"><span>Reto</span><b style="font-size:18px">${selectedScenario?selectedScenario.title:"—"}</b></div><div class="scorecard"><span>Compra</span><b style="font-size:18px">${euro(total)}</b></div></div><h3>Lectura profesional</h3><p>${avg>=4?"Ha demostrado capacidad para tomar decisiones y transferir el criterio a situaciones nuevas.":avg>=3?"Hay criterio, pero todavía aparecen dudas o necesidad de validación. Conviene practicar situaciones nuevas y reducir progresivamente las pistas.":"La prioridad es construir criterio básico y práctica guiada. Evita dar respuestas cerradas y repite decisiones sencillas en distintos contextos."}</p><p><b>Habilidad principal:</b> ${focus}</p><p><b>Observaciones:</b> ${note||"Sin observaciones añadidas."}</p><p><b>Próximo paso ARRANCA:</b> ${avg>=4?"reto nuevo con menos pistas":"repetir la habilidad en un escenario cotidiano diferente"}</p>`;
+}
+</script>
+</body></html>
