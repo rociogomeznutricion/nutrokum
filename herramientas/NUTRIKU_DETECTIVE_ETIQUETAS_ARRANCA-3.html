@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NUTRIKU · Detective de Etiquetas</title>
+<style>
+:root{--navy:#071b3a;--blue:#08b9d6;--cyan:#19d7e8;--bg:#f3f7fb;--line:#dbe5ef;--muted:#64748b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--navy)}
+header{background:linear-gradient(135deg,var(--navy),#0b315f);color:#fff;padding:26px 20px}.wrap{max-width:1180px;margin:auto}.brand{color:var(--cyan);font-weight:900;letter-spacing:2px;font-size:14px}header h1{margin:7px 0 4px;font-size:34px}header p{margin:0;color:#d9e7f4}.pill{display:inline-block;margin-top:13px;padding:7px 11px;border-radius:99px;background:rgba(255,255,255,.1);font-size:11px;font-weight:800}
+main{padding:22px 20px 50px}.toolbar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;display:flex;gap:9px;flex-wrap:wrap;box-shadow:0 10px 30px rgba(7,27,58,.06)}select,input{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--navy)}button{border:0;border-radius:10px;padding:10px 14px;font-weight:850;cursor:pointer}.primary{background:var(--navy);color:#fff}.accent{background:var(--cyan);color:var(--navy)}.soft{background:#edf4f8;color:var(--navy)}
+.info{margin:16px 0;background:#e9f9fc;border-left:5px solid var(--cyan);padding:13px 15px;border-radius:12px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:15px;margin-top:18px}.prod{background:#fff;border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:0 7px 22px rgba(7,27,58,.05)}.prod:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(7,27,58,.1)}.cat{font-size:10px;color:var(--muted);font-weight:900;text-transform:uppercase}.prod h3{margin:6px 0;font-size:18px}.claim{display:inline-block;padding:5px 8px;background:#eefbfc;border-radius:8px;font-size:11px;font-weight:800;color:#08788a}.nut{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:13px}.nut div{background:#f6f8fa;border-radius:8px;padding:7px;text-align:center}.nut b{display:block;font-size:13px}.nut span{font-size:9px;color:var(--muted)}.tag{font-size:11px;color:var(--muted);margin-top:10px}
+#modal{display:none;position:fixed;inset:0;background:rgba(2,12,29,.65);z-index:30;padding:16px;overflow:auto}.box{max-width:900px;margin:3vh auto;background:#fff;border-radius:22px;overflow:hidden}.mh{background:linear-gradient(135deg,var(--navy),#0b315f);color:#fff;padding:22px}.mh small{color:var(--cyan);font-weight:900}.mh h2{margin:6px 0;font-size:28px}.body{padding:20px}.label{border:2px solid #111;padding:13px;background:#fff;color:#111;max-width:540px;margin:auto}.label h3{margin:0;font-size:20px;border-bottom:7px solid #111;padding-bottom:5px}.row{display:flex;justify-content:space-between;border-bottom:1px solid #999;padding:5px 0;font-size:13px}.row strong{font-weight:900}.ing{font-size:12px;line-height:1.45;margin-top:10px}.game{margin-top:18px;background:#f8fafc;border:1px solid var(--line);border-radius:15px;padding:16px}.game h4{margin:0 0 10px}.answers{display:grid;gap:8px}.answers button{text-align:left;background:#fff;border:1px solid var(--line)}.feedback{margin-top:12px;padding:12px;border-radius:10px;display:none}.success{background:#eaf8f0;color:#166534}.error{background:#fff0ee;color:#9f1d16}.notes{width:100%;min-height:85px;margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px;flex-wrap:wrap}.compare{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px}.selected{display:flex;gap:7px;flex-wrap:wrap}.chip{padding:7px 10px;border-radius:99px;background:#eef9fb;font-size:12px;font-weight:800}
+@media(max-width:650px){header h1{font-size:27px}.toolbar>*{width:100%}.nut{grid-template-columns:repeat(2,1fr)}}
+
+.compare-wrap{margin-top:18px;overflow-x:auto}.compare-table{width:100%;border-collapse:collapse;min-width:650px;background:#fff;border-radius:14px;overflow:hidden}.compare-table th,.compare-table td{padding:11px 10px;border-bottom:1px solid #e6edf3;text-align:left;vertical-align:top}.compare-table th{background:#071b35;color:#fff}.compare-table tr.highlight td{background:#e8fbff;font-weight:700}.compare-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.compare-controls select{padding:10px 12px;border-radius:10px;border:1px solid #ccd8e2}.challenge-meta{font-size:13px;color:#55708b;margin:8px 0 14px}.secondary{background:#eef5fa!important;color:#12304d!important}.comparison-note{padding:14px;border-radius:12px;background:#f3f8fb;margin-top:14px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="brand">NUTRIKU · DESCIFRANDO LA NUTRICIÓN</div><h1>🔍 Detective de Etiquetas</h1><p>Juego profesional para entrenar lectura crítica, comparación y detección de marketing.</p><span class="pill">MÉTODO ARRANCA · MODO PROFESIONAL</span></div></header>
+<main><div class="wrap">
+<div class="toolbar">
+<select id="cat" onchange="render()"><option>Todas las categorías</option></select>
+<select id="mode" onchange="render()"><option value="all">Toda la biblioteca</option><option value="claim">Con reclamo de marketing</option><option value="protein">Alta proteína</option><option value="sugar">Más azúcar</option><option value="salt">Más sal</option></select>
+<input id="q" oninput="render()" placeholder="Buscar producto...">
+<button class="accent" onclick="randomProduct()">🎲 Producto al azar</button>
+<button class="primary" onclick="startGame()">🎯 Reto aleatorio</button>
+</div>
+<div class="info"><b>Regla ARRANCA:</b> primero pregunta “¿qué mirarías y por qué?”. La información nutricional obligatoria permite comparar, en general, mediante valores por 100 g o 100 ml. Las declaraciones nutricionales son voluntarias y tienen condiciones de uso. citeturn0search0turn0search1</div>
+<div id="grid" class="grid"></div>
+<div class="compare"><h3>⚖️ COMPARADOR ARRANCA</h3><p style="font-size:13px;color:#64748b"><b>PASO 1:</b> añade 2 o 3 productos. <b>PASO 2:</b> aparecerán aquí. <b>PASO 3:</b> abre la comparación.</p><div id="selected" class="selected"></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="primary" onclick="compare()">⚖️ ABRIR COMPARACIÓN</button><button class="soft" onclick="clearSelection()">✕ Limpiar</button></div></div>
+</div></main>
+
+<div id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="box">
+<div class="mh"><small id="mcat"></small><h2 id="mtitle"></h2><span id="mclaim"></span><div id="mMode" style="margin-top:10px;font-size:12px;font-weight:900"></div></div>
+<div class="body">
+<div class="label"><h3>INFORMACIÓN NUTRICIONAL</h3>
+<div class="row"><span>Valor energético</span><strong id="mkcal"></strong></div><div class="row"><span>Grasas</span><strong id="mfat"></strong></div><div class="row"><span>de las cuales saturadas</span><strong id="msat"></strong></div><div class="row"><span>Hidratos de carbono</span><strong id="mcarb"></strong></div><div class="row"><span>de los cuales azúcares</span><strong id="msugar"></strong></div><div class="row"><span>Proteínas</span><strong id="mprotein"></strong></div><div class="row"><span>Sal</span><strong id="msalt"></strong></div>
+<div class="ing"><b>Ingredientes:</b> <span id="ming"></span></div></div>
+<div class="game"><h4>🕵️ Reto Detective</h4><p id="mission" style="font-size:13px"></p><div class="answers" id="answers"></div><div id="feedback" class="feedback"></div></div>
+<textarea id="notes" class="notes" placeholder="Notas profesionales: ¿qué miró primero?, ¿qué criterio utilizó?, ¿detectó el reclamo?, ¿necesitó ayuda?"></textarea>
+<div class="actions"><button class="soft" onclick="closeModal()">Cerrar</button><button class="accent" onclick="markDone()">✅ Registrar entrenamiento</button></div>
+</div></div></div>
+
+<script>
+const products = [{"name": "Yogur natural", "cat": "Lácteos", "type": "Natural", "kcal": 63, "fat": 3.3, "sat": 1.9, "carb": 4.2, "sugar": 4.2, "protein": 3.8, "salt": 0.1, "ingredients": ["leche", "fermentos lácticos"], "claim": "Sin azúcares añadidos"}, {"name": "Yogur sabor fresa", "cat": "Lácteos", "type": "Azucarado", "kcal": 94, "fat": 2.8, "sat": 1.8, "carb": 14.0, "sugar": 13.2, "protein": 3.2, "salt": 0.12, "ingredients": ["leche", "azúcar", "preparado de fresa", "fermentos"], "claim": "Fuente de calcio"}, {"name": "Yogur alto en proteína natural", "cat": "Lácteos", "type": "Proteico", "kcal": 72, "fat": 0.2, "sat": 0.1, "carb": 4.5, "sugar": 4.5, "protein": 9.8, "salt": 0.1, "ingredients": ["leche", "proteínas de leche", "fermentos"], "claim": "Alto en proteínas"}, {"name": "Bebida láctea cacao", "cat": "Lácteos", "type": "Bebida", "kcal": 78, "fat": 1.5, "sat": 1.0, "carb": 11.2, "sugar": 10.4, "protein": 3.4, "salt": 0.14, "ingredients": ["leche", "agua", "azúcar", "cacao", "almidón"], "claim": "Fuente de calcio"}, {"name": "Avena crujiente chocolate", "cat": "Cereales", "type": "Cereales desayuno", "kcal": 438, "fat": 14.0, "sat": 3.0, "carb": 64.0, "sugar": 18.0, "protein": 9.0, "salt": 0.65, "ingredients": ["avena", "harina de trigo", "azúcar", "cacao", "aceite de girasol"], "claim": "Fuente de fibra"}, {"name": "Copos de avena", "cat": "Cereales", "type": "Avena", "kcal": 380, "fat": 7.0, "sat": 1.3, "carb": 62.0, "sugar": 1.0, "protein": 13.0, "salt": 0.02, "ingredients": ["100% avena"], "claim": "Sin azúcares añadidos"}, {"name": "Muesli frutos secos", "cat": "Cereales", "type": "Muesli", "kcal": 410, "fat": 11.0, "sat": 1.7, "carb": 58.0, "sugar": 13.0, "protein": 10.0, "salt": 0.2, "ingredients": ["copos de avena", "frutos secos", "pasas", "semillas", "miel"], "claim": "Fuente de fibra"}, {"name": "Pan de molde integral", "cat": "Pan", "type": "Pan", "kcal": 245, "fat": 4.0, "sat": 0.8, "carb": 41.0, "sugar": 4.0, "protein": 10.0, "salt": 1.05, "ingredients": ["harina integral de trigo", "agua", "levadura", "aceite de girasol", "sal"], "claim": "100% harina integral"}, {"name": "Pan de molde blanco", "cat": "Pan", "type": "Pan", "kcal": 255, "fat": 3.3, "sat": 0.7, "carb": 47.0, "sugar": 4.5, "protein": 8.2, "salt": 1.1, "ingredients": ["harina de trigo", "agua", "levadura", "aceite de girasol", "sal"], "claim": "Suave y esponjoso"}, {"name": "Tortitas de maíz", "cat": "Pan", "type": "Tortitas", "kcal": 390, "fat": 3.0, "sat": 0.6, "carb": 80.0, "sugar": 1.2, "protein": 8.0, "salt": 0.8, "ingredients": ["maíz", "sal"], "claim": "Sin gluten"}, {"name": "Pechuga de pollo cocida", "cat": "Proteínas", "type": "Preparado", "kcal": 110, "fat": 2.0, "sat": 0.6, "carb": 1.0, "sugar": 0.5, "protein": 22.0, "salt": 1.1, "ingredients": ["pechuga de pollo", "agua", "sal", "almidón"], "claim": "Alto en proteínas"}, {"name": "Atún al natural", "cat": "Proteínas", "type": "Conserva", "kcal": 110, "fat": 1.0, "sat": 0.3, "carb": 0.0, "sugar": 0.0, "protein": 25.0, "salt": 1.0, "ingredients": ["atún", "agua", "sal"], "claim": "Alto en proteínas"}, {"name": "Garbanzos cocidos", "cat": "Legumbres", "type": "Legumbre", "kcal": 120, "fat": 2.0, "sat": 0.3, "carb": 15.0, "sugar": 1.0, "protein": 7.0, "salt": 0.85, "ingredients": ["garbanzos", "agua", "sal"], "claim": "Fuente de fibra"}, {"name": "Lentejas cocidas", "cat": "Legumbres", "type": "Legumbre", "kcal": 105, "fat": 0.6, "sat": 0.1, "carb": 14.0, "sugar": 0.5, "protein": 7.0, "salt": 0.8, "ingredients": ["lentejas", "agua", "sal"], "claim": "Fuente de fibra"}, {"name": "Tomate triturado", "cat": "Despensa", "type": "Conserva", "kcal": 27, "fat": 0.2, "sat": 0.0, "carb": 4.2, "sugar": 3.0, "protein": 1.3, "salt": 0.35, "ingredients": ["tomate", "sal", "corrector de acidez"], "claim": "Sin azúcares añadidos"}, {"name": "Salsa de tomate", "cat": "Salsas", "type": "Tomate", "kcal": 82, "fat": 2.0, "sat": 0.3, "carb": 12.0, "sugar": 9.0, "protein": 1.5, "salt": 0.95, "ingredients": ["tomate", "agua", "azúcar", "aceite de oliva", "sal"], "claim": "Receta casera"}, {"name": "Kétchup", "cat": "Salsas", "type": "Salsa", "kcal": 105, "fat": 0.1, "sat": 0.0, "carb": 24.0, "sugar": 21.0, "protein": 1.2, "salt": 1.6, "ingredients": ["tomate", "azúcar", "vinagre", "sal"], "claim": "0% grasas"}, {"name": "Mayonesa ligera", "cat": "Salsas", "type": "Salsa", "kcal": 280, "fat": 27.0, "sat": 4.0, "carb": 5.0, "sugar": 3.0, "protein": 1.0, "salt": 1.2, "ingredients": ["agua", "aceite", "huevo", "vinagre", "almidón", "sal"], "claim": "Light"}, {"name": "Crema de cacahuete", "cat": "Despensa", "type": "Frutos secos", "kcal": 620, "fat": 50.0, "sat": 10.0, "carb": 14.0, "sugar": 5.0, "protein": 25.0, "salt": 0.5, "ingredients": ["cacahuete 100%"], "claim": "100% cacahuete"}, {"name": "Chocolate negro 70%", "cat": "Snacks", "type": "Chocolate", "kcal": 580, "fat": 42.0, "sat": 25.0, "carb": 32.0, "sugar": 20.0, "protein": 8.0, "salt": 0.02, "ingredients": ["pasta de cacao", "azúcar", "manteca de cacao", "cacao"], "claim": "70% cacao"}, {"name": "Galletas de avena", "cat": "Snacks", "type": "Galletas", "kcal": 455, "fat": 18.0, "sat": 5.0, "carb": 65.0, "sugar": 22.0, "protein": 7.0, "salt": 0.55, "ingredients": ["harina de avena", "azúcar", "aceite de girasol", "copos de avena"], "claim": "Con avena"}, {"name": "Barrita proteica chocolate", "cat": "Snacks", "type": "Barrita", "kcal": 380, "fat": 12.0, "sat": 6.0, "carb": 38.0, "sugar": 3.0, "protein": 25.0, "salt": 0.35, "ingredients": ["proteína de leche", "chocolate", "jarabe de fibra", "edulcorantes"], "claim": "20 g de proteína"}, {"name": "Patatas fritas", "cat": "Snacks", "type": "Patatas", "kcal": 530, "fat": 33.0, "sat": 4.0, "carb": 49.0, "sugar": 1.0, "protein": 6.0, "salt": 1.2, "ingredients": ["patata", "aceite de girasol", "sal"], "claim": "Crujientes"}, {"name": "Hummus", "cat": "Listos para comer", "type": "Untable", "kcal": 180, "fat": 13.0, "sat": 1.7, "carb": 8.0, "sugar": 0.8, "protein": 6.0, "salt": 1.0, "ingredients": ["garbanzo", "agua", "pasta de sésamo", "aceite de oliva", "limón", "sal"], "claim": "Fuente de fibra"}, {"name": "Guacamole", "cat": "Listos para comer", "type": "Untable", "kcal": 170, "fat": 15.0, "sat": 2.4, "carb": 5.0, "sugar": 1.0, "protein": 2.0, "salt": 0.8, "ingredients": ["aguacate", "cebolla", "tomate", "lima", "sal"], "claim": "100% aguacate"}, {"name": "Pizza jamón y queso", "cat": "Platos preparados", "type": "Pizza", "kcal": 225, "fat": 9.0, "sat": 4.0, "carb": 26.0, "sugar": 3.0, "protein": 10.0, "salt": 1.3, "ingredients": ["harina de trigo", "tomate", "queso", "jamón cocido", "aceite", "sal"], "claim": "Alto contenido en proteínas"}, {"name": "Lasaña boloñesa", "cat": "Platos preparados", "type": "Plato preparado", "kcal": 155, "fat": 7.0, "sat": 3.5, "carb": 15.0, "sugar": 3.0, "protein": 8.0, "salt": 1.1, "ingredients": ["pasta", "carne", "tomate", "leche", "queso", "sal"], "claim": "Lista para calentar"}, {"name": "Bebida de avena", "cat": "Bebidas", "type": "Vegetal", "kcal": 46, "fat": 1.5, "sat": 0.2, "carb": 6.5, "sugar": 3.8, "protein": 1.0, "salt": 0.1, "ingredients": ["agua", "avena", "aceite de girasol", "sal"], "claim": "Sin lactosa"}, {"name": "Refresco cola", "cat": "Bebidas", "type": "Refresco", "kcal": 42, "fat": 0.0, "sat": 0.0, "carb": 10.6, "sugar": 10.6, "protein": 0.0, "salt": 0.0, "ingredients": ["agua", "azúcar", "dióxido de carbono", "colorante", "aromas"], "claim": "Sin grasas"}, {"name": "Refresco cola zero", "cat": "Bebidas", "type": "Refresco", "kcal": 1, "fat": 0.0, "sat": 0.0, "carb": 0.0, "sugar": 0.0, "protein": 0.0, "salt": 0.02, "ingredients": ["agua", "edulcorantes", "dióxido de carbono", "colorante", "aromas"], "claim": "Sin azúcares"}, {"name": "Café frío con leche", "cat": "Bebidas", "type": "Café", "kcal": 62, "fat": 1.5, "sat": 1.0, "carb": 9.8, "sugar": 9.0, "protein": 2.8, "salt": 0.12, "ingredients": ["leche", "café", "azúcar", "estabilizantes"], "claim": "Con leche"}, {"name": "Bebida isotónica", "cat": "Bebidas", "type": "Deportiva", "kcal": 24, "fat": 0.0, "sat": 0.0, "carb": 5.8, "sugar": 5.2, "protein": 0.0, "salt": 0.1, "ingredients": ["agua", "azúcar", "sales minerales", "aromas"], "claim": "Con electrolitos"}, {"name": "Caldo de verduras", "cat": "Despensa", "type": "Caldo", "kcal": 18, "fat": 0.3, "sat": 0.1, "carb": 1.8, "sugar": 0.7, "protein": 0.6, "salt": 0.95, "ingredients": ["agua", "verduras", "sal", "aceite"], "claim": "Bajo en calorías"}, {"name": "Cereales infantiles chocolate", "cat": "Cereales", "type": "Cereales desayuno", "kcal": 405, "fat": 7.0, "sat": 1.2, "carb": 76.0, "sugar": 25.0, "protein": 7.0, "salt": 0.55, "ingredients": ["cereales", "azúcar", "cacao", "harina", "sal"], "claim": "Con vitaminas"}, {"name": "Granola proteica", "cat": "Cereales", "type": "Granola", "kcal": 460, "fat": 18.0, "sat": 3.0, "carb": 52.0, "sugar": 12.0, "protein": 20.0, "salt": 0.4, "ingredients": ["avena", "frutos secos", "proteína de leche", "azúcar", "semillas"], "claim": "20 g de proteína"}, {"name": "Queso fresco batido", "cat": "Lácteos", "type": "Lácteo", "kcal": 67, "fat": 0.2, "sat": 0.1, "carb": 4.0, "sugar": 4.0, "protein": 10.0, "salt": 0.1, "ingredients": ["leche", "fermentos"], "claim": "Alto en proteínas"}, {"name": "Postre lácteo chocolate", "cat": "Lácteos", "type": "Postre", "kcal": 145, "fat": 4.5, "sat": 2.8, "carb": 20.0, "sugar": 16.0, "protein": 3.2, "salt": 0.18, "ingredients": ["leche", "azúcar", "cacao", "almidón"], "claim": "Fuente de calcio"}, {"name": "Zumo de naranja", "cat": "Bebidas", "type": "Zumo", "kcal": 45, "fat": 0.1, "sat": 0.0, "carb": 10.0, "sugar": 8.5, "protein": 0.7, "salt": 0.0, "ingredients": ["naranja exprimida"], "claim": "100% fruta"}, {"name": "Néctar de melocotón", "cat": "Bebidas", "type": "Néctar", "kcal": 49, "fat": 0.0, "sat": 0.0, "carb": 11.8, "sugar": 11.5, "protein": 0.2, "salt": 0.01, "ingredients": ["agua", "puré de melocotón", "azúcar"], "claim": "Con fruta"}, {"name": "Pechuga de pavo loncheada", "cat": "Proteínas", "type": "Fiambre", "kcal": 105, "fat": 2.0, "sat": 0.6, "carb": 2.0, "sugar": 0.5, "protein": 20.0, "salt": 2.0, "ingredients": ["carne de pavo", "agua", "sal", "almidón", "dextrosa"], "claim": "90% carne"}, {"name": "Salchichas de pollo", "cat": "Proteínas", "type": "Procesado", "kcal": 190, "fat": 13.0, "sat": 4.0, "carb": 4.0, "sugar": 1.0, "protein": 14.0, "salt": 1.7, "ingredients": ["carne de pollo", "agua", "grasa", "almidón", "sal"], "claim": "Fuente de proteínas"}, {"name": "Tortilla de patata refrigerada", "cat": "Platos preparados", "type": "Refrigerado", "kcal": 170, "fat": 10.0, "sat": 2.5, "carb": 13.0, "sugar": 1.0, "protein": 6.0, "salt": 1.2, "ingredients": ["patata", "huevo", "cebolla", "aceite de girasol", "sal"], "claim": "Lista para calentar"}, {"name": "Sopa instantánea", "cat": "Rápidos", "type": "Instantáneo", "kcal": 70, "fat": 2.0, "sat": 0.8, "carb": 8.0, "sugar": 1.5, "protein": 2.0, "salt": 2.2, "ingredients": ["fideos", "verduras", "sal", "aromas"], "claim": "Lista en 3 minutos"}, {"name": "Pizza vegetal congelada", "cat": "Platos preparados", "type": "Pizza", "kcal": 190, "fat": 6.5, "sat": 2.8, "carb": 25.0, "sugar": 3.5, "protein": 7.0, "salt": 1.0, "ingredients": ["harina", "tomate", "verduras", "queso", "aceite", "sal"], "claim": "Con verduras"}, {"name": "Helado chocolate", "cat": "Snacks", "type": "Helado", "kcal": 220, "fat": 12.0, "sat": 7.0, "carb": 25.0, "sugar": 21.0, "protein": 3.5, "salt": 0.12, "ingredients": ["leche", "azúcar", "nata", "cacao"], "claim": "Con cacao"}, {"name": "Edamame", "cat": "Congelados", "type": "Legumbre", "kcal": 125, "fat": 5.0, "sat": 0.8, "carb": 8.0, "sugar": 2.0, "protein": 11.0, "salt": 0.02, "ingredients": ["soja verde"], "claim": "Fuente de proteína vegetal"}];
+let current=-1, selected=[];
+const KEY="nutriku_detective_v1";
+
+function init(){
+  [...new Set(products.map(p=>p.cat))].sort().forEach(c=>document.getElementById("cat").insertAdjacentHTML("beforeend","<option>"+c+"</option>"));
+  render();
+}
+function render(){
+  const cat=document.getElementById("cat").value, mode=document.getElementById("mode").value, q=document.getElementById("q").value.toLowerCase();
+  let arr=products.map((p,i)=>({p:p,i:i})).filter(o=>(cat==="Todas las categorías"||o.p.cat===cat)&&(!q||JSON.stringify(o.p).toLowerCase().includes(q)));
+  if(mode==="claim")arr=arr.filter(o=>o.p.claim);
+  if(mode==="protein")arr=arr.filter(o=>o.p.protein>=15);
+  if(mode==="sugar")arr=arr.filter(o=>o.p.sugar>=10);
+  if(mode==="salt")arr=arr.filter(o=>o.p.salt>=1);
+  document.getElementById("grid").innerHTML=arr.map(o=>card(o.p,o.i)).join("")||"<p>No hay productos con ese filtro.</p>";
+}
+function card(p,i){
+ return '<div class="prod">'+
+ '<div class="cat">'+p.cat+' · '+p.type+'</div><h3>'+p.name+'</h3><span class="claim">'+p.claim+'</span>'+ 
+ '<div class="nut"><div><b>'+p.kcal+'</b><span>kcal</span></div><div><b>'+p.protein+'g</b><span>proteína</span></div><div><b>'+p.sugar+'g</b><span>azúcares</span></div><div><b>'+p.fat+'g</b><span>grasas</span></div><div><b>'+p.sat+'g</b><span>sat.</span></div><div><b>'+p.salt+'g</b><span>sal</span></div></div>'+ 
+ '<div class="tag">Elige qué quieres entrenar</div>'+ 
+ '<div style="display:flex;gap:7px;margin-top:10px"><button class="primary" style="flex:1" onclick="openProduct('+i+',\'investigate\')">🔍 Investigar etiqueta</button><button class="soft" onclick="toggleSelect('+i+')">⚖️ Añadir a comparación</button></div></div>';
+}
+function openProduct(i,mode="investigate"){
+ if(typeof mode === "boolean") mode=mode?"challenge":"investigate";
+ current=i; const p=products[i];
+ document.getElementById("mcat").textContent=p.cat.toUpperCase();
+ document.getElementById("mtitle").textContent=p.name;
+ document.getElementById("mclaim").textContent=p.claim;
+ document.getElementById("mMode").textContent=mode==="challenge"?"🎯 RETO ALEATORIO · MISIÓN ESPECÍFICA":"🔍 INVESTIGACIÓN LIBRE · EXAMINA LA ETIQUETA";
+ document.getElementById("mkcal").textContent=p.kcal+" kcal";
+ document.getElementById("mfat").textContent=p.fat+" g"; document.getElementById("msat").textContent=p.sat+" g";
+ document.getElementById("mcarb").textContent=p.carb+" g"; document.getElementById("msugar").textContent=p.sugar+" g";
+ document.getElementById("mprotein").textContent=p.protein+" g"; document.getElementById("msalt").textContent=p.salt+" g";
+ document.getElementById("ming").textContent=p.ingredients.join(", ");
+ document.getElementById("notes").value="";
+ document.getElementById("feedback").style.display="none";
+ if(mode==="challenge") newChallenge(); else {document.getElementById("mission").innerHTML="<strong>🔍 Investigación libre</strong><br>Pregunta inicial: <b>¿qué dato mirarías primero y por qué?</b>";document.getElementById("answers").innerHTML="";document.getElementById("feedback").style.display="none";}
+ document.getElementById("modal").style.display="block";document.body.style.overflow="hidden";
+}
+function challengeBank(p){
+ return [
+  {title:'🕵️ Descubre el reclamo',q:'¿Qué elemento del producto está funcionando como reclamo y qué NO demuestra por sí solo?',a:p.claim?'El reclamo es «'+p.claim+'». No demuestra por sí solo que el producto sea la mejor opción en cualquier contexto.':'No aparece un reclamo destacado. La ausencia de reclamo también es información: hay que mirar la composición y el contexto.',opts:p.claim?['Que el producto es automáticamente mejor.','Qué se está destacando y después contrastarlo con la etiqueta.','Que no hace falta leer la tabla.']:['Que el producto es automáticamente mejor.','Qué información necesitas y después contrastarla con la etiqueta.','Que no hace falta leer la tabla.'],correct:1},
+  {title:'⚖️ Compara por 100 g / 100 ml',q:'Si quieres comparar este producto con otro, ¿qué dato usarías primero?',a:'Los valores por 100 g o 100 ml permiten una comparación más homogénea.',opts:['El tamaño del envase.','Los valores por 100 g o 100 ml.','El diseño del frontal.'],correct:1},
+  {title:'🥄 Mira el azúcar con criterio',q:'¿Qué te dice realmente el valor de azúcares de esta etiqueta?',a:'Indica la cantidad declarada de azúcares; para interpretarla hay que considerar el tipo de producto, la cantidad consumida y el resto de la composición.',opts:['Que el producto es bueno o malo automáticamente.','La cantidad de azúcares declarada, que debe interpretarse en contexto.','Que todos los azúcares tienen exactamente el mismo origen.'],correct:1},
+  {title:'💪 Investiga la proteína',q:'¿Cómo comprobarías si «alto en proteínas» está respaldado por la información nutricional?',a:'Mirando la cantidad de proteína declarada y comparándola con productos equivalentes cuando tenga sentido.',opts:['Mirando solo el reclamo.','Mirando la cantidad de proteína y comparando con productos equivalentes.','Por el color o diseño del envase.'],correct:1},
+  {title:'🧾 Detective de ingredientes',q:'¿Qué ingrediente aparece primero en la lista y qué puede enseñarte ese dato?',a:'El orden de ingredientes informa de su orden de predominio por peso en la formulación.',opts:['El ingrediente que tiene menos cantidad.','El ingrediente que aparece primero según el orden de la lista.','El ingrediente que el fabricante considera más saludable.'],correct:1},
+  {title:'🎯 Decisión contextual',q:'Una clienta te pregunta: «¿Este producto es bueno?» ¿Cuál sería una respuesta profesional?',a:'No hay un ganador universal: hay que relacionar composición, cantidad, objetivo y contexto de uso.',opts:['Sí, siempre.','No, nunca.','Depende del objetivo y del contexto; primero definimos qué queremos comparar.'],correct:2},
+  {title:'🔬 ¿Qué NO puedes concluir?',q:'¿Qué error quieres evitar al mirar una sola cifra de la etiqueta?',a:'Convertir un único dato en un veredicto global sobre el producto.',opts:['Usar la cifra como una pieza de información.','Compararla con productos equivalentes.','Concluir que una sola cifra determina si todo el producto es «bueno» o «malo».'],correct:2},
+  {title:'📋 Etiqueta completa',q:'¿Qué conjunto pertenece a la declaración nutricional obligatoria?',a:'Energía, grasas, saturadas, hidratos de carbono, azúcares, proteínas y sal.',opts:['Solo calorías y proteína.','Energía, grasas, saturadas, hidratos, azúcares, proteínas y sal.','Solo ingredientes y reclamos.'],correct:1}
+ ].filter(Boolean);
+}
+function showChallenge(p,c){
+ document.getElementById('mission').innerHTML='<strong>'+c.title+'</strong><br>'+c.q+'<div class="challenge-meta">🎯 Producto elegido al azar: '+p.name+'</div>';
+ document.getElementById('answers').innerHTML=c.opts.map((a,i)=>'<button onclick="answer('+i+','+c.correct+')">'+String.fromCharCode(65+i)+'. '+a+'</button>').join('');
+ document.getElementById('feedback').style.display='none';
+}
+function newChallenge(){
+ const p=products[current], list=challengeBank(p), c=list[Math.floor(Math.random()*list.length)];
+ showChallenge(p,c);
+}
+function answer(i,correct){
+ const f=document.getElementById('feedback');f.style.display='block';
+ if(i===correct){f.className='feedback success';f.textContent='✅ Correcto. Ahora pide: «¿Qué te ha llevado a esa conclusión?»';}
+ else{f.className='feedback error';f.textContent='🔎 Revisa la etiqueta. Busca el dato que necesitas y explica por qué lo usarías.';}
+}
+function randomProduct(){openProduct(Math.floor(Math.random()*products.length),"investigate")}
+function startGame(){openProduct(Math.floor(Math.random()*products.length),"challenge")}
+function closeModal(){document.getElementById('modal').style.display='none';document.body.style.overflow=''}
+function markDone(){
+ let data=JSON.parse(localStorage.getItem(KEY)||'[]');
+ data.unshift({product:products[current].name,date:new Date().toLocaleString('es-ES'),notes:document.getElementById('notes').value});
+ localStorage.setItem(KEY,JSON.stringify(data.slice(0,100)));
+ alert('Entrenamiento registrado.'); closeModal();
+}
+function toggleSelect(i){
+ if(selected.includes(i)){selected=selected.filter(x=>x!==i);renderSelected();return;}
+ if(selected.length>=3)return alert("Máximo 3 productos.");
+ selected.push(i);renderSelected();
+ if(selected.length===2)setTimeout(()=>compare(),150);
+}
+function clearSelection(){selected=[];renderSelected();}
+function renderSelected(){
+ document.getElementById('selected').innerHTML=selected.map(i=>'<button class="chip" onclick="toggleSelect('+i+')">'+products[i].name+' ×</button>').join('');
+}
+function compare(){
+ if(selected.length<2)return alert('Selecciona al menos 2 productos.');
+ const ps=selected.map(i=>products[i]);
+ const rows=[['Energía', 'kcal'],['Grasas','fat'],['Saturadas','sat'],['Hidratos de carbono','carb'],['Azúcares','sugar'],['Proteínas','protein'],['Sal','salt']];
+ document.getElementById('mcat').textContent='COMPARACIÓN DE ETIQUETAS';
+ document.getElementById('mtitle').textContent='⚖️ Comparador ARRANCA';
+ document.getElementById('mclaim').textContent='';
+ document.getElementById('mMode').textContent='MODO COMPARACIÓN · 2–3 PRODUCTOS';
+ document.querySelector('#modal .body').innerHTML=`<p>Compara productos con un criterio concreto. <strong>No buscamos un ganador universal.</strong></p>
+ <div class="compare-controls"><label><strong>¿Qué quieres comparar?</strong></label><select id="criterion" onchange="highlightCriterion()"><option value="">Selecciona un criterio…</option><option value="sugar">Azúcares</option><option value="protein">Proteínas</option><option value="salt">Sal</option><option value="fat">Grasas</option><option value="sat">Saturadas</option><option value="kcal">Energía</option><option value="carb">Hidratos</option></select></div>
+ <div class="compare-wrap"><table class="compare-table"><thead><tr><th>Dato</th>${ps.map(p=>'<th>'+p.name+'</th>').join('')}</tr></thead><tbody>${rows.map(r=>'<tr data-key="'+r[1]+'"><td><strong>'+r[0]+'</strong></td>'+ps.map(p=>'<td>'+p[r[1]]+'</td>').join('')+'</tr>').join('')}<tr><td><strong>Reclamo</strong></td>${ps.map(p=>'<td>'+(p.claim||'—')+'</td>').join('')}</tr></tbody></table></div>
+ <div class="comparison-note"><strong>Pregunta para la clienta:</strong><br>«¿Qué estás comparando exactamente, qué dato te parece relevante y por qué?»</div>
+ <div class="actions"><button class="secondary" onclick="closeModal()">Cerrar</button></div>`;
+ document.getElementById('modal').style.display='flex'; document.body.style.overflow='hidden';
+}
+function highlightCriterion(){
+ document.querySelectorAll('.compare-table tr').forEach(r=>r.classList.remove('highlight'));
+ const k=document.getElementById('criterion').value;if(!k)return;
+ const r=document.querySelector('.compare-table tr[data-key="'+k+'"]');if(r)r.classList.add('highlight');
+}
+init();
+</script>
+</body>
+</html>
