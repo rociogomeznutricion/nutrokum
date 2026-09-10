@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NUTRIKU · Planificador Lego Meal Prep</title>
+<style>
+:root{--navy:#071b3a;--blue:#08b9d6;--cyan:#19d7e8;--bg:#f3f7fb;--line:#dbe5ef;--muted:#64748b;--ok:#138a63;--warn:#c17a00}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--navy)}
+header{background:linear-gradient(135deg,var(--navy),#0b315f);color:#fff;padding:28px 20px}.wrap{max-width:1220px;margin:auto}.brand{color:var(--cyan);font-weight:900;letter-spacing:2px;font-size:14px}header h1{margin:7px 0 4px;font-size:clamp(24px,4vw,36px)}header p{margin:0;color:#d9e7f4;max-width:660px}.pill{display:inline-block;margin-top:13px;padding:7px 11px;border-radius:99px;background:rgba(255,255,255,.1);font-size:11px;font-weight:800}
+
+main{padding:22px 20px 60px}
+.steps-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.steps-nav div{background:#fff;border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-size:12px;font-weight:800;color:var(--muted)}
+.steps-nav div b{color:var(--navy);margin-right:4px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:18px;box-shadow:0 8px 26px rgba(7,27,58,.06)}
+.panel h2{margin:0 0 4px;font-size:18px}
+.panel .desc{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12px;font-weight:800}
+.field input[type=number]{width:110px;padding:9px;border:1px solid var(--line);border-radius:9px}
+.checkrow{display:flex;gap:14px;flex-wrap:wrap}
+.checkrow label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;background:#f6f9fb;border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:99px;padding:9px 14px;font-weight:800;font-size:13px;cursor:pointer}
+.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.itemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
+.item.selected{border-color:var(--blue);background:#f4fdff}
+.item h4{margin:0 0 4px;font-size:13.5px}
+.item .ing{font-size:10.5px;color:var(--muted);line-height:1.45;margin-bottom:9px;min-height:28px}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:#fff;font-weight:900;cursor:pointer}
+.stepper span{font-weight:900;min-width:22px;text-align:center}
+.stepper .lbl{font-size:10.5px;color:var(--muted);margin-left:4px}
+
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.sstat{background:#f6f9fb;border-radius:12px;padding:12px;text-align:center}
+.sstat b{display:block;font-size:20px}
+.sstat span{font-size:10px;color:var(--muted)}
+.coverage{margin-top:12px;padding:12px;border-radius:12px;font-size:13px}
+.coverage.good{background:#eafaf0;color:#0d5c3f}
+.coverage.warn{background:#fff7e8;color:#8a5b00}
+.coverage.off{background:#f1f5f9;color:var(--muted)}
+
+.shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.shopcat h4{font-size:12px;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;margin:14px 0 8px}
+.ingchip{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:7px;font-size:13px;cursor:pointer;background:#fff}
+.ingchip.have{background:#f0fdf6;border-color:#bde7c8;text-decoration:line-through;color:#0d5c3f}
+.ingchip small{font-weight:800;font-size:10px}
+
+.combogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;max-height:420px;overflow:auto;padding:2px}
+.combo{border:1px solid var(--line);border-radius:12px;padding:11px;background:#fbfdff;font-size:12.5px}
+.combo b{display:block;margin-bottom:3px;font-size:13px}
+
+.menutable{width:100%;border-collapse:collapse;margin-top:10px}
+.menutable th,.menutable td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;font-size:12.5px}
+.menutable th{background:#f1f7fa}
+
+button.primary{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:11px 16px;font-weight:850;cursor:pointer}
+button.accent{background:var(--cyan);color:var(--navy);border:0;border-radius:10px;padding:11px 16px;font-weight:850;cursor:pointer}
+button.soft{background:#edf4f8;color:var(--navy);border:0;border-radius:10px;padding:11px 16px;font-weight:850;cursor:pointer}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+.printview{display:none}
+@media print{
+ body{background:#fff}
+ body.printing-list #app,body.printing-list header,body.printing-study #app,body.printing-study header{display:none!important}
+ body.printing-list #printList,body.printing-study #printStudy{display:block!important}
+ .printview{padding:10px}
+ .printview h1{font-size:22px;margin-bottom:2px}
+ .printview .sub{color:#555;font-size:12px;margin-bottom:16px}
+ .printview h2{font-size:15px;border-bottom:2px solid #071b3a;padding-bottom:4px;margin-top:20px}
+ .printcheck{display:flex;gap:8px;padding:5px 0;font-size:13px;border-bottom:1px solid #eee}
+ .printcheck .box{font-family:monospace}
+ .printgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+ .ptable{width:100%;border-collapse:collapse;margin-top:8px}
+ .ptable th,.ptable td{border:1px solid #ccc;padding:5px 8px;font-size:11.5px;text-align:left}
+}
+@media(max-width:900px){.summary{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">NUTRIKU · DESCIFRANDO LA NUTRICIÓN</div>
+<h1>🧊 Planificador Lego Meal Prep</h1>
+<p>Planifica tu cocinado de la quincena en un solo sitio: qué comprar, qué congelar, cuántos táperes necesitas y cuántas combinaciones distintas te da.</p>
+<span class="pill">MÉTODO ARRANCA · ESTRATEGIA LEGO</span>
+</div></header>
+
+<main><div class="wrap" id="app">
+
+<div class="steps-nav">
+<div><b>01</b>Horizonte</div><div><b>02</b>Piezas a cocinar</div><div><b>03</b>Resumen y táperes</div><div><b>04</b>Lista de la compra</div><div><b>05</b>Combinaciones y menú</div>
+</div>
+
+<div class="panel">
+<h2>01 · ¿Para cuántos días cocinas hoy?</h2>
+<div class="desc">Define el horizonte del batch cooking y qué comidas quieres cubrir.</div>
+<div class="row">
+  <div class="field"><label>Días a cubrir</label><input type="number" id="days" value="15" min="1" max="30" onchange="update()"></div>
+  <div class="field"><label>Comidas a cubrir</label>
+    <div class="checkrow">
+      <label><input type="checkbox" id="mComida" checked onchange="update()"> Comida</label>
+      <label><input type="checkbox" id="mCena" checked onchange="update()"> Cena</label>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="panel">
+<h2>02 · Elige tus piezas y cuántas raciones</h2>
+<div class="desc">Marca cuántas raciones vas a cocinar de cada pieza. Los ingredientes se añaden solos a tu lista de la compra.</div>
+<div class="tabs" id="tabs"></div>
+<div class="itemgrid" id="itemgrid"></div>
+</div>
+
+<div class="panel">
+<h2>03 · Resumen de tu cocinado</h2>
+<div class="desc">Cuántos táperes y cubitos necesitas, y para cuántas comidas te llega.</div>
+<div class="summary">
+  <div class="sstat"><b id="sTarrinas">0</b><span>TÁPERES (proteína+base+verdura)</span></div>
+  <div class="sstat"><b id="sCubitos">0</b><span>CUBITOS (salsas)</span></div>
+  <div class="sstat"><b id="sTotal">0</b><span>RECIPIENTES TOTALES</span></div>
+  <div class="sstat"><b id="sCombos">0</b><span>COMBINACIONES DISTINTAS</span></div>
+</div>
+<div id="coverage" class="coverage off"></div>
+</div>
+
+<div class="panel">
+<h2>04 · Lista de la compra</h2>
+<div class="desc">Se genera sola a partir de las piezas elegidas. Toca un ingrediente si ya lo tienes en casa.</div>
+<div class="shopgrid" id="shopgrid"></div>
+<div class="actions"><button class="soft" onclick="exportList()">📄 Exportar lista de la compra (PDF)</button></div>
+</div>
+
+<div class="panel">
+<h2>05 · Combinaciones posibles</h2>
+<div class="desc">Todas las comidas distintas que puedes montar con lo que vas a cocinar.</div>
+<div id="comboIntro" style="font-size:13px;color:var(--muted);margin-bottom:10px"></div>
+<div class="combogrid" id="combogrid"></div>
+<div class="actions">
+  <button class="accent" onclick="generateMenu()">🗓️ Generar menú para tus días</button>
+  <button class="primary" onclick="exportStudy()">📄 Exportar estudio completo (PDF)</button>
+</div>
+<div id="menuwrap"></div>
+</div>
+
+</div></main>
+
+<!-- ============ PRINT: LISTA DE LA COMPRA ============ -->
+<div class="printview" id="printList">
+  <h1>NUTRIKU · Lista de la compra</h1>
+  <div class="sub" id="plDate"></div>
+  <h2>🛒 Por comprar</h2>
+  <div id="plBuy"></div>
+  <h2>✅ Ya en casa</h2>
+  <div id="plHave"></div>
+</div>
+
+<!-- ============ PRINT: ESTUDIO COMPLETO ============ -->
+<div class="printview" id="printStudy">
+  <h1>NUTRIKU · Estudio Lego Meal Prep</h1>
+  <div class="sub" id="psDate"></div>
+
+  <h2>Resumen</h2>
+  <table class="ptable">
+    <tr><th>Días cubiertos</th><td id="psDays"></td></tr>
+    <tr><th>Comidas/día</th><td id="psMeals"></td></tr>
+    <tr><th>Táperes necesarios</th><td id="psTarrinas"></td></tr>
+    <tr><th>Cubitos de salsa</th><td id="psCubitos"></td></tr>
+    <tr><th>Combinaciones distintas</th><td id="psCombos"></td></tr>
+    <tr><th>Cobertura</th><td id="psCoverage"></td></tr>
+  </table>
+
+  <h2>Piezas a cocinar</h2>
+  <table class="ptable"><thead><tr><th>Categoría</th><th>Pieza</th><th>Raciones</th></tr></thead><tbody id="psPieces"></tbody></table>
+
+  <h2>Lista de la compra</h2>
+  <div class="printgrid">
+    <div><b>Por comprar</b><div id="psBuy"></div></div>
+    <div><b>Ya en casa</b><div id="psHave"></div></div>
+  </div>
+
+  <h2>Combinaciones posibles</h2>
+  <div id="psCombosList" style="font-size:12px;line-height:1.7"></div>
+
+  <div id="psMenuSection" style="display:none">
+    <h2>Menú propuesto</h2>
+    <table class="ptable"><thead><tr><th>Día</th><th>Comida</th><th>Cena</th></tr></thead><tbody id="psMenu"></tbody></table>
+  </div>
+</div>
+
+<script>
+const KEY="nutriku_lego_planner_v1";
+
+const BLOCKS={
+ proteina:[
+  {id:"bolonesa",name:"Boloñesa de carne picada",emoji:"🍝",ing:["Carne picada (ternera/pavo)","Tomate triturado","Cebolla","Ajo"]},
+  {id:"pollo_salsa",name:"Pollo/pavo desmigado en salsa",emoji:"🍗",ing:["Pechuga de pollo o pavo","Salsa de tomate o curry","Cebolla"]},
+  {id:"albondigas",name:"Albóndigas cocinadas",emoji:"🍖",ing:["Carne picada","Huevo","Pan rallado","Ajo y perejil"]},
+  {id:"legumbre_guisada",name:"Garbanzos o lentejas guisados",emoji:"🫘",ing:["Garbanzos o lentejas cocidos","Sofrito de verduras","Pimentón"]},
+  {id:"pescado_desmigado",name:"Salmón o merluza desmigada",emoji:"🐟",ing:["Salmón o merluza","AOVE","Limón"]},
+  {id:"chili",name:"Chili con carne o vegetal",emoji:"🌶️",ing:["Carne picada o alubias","Tomate triturado","Pimiento","Especias"]},
+  {id:"huevo_picado",name:"Huevo cocido picado",emoji:"🥚",ing:["Huevos","Especias al gusto"]}
+ ],
+ base:[
+  {id:"arroz",name:"Arroz blanco o integral cocido",emoji:"🍚",ing:["Arroz"]},
+  {id:"pasta",name:"Pasta corta o ñoquis",emoji:"🍝",ing:["Pasta corta o ñoquis"]},
+  {id:"quinoa",name:"Quinoa cocida",emoji:"🌾",ing:["Quinoa"]},
+  {id:"patata_boniato",name:"Patata o boniato cocido y chafado",emoji:"🥔",ing:["Patatas o boniatos"]},
+  {id:"legumbre_base",name:"Legumbres cocidas (base)",emoji:"🫘",ing:["Garbanzos, alubias o lentejas"]}
+ ],
+ salsa:[
+  {id:"tomate_casera",name:"Salsa de tomate casera",emoji:"🍅",ing:["Tomate triturado","Cebolla","Ajo","AOVE"]},
+  {id:"bolonesa_veg",name:"Boloñesa vegetal",emoji:"🥕",ing:["Soja texturizada o lentejas","Tomate triturado","Zanahoria"]},
+  {id:"curry",name:"Curry suave con leche de coco",emoji:"🍛",ing:["Leche de coco","Curry en polvo","Cebolla","Jengibre"]},
+  {id:"pesto",name:"Salsa pesto",emoji:"🌿",ing:["Albahaca","Piñones o nueces","AOVE","Parmesano"]},
+  {id:"champinon",name:"Salsa de champiñones al ajillo",emoji:"🍄",ing:["Champiñones","Ajo","Bebida vegetal o nata","AOVE"]},
+  {id:"caldo",name:"Caldo o fondo casero",emoji:"🍲",ing:["Verduras de caldo","Zanahoria","Puerro","Apio"]}
+ ],
+ verdura:[
+  {id:"salteadas",name:"Verduras salteadas o asadas",emoji:"🫑",ing:["Pimiento, calabacín, berenjena, cebolla"]},
+  {id:"espinacas",name:"Espinacas cocinadas",emoji:"🍃",ing:["Espinacas frescas o congeladas","Ajo"]},
+  {id:"brocoli_col",name:"Brócoli o coliflor al vapor",emoji:"🥦",ing:["Brócoli o coliflor"]}
+ ]
+};
+const CATLABEL={proteina:"🍗 Proteínas",base:"🍚 Bases",salsa:"🥫 Salsas",verdura:"🥦 Verduras"};
+const ALL=[].concat(BLOCKS.proteina,BLOCKS.base,BLOCKS.salsa,BLOCKS.verdura);
+function itemById(id){return ALL.find(x=>x.id===id)}
+function catOf(id){for(const c in BLOCKS){if(BLOCKS[c].some(x=>x.id===id))return c}return null}
+
+let activeTab="proteina";
+let portions={};      // id -> number of raciones
+let pantry={};         // ingredient name -> true(tengo)/false(comprar)
+let lastMenu=null;
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+function setTab(c){activeTab=c;renderTabs();renderItems();}
+function renderTabs(){
+ document.getElementById("tabs").innerHTML=Object.keys(CATLABEL).map(c=>`<div class="tab${activeTab===c?' active':''}" onclick="setTab('${c}')">${CATLABEL[c]}</div>`).join("");
+}
+function renderItems(){
+ document.getElementById("itemgrid").innerHTML=BLOCKS[activeTab].map(it=>{
+  const n=portions[it.id]||0;
+  return `<div class="item${n>0?' selected':''}">
+   <h4>${it.emoji} ${esc(it.name)}</h4>
+   <div class="ing">${esc(it.ing.join(", "))}</div>
+   <div class="stepper">
+     <button onclick="setPortion('${it.id}',${Math.max(0,n-1)})">−</button>
+     <span>${n}</span>
+     <button onclick="setPortion('${it.id}',${n+1})">+</button>
+     <span class="lbl">raciones</span>
+   </div>
+  </div>`;
+ }).join("");
+}
+function setPortion(id,n){
+ n=Math.max(0,Math.min(20,n));
+ if(n===0)delete portions[id]; else portions[id]=n;
+ update();
+}
+
+function selectedIds(cat){return BLOCKS[cat].filter(x=>portions[x.id]>0).map(x=>x.id)}
+function sumPortions(cat){return selectedIds(cat).reduce((a,id)=>a+portions[id],0)}
+
+function update(){
+ renderItems();
+ renderSummary();
+ renderShoppingList();
+ renderCombos();
+ save();
+}
+
+function renderSummary(){
+ const tarrinas=sumPortions("proteina")+sumPortions("base")+sumPortions("verdura");
+ const cubitos=sumPortions("salsa");
+ document.getElementById("sTarrinas").textContent=tarrinas;
+ document.getElementById("sCubitos").textContent=cubitos;
+ document.getElementById("sTotal").textContent=tarrinas+cubitos;
+
+ const nP=selectedIds("proteina").length,nB=selectedIds("base").length,nV=selectedIds("verdura").length,nS=selectedIds("salsa").length;
+ const combos=nP*nB*Math.max(nV,1)*Math.max(nS,1);
+ document.getElementById("sCombos").textContent=(nP&&nB)?combos:0;
+
+ const days=Number(document.getElementById("days").value)||0;
+ const mealsPerDay=(document.getElementById("mComida").checked?1:0)+(document.getElementById("mCena").checked?1:0);
+ const needed=days*mealsPerDay;
+ const available=(nP&&nB)?Math.min(sumPortions("proteina"),sumPortions("base")):0;
+ const cov=document.getElementById("coverage");
+ if(!nP||!nB){
+  cov.className="coverage off";
+  cov.textContent="Selecciona al menos una proteína y una base para calcular cuántas comidas te llegan.";
+ }else if(available>=needed){
+  cov.className="coverage good";
+  cov.textContent=`✅ Con este cocinado tienes comida lista para ${available} comidas — cubres tus ${needed} necesarias (${days} días × ${mealsPerDay} comida/s).`;
+ }else{
+  cov.className="coverage warn";
+  cov.textContent=`⚠️ Con este cocinado te llegan ${available} de las ${needed} comidas que necesitas. Sube raciones de proteína o base, o compra ${needed-available} comidas extra sueltas.`;
+ }
+}
+
+function renderShoppingList(){
+ const el=document.getElementById("shopgrid");
+ const cats=Object.keys(CATLABEL);
+ let html="";
+ cats.forEach(c=>{
+  const ids=selectedIds(c);
+  if(!ids.length)return;
+  const ings=new Set();
+  ids.forEach(id=>itemById(id).ing.forEach(i=>ings.add(i)));
+  if(!ings.size)return;
+  html+=`<div class="shopcat" style="grid-column:1/-1"><h4>${CATLABEL[c]}</h4><div class="itemgrid">`;
+  [...ings].forEach(ing=>{
+   if(!(ing in pantry))pantry[ing]=false;
+   html+=`<div class="ingchip${pantry[ing]?' have':''}" onclick="togglePantry('${esc(ing).replace(/'/g,"\\'")}')"><span>${esc(ing)}</span><small>${pantry[ing]?"YA EN CASA":"COMPRAR"}</small></div>`;
+  });
+  html+=`</div></div>`;
+ });
+ el.innerHTML=html||'<div style="color:var(--muted);font-size:13px">Elige piezas en el paso 2 para generar tu lista de la compra.</div>';
+}
+function togglePantry(ing){pantry[ing]=!pantry[ing];renderShoppingList();save();}
+
+function renderCombos(){
+ const nP=selectedIds("proteina"),nB=selectedIds("base"),nV=selectedIds("verdura"),nS=selectedIds("salsa");
+ const grid=document.getElementById("combogrid"),intro=document.getElementById("comboIntro");
+ if(!nP.length||!nB.length){
+  intro.textContent="Selecciona al menos una proteína y una base en el paso 2 para ver tus combinaciones.";
+  grid.innerHTML="";
+  return;
+ }
+ const combos=buildCombos();
+ intro.textContent=`${combos.length} combinaciones distintas con las piezas elegidas.`;
+ grid.innerHTML=combos.map(c=>`<div class="combo"><b>${c.label}</b>${c.sub?('<div style="color:var(--muted)">'+c.sub+'</div>'):''}</div>`).join("");
+}
+function buildCombos(){
+ const nP=selectedIds("proteina"),nB=selectedIds("base"),nV=selectedIds("verdura"),nS=selectedIds("salsa");
+ const out=[];
+ nP.forEach(p=>{
+  nB.forEach(b=>{
+   const vList=nV.length?nV:[null];
+   vList.forEach(v=>{
+    const sList=nS.length?nS:[null];
+    sList.forEach(s=>{
+     const parts=[itemById(p).emoji+" "+itemById(p).name,itemById(b).emoji+" "+itemById(b).name];
+     if(v)parts.push(itemById(v).emoji+" "+itemById(v).name);
+     const label=parts.join(" + ");
+     const sub=s?("con "+itemById(s).name):"";
+     out.push({label,sub,p,b,v,s});
+    });
+   });
+  });
+ });
+ return out;
+}
+
+function generateMenu(){
+ const days=Number(document.getElementById("days").value)||0;
+ const mComida=document.getElementById("mComida").checked;
+ const mCena=document.getElementById("mCena").checked;
+ const combos=buildCombos();
+ if(!combos.length){alert("Necesitas al menos una proteína y una base seleccionadas para generar el menú.");return;}
+ function shuffled(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+ let pool=shuffled(combos),idx=0;
+ function next(){if(idx>=pool.length){pool=shuffled(combos);idx=0;}return pool[idx++];}
+ const rows=[];
+ for(let d=1;d<=days;d++){
+  rows.push({day:d,comida:mComida?next().label:"—",cena:mCena?next().label:"—"});
+ }
+ lastMenu=rows;
+ const wrap=document.getElementById("menuwrap");
+ wrap.innerHTML=`<table class="menutable"><thead><tr><th>Día</th><th>Comida</th><th>Cena</th></tr></thead><tbody>${rows.map(r=>`<tr><td>Día ${r.day}</td><td>${esc(r.comida)}</td><td>${esc(r.cena)}</td></tr>`).join("")}</tbody></table>`;
+}
+
+// ---------- PDF export via print ----------
+function fillPrintList(){
+ document.getElementById("plDate").textContent="Generado el "+new Date().toLocaleDateString("es-ES");
+ const buy=[],have=[];
+ Object.keys(pantry).forEach(ing=>{(pantry[ing]?have:buy).push(ing)});
+ document.getElementById("plBuy").innerHTML=buy.length?buy.map(i=>`<div class="printcheck"><span class="box">☐</span> ${esc(i)}</div>`).join(""):"<i>Nada pendiente — lo tienes todo.</i>";
+ document.getElementById("plHave").innerHTML=have.length?have.map(i=>`<div class="printcheck"><span class="box">☑</span> ${esc(i)}</div>`).join(""):"<i>Todavía no has marcado nada como disponible.</i>";
+}
+function exportList(){
+ fillPrintList();
+ document.body.classList.add("printing-list");
+ window.print();
+}
+
+function fillPrintStudy(){
+ const days=Number(document.getElementById("days").value)||0;
+ const mealsPerDay=(document.getElementById("mComida").checked?1:0)+(document.getElementById("mCena").checked?1:0);
+ document.getElementById("psDate").textContent="Generado el "+new Date().toLocaleDateString("es-ES");
+ document.getElementById("psDays").textContent=days;
+ document.getElementById("psMeals").textContent=mealsPerDay+" (Comida: "+(document.getElementById("mComida").checked?"sí":"no")+" · Cena: "+(document.getElementById("mCena").checked?"sí":"no")+")";
+ document.getElementById("psTarrinas").textContent=document.getElementById("sTarrinas").textContent;
+ document.getElementById("psCubitos").textContent=document.getElementById("sCubitos").textContent;
+ document.getElementById("psCombos").textContent=document.getElementById("sCombos").textContent;
+ document.getElementById("psCoverage").textContent=document.getElementById("coverage").textContent;
+
+ let piecesHtml="";
+ Object.keys(CATLABEL).forEach(c=>{
+  selectedIds(c).forEach(id=>{piecesHtml+=`<tr><td>${CATLABEL[c]}</td><td>${esc(itemById(id).name)}</td><td>${portions[id]}</td></tr>`});
+ });
+ document.getElementById("psPieces").innerHTML=piecesHtml||"<tr><td colspan='3'><i>Sin piezas seleccionadas.</i></td></tr>";
+
+ const buy=[],have=[];
+ Object.keys(pantry).forEach(ing=>{(pantry[ing]?have:buy).push(ing)});
+ document.getElementById("psBuy").innerHTML=buy.length?buy.map(i=>`<div class="printcheck"><span class="box">☐</span> ${esc(i)}</div>`).join(""):"<i>Nada pendiente.</i>";
+ document.getElementById("psHave").innerHTML=have.length?have.map(i=>`<div class="printcheck"><span class="box">☑</span> ${esc(i)}</div>`).join(""):"<i>—</i>";
+
+ const combos=buildCombos();
+ document.getElementById("psCombosList").innerHTML=combos.length?combos.map(c=>"• "+esc(c.label)+(c.sub?" ("+esc(c.sub)+")":"")).join("<br>"):"<i>Sin combinaciones todavía.</i>";
+
+ const menuSection=document.getElementById("psMenuSection");
+ if(lastMenu&&lastMenu.length){
+  menuSection.style.display="block";
+  document.getElementById("psMenu").innerHTML=lastMenu.map(r=>`<tr><td>Día ${r.day}</td><td>${esc(r.comida)}</td><td>${esc(r.cena)}</td></tr>`).join("");
+ }else{
+  menuSection.style.display="none";
+ }
+}
+function exportStudy(){
+ fillPrintStudy();
+ document.body.classList.add("printing-study");
+ window.print();
+}
+window.addEventListener("afterprint",()=>{document.body.classList.remove("printing-list","printing-study");});
+
+// ---------- persistence ----------
+function save(){
+ localStorage.setItem(KEY,JSON.stringify({portions,pantry,days:document.getElementById("days").value,mComida:document.getElementById("mComida").checked,mCena:document.getElementById("mCena").checked}));
+}
+function load(){
+ try{
+  const d=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(!d)return;
+  portions=d.portions||{};pantry=d.pantry||{};
+  if(d.days)document.getElementById("days").value=d.days;
+  document.getElementById("mComida").checked=d.mComida!==false;
+  document.getElementById("mCena").checked=d.mCena!==false;
+ }catch(e){}
+}
+
+function init(){
+ load();
+ renderTabs();
+ renderItems();
+ update();
+}
+init();
+</script>
+</body>
+</html>
