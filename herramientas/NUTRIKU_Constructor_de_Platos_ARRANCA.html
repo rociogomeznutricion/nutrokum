@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NUTRIKU · Constructor de Platos ARRANCA</title>
+<style>
+:root{--navy:#071b3a;--blue:#08b9d6;--cyan:#19d7e8;--bg:#f3f7fb;--line:#dbe5ef;--muted:#64748b;--ok:#138a63;--warn:#c17a00}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--navy)}
+header{background:linear-gradient(135deg,var(--navy),#0b315f);color:#fff;padding:28px 20px}.wrap{max-width:1200px;margin:auto}.brand{color:var(--cyan);font-weight:900;letter-spacing:2px;font-size:14px}header h1{margin:7px 0 4px;font-size:clamp(26px,4vw,38px)}header p{margin:0;color:#d9e7f4;max-width:640px}.pill{display:inline-block;margin-top:13px;padding:7px 11px;border-radius:99px;background:rgba(255,255,255,.1);font-size:11px;font-weight:800}
+
+main{padding:22px 20px 60px}
+.profnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.profnav button{border:0;border-radius:11px;padding:10px 15px;font-weight:850;cursor:pointer;font-size:13px;background:#eef4f8;color:var(--navy)}.profnav button.active{background:var(--navy);color:#fff}
+.hidden{display:none!important}
+
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:18px;box-shadow:0 8px 26px rgba(7,27,58,.06)}
+.scenarios{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.scenario{min-width:190px;border:1px solid var(--line);border-radius:14px;padding:13px;cursor:pointer;background:#fbfdff;flex-shrink:0}
+.scenario:hover{border-color:var(--blue)}.scenario.active{border:2px solid var(--blue);background:#effcff}
+.scenario b{display:block;font-size:13px;margin-bottom:4px}.scenario span{font-size:11px;color:var(--muted)}
+
+.layout{display:grid;grid-template-columns:1.6fr 1fr;gap:18px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:99px;padding:9px 14px;font-weight:800;font-size:13px;cursor:pointer;color:var(--navy)}
+.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.foodgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.food{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fff;display:flex;flex-direction:column;gap:7px}
+.food .em{font-size:28px}.food h4{margin:0;font-size:14px}.food .macros{font-size:10.5px;color:var(--muted);line-height:1.5}
+.food button{margin-top:auto;border:0;border-radius:9px;padding:8px;font-weight:850;cursor:pointer;background:var(--cyan);color:var(--navy);font-size:12px}
+
+.plate{position:sticky;top:14px;align-self:start}
+.plate h3{margin:0 0 4px}
+.plate .hint{font-size:12px;color:var(--muted);margin-bottom:12px}
+.pitem{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:9px 0;font-size:13px}
+.pitem .qty{display:flex;align-items:center;gap:6px}
+.pitem .qty button{border:1px solid var(--line);background:#fff;border-radius:7px;width:24px;height:24px;cursor:pointer;font-weight:900}
+.empty-plate{color:var(--muted);font-size:13px;padding:14px 0}
+
+.totals{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}
+.tstat{background:#f6f9fb;border-radius:11px;padding:10px;text-align:center}
+.tstat b{display:block;font-size:18px}.tstat span{font-size:10px;color:var(--muted)}
+.macrobar{display:flex;height:12px;border-radius:99px;overflow:hidden;margin:10px 0;background:#eef2f5}
+.macrobar div{height:100%}
+.legend{display:flex;gap:12px;font-size:10.5px;color:var(--muted);flex-wrap:wrap;margin-bottom:14px}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+.checklist{margin-top:6px}
+.check{display:flex;gap:8px;align-items:flex-start;padding:7px 0;font-size:12.5px;border-bottom:1px solid #f1f5f9}
+.check:last-child{border-bottom:none}
+.check .dot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.dot.ok{background:var(--ok)}.dot.warn{background:var(--warn)}.dot.off{background:#cbd5e1}
+
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button.primary{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:850;cursor:pointer}
+button.accent{background:var(--cyan);color:var(--navy);border:0;border-radius:10px;padding:10px 14px;font-weight:850;cursor:pointer}
+button.soft{background:#edf4f8;color:var(--navy);border:0;border-radius:10px;padding:10px 14px;font-weight:850;cursor:pointer}
+button.danger{background:#fff0ee;color:#9f1d16;border:0;border-radius:10px;padding:10px 14px;font-weight:850;cursor:pointer}
+
+.debugbox{margin-top:12px;padding:12px;border-radius:12px;background:#f8fafc;border:1px dashed #b8c7d6;font-size:12.5px;display:none}
+.debugbox.show{display:block}
+.debugbox.ok-state{background:#eafaf0;border-color:#bde7c8}
+
+.legogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.legocol h4{margin:0 0 8px;font-size:13px}
+.legochip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:7px;font-size:12.5px;cursor:pointer;background:#fff}
+.legochip input{margin:0}
+.legoresult{margin-top:14px;background:linear-gradient(135deg,var(--navy),#0c396b);color:#fff;border-radius:14px;padding:16px}
+.legoresult b{color:var(--cyan);font-size:22px}
+
+.evalgrid{width:100%;border-collapse:collapse;margin-top:10px}
+.evalgrid th,.evalgrid td{padding:8px;border-bottom:1px solid var(--line);text-align:left;font-size:12.5px}
+.evalgrid th{background:#f1f7fa}
+textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;resize:vertical}
+input[type=text],select{padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff;width:100%}
+
+.result{margin-top:14px;padding:16px;border-radius:14px;background:#f5fbfd;border:1px solid #bfe6ef;display:none}
+.result.show{display:block}
+.pill2{display:inline-block;border-radius:99px;padding:5px 9px;background:#e8f7f5;color:#086a50;font-weight:800;font-size:11px;margin:2px}
+
+.history{margin-top:18px}
+.histrow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.emptyh{color:var(--muted);font-size:13px}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}.plate{position:static}.legogrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">NUTRIKU · DESCIFRANDO LA NUTRICIÓN</div>
+<h1>🧩 Constructor de Platos ARRANCA</h1>
+<p>Construye un plato pieza a pieza, entiende sus macros en tiempo real y detecta qué le falta — igual que enseñas a debuggear un día completo.</p>
+<span class="pill">MÉTODO ARRANCA · MODO PROFESIONAL</span>
+</div></header>
+
+<main><div class="wrap">
+
+<div class="profnav">
+<button id="btnClient" class="active" onclick="setMode('client')">👤 Modo cliente</button>
+<button id="btnPro" onclick="setMode('pro')">🧠 Modo profesional</button>
+</div>
+
+<div class="panel">
+<h3 style="margin-top:0">🎯 ¿Qué plato vamos a construir hoy?</h3>
+<div class="scenarios" id="scenarios"></div>
+<p id="scenarioHint" style="font-size:12.5px;color:var(--muted);margin-top:10px">Elige un contexto o construye libremente — no hace falta escenario para empezar.</p>
+</div>
+
+<div class="layout">
+<div>
+  <div class="panel">
+    <div class="tabs" id="tabs"></div>
+    <div class="foodgrid" id="foodgrid"></div>
+  </div>
+
+  <div class="panel">
+    <h3 style="margin-top:0">🧊 Planificador Lego Meal Prep</h3>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:-6px">Elige qué piezas vas a cocinar y congelar este domingo. El sistema calcula cuántas combinaciones distintas te da esa compra.</p>
+    <div class="legogrid">
+      <div class="legocol"><h4>🍗 Proteínas</h4><div id="legoProt"></div></div>
+      <div class="legocol"><h4>🍚 Bases</h4><div id="legoBase"></div></div>
+      <div class="legocol"><h4>🥦 Verduras</h4><div id="legoVeg"></div></div>
+    </div>
+    <div class="legoresult" id="legoResult"></div>
+  </div>
+</div>
+
+<div class="plate panel">
+  <h3>🍽️ Tu plato</h3>
+  <div class="hint">Añade piezas desde la izquierda. Los totales y el checklist ARRANCA se actualizan solos.</div>
+  <div id="plateList"><div class="empty-plate">Todavía no has añadido nada. Empieza por la proteína.</div></div>
+
+  <div class="totals">
+    <div class="tstat"><b id="tkcal">0</b><span>KCAL</span></div>
+    <div class="tstat"><b id="titems">0</b><span>PIEZAS</span></div>
+  </div>
+  <div class="macrobar" id="macrobar"></div>
+  <div class="legend">
+    <span><i style="background:#08b9d6"></i>Proteína</span>
+    <span><i style="background:#19d7e8"></i>Hidrato</span>
+    <span><i style="background:#071b3a"></i>Grasa</span>
+  </div>
+
+  <div class="checklist" id="checklist"></div>
+
+  <div class="actions">
+    <button class="accent" onclick="loadBug()">🐛 Cargar plato con bug</button>
+    <button class="soft" onclick="clearPlate()">✕ Vaciar plato</button>
+    <button class="primary" onclick="debugPlate()">🔎 Debuggear este plato</button>
+  </div>
+  <div class="debugbox" id="debugbox"></div>
+</div>
+</div>
+
+<div class="panel" id="proPanel" style="display:none">
+<h2 style="margin-top:0">🧠 Modo Profesional ARRANCA</h2>
+<p style="font-size:13px;color:var(--muted)">Deja que la clienta construya el plato sola. Pregunta <b>"¿por qué has elegido esto?"</b> antes de corregir nada. Usa el checklist como apoyo visual, no como examen.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+  <input id="clientName" type="text" placeholder="Nombre / iniciales de la clienta">
+  <select id="skillFocus">
+    <option value="">Habilidad a evaluar (opcional)</option>
+    <option value="Construcción de plato equilibrado">Construcción de plato equilibrado</option>
+    <option value="Lectura de macronutrientes">Lectura de macronutrientes</option>
+    <option value="Gestión del kit de emergencia / Lego meal prep">Gestión del kit de emergencia / Lego meal prep</option>
+    <option value="Detección de platos incompletos">Detección de platos incompletos</option>
+  </select>
+</div>
+<textarea id="proNotes" placeholder="Notas profesionales: ¿qué eligió primero, proteína o hidrato? ¿necesitó pistas? ¿reconoció el bug sin ayuda?" style="margin-top:12px"></textarea>
+
+<h4>📊 Evaluación rápida (1-5)</h4>
+<table class="evalgrid">
+<thead><tr><th>Indicador</th><th>Puntuación</th></tr></thead>
+<tbody id="evalRows"></tbody>
+</table>
+<div class="actions"><button class="primary" onclick="calcEvaluation()">✅ Generar evaluación</button><button class="soft" onclick="savePlateExample()">💾 Guardar este plato como ejemplo</button></div>
+<div class="result" id="evalResult"></div>
+
+<div class="history">
+<h3>📋 Registro de sesiones</h3>
+<div id="history" class="emptyh">Todavía no hay platos guardados.</div>
+</div>
+</div>
+
+</div></main>
+
+<script>
+const KEY="nutriku_arranca_constructor_v1";
+
+const FOODS={
+ proteina:[
+  {id:"pollo",name:"Pechuga de pollo (150g)",emoji:"🍗",kcal:250,p:46,c:0,f:5},
+  {id:"salmon",name:"Salmón (130g)",emoji:"🐟",kcal:270,p:26,c:0,f:17},
+  {id:"huevos",name:"2 huevos cocidos",emoji:"🥚",kcal:155,p:13,c:1,f:11},
+  {id:"atun",name:"Atún en lata natural",emoji:"🥫",kcal:90,p:21,c:0,f:1},
+  {id:"pavo",name:"Pavo fiambre (80g)",emoji:"🍖",kcal:85,p:14,c:1,f:2},
+  {id:"garbanzos",name:"Garbanzos cocidos (150g)",emoji:"🫘",kcal:245,p:14,c:41,f:4},
+  {id:"tofu",name:"Tofu (150g)",emoji:"🧊",kcal:115,p:12,c:3,f:7}
+ ],
+ hidrato:[
+  {id:"arroz",name:"Arroz integral (150g)",emoji:"🍚",kcal:185,p:4,c:39,f:2},
+  {id:"boniato",name:"Boniato asado (200g)",emoji:"🍠",kcal:180,p:4,c:42,f:0},
+  {id:"pasta",name:"Pasta cocida (180g)",emoji:"🍝",kcal:235,p:9,c:45,f:2},
+  {id:"patata",name:"Patata cocida (200g)",emoji:"🥔",kcal:175,p:4,c:40,f:0},
+  {id:"quinoa",name:"Quinoa cocida (150g)",emoji:"🌾",kcal:180,p:7,c:32,f:3},
+  {id:"pan",name:"Pan integral (60g)",emoji:"🍞",kcal:150,p:8,c:25,f:2}
+ ],
+ verdura:[
+  {id:"brocoli",name:"Brócoli al vapor",emoji:"🥦",kcal:50,p:4,c:11,f:1},
+  {id:"espinacas",name:"Espinacas salteadas",emoji:"🍃",kcal:35,p:4,c:5,f:1},
+  {id:"pimiento",name:"Pimiento asado",emoji:"🫑",kcal:45,p:2,c:9,f:0},
+  {id:"calabacin",name:"Calabacín salteado",emoji:"🥒",kcal:25,p:2,c:5,f:0},
+  {id:"ensalada",name:"Ensalada verde",emoji:"🥬",kcal:15,p:1,c:3,f:0},
+  {id:"tomate",name:"Tomate aliñado",emoji:"🍅",kcal:25,p:1,c:6,f:0}
+ ],
+ grasa:[
+  {id:"aove",name:"AOVE (10ml)",emoji:"🫒",kcal:80,p:0,c:0,f:9},
+  {id:"aguacate",name:"Medio aguacate",emoji:"🥑",kcal:110,p:1,c:6,f:10},
+  {id:"frutossecos",name:"Frutos secos (20g)",emoji:"🥜",kcal:120,p:4,c:4,f:10},
+  {id:"chia",name:"Semillas de chía (10g)",emoji:"🌱",kcal:50,p:2,c:4,f:3}
+ ]
+};
+const CATLABEL={proteina:"🍗 Proteína",hidrato:"🍚 Hidrato",verdura:"🥦 Verdura",grasa:"🫒 Grasa"};
+const ALLFOODS=[].concat(FOODS.proteina,FOODS.hidrato,FOODS.verdura,FOODS.grasa);
+function foodById(id){return ALLFOODS.find(f=>f.id===id)}
+function catOf(id){for(const c in FOODS){if(FOODS[c].some(f=>f.id===id))return c}return null}
+
+const SCENARIOS=[
+ {id:"rapida",title:"Comida rápida entre semana",hint:"Objetivo: proteína + hidrato + verdura en menos de 20 minutos de montaje.",bug:"tostada"},
+ {id:"lutea",title:"Cena en fase lútea",hint:"Objetivo: prioriza fibra soluble y grasa buena — recuerda el capítulo de ciclo hormonal.",bug:"ensalada"},
+ {id:"postentreno",title:"Después de entrenar",hint:"Objetivo: proteína de calidad + hidrato para reponer glucógeno.",bug:"pastasola"},
+ {id:"emergencia",title:"Kit de emergencia sin cocinar",hint:"Objetivo: usa solo piezas de 0 cocinado (atún, huevos, legumbre, verdura ya lista).",bug:"pechuga"}
+];
+
+const BUGS={
+ tostada:{label:"🐛 La tostada de la mañana",items:{pan:1}},
+ ensalada:{label:"🐛 La ensalada de oficina",items:{ensalada:1,tomate:1}},
+ pastasola:{label:"🐛 El bol de pasta enorme",items:{pasta:2}},
+ pechuga:{label:"🐛 La pechuga sola a la plancha",items:{pollo:1}}
+};
+
+let mode="client";
+let activeCat="proteina";
+let activeScenario=null;
+let plate={};
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+function setMode(m){
+ mode=m;
+ document.getElementById("btnClient").classList.toggle("active",m==="client");
+ document.getElementById("btnPro").classList.toggle("active",m==="pro");
+ document.getElementById("proPanel").style.display=m==="pro"?"block":"none";
+ if(m==="pro")historyRender();
+}
+
+function renderScenarios(){
+ const el=document.getElementById("scenarios");
+ el.innerHTML=SCENARIOS.map(s=>`<div class="scenario${activeScenario===s.id?' active':''}" onclick="pickScenario('${s.id}')"><b>${esc(s.title)}</b><span>${esc(s.hint)}</span></div>`).join("");
+}
+function pickScenario(id){
+ activeScenario=(activeScenario===id)?null:id;
+ renderScenarios();
+ const s=SCENARIOS.find(x=>x.id===id);
+ document.getElementById("scenarioHint").textContent=(activeScenario&&s)?("🎯 "+s.hint):"Elige un contexto o construye libremente — no hace falta escenario para empezar.";
+}
+
+function renderTabs(){
+ const el=document.getElementById("tabs");
+ el.innerHTML=Object.keys(CATLABEL).map(c=>`<div class="tab${activeCat===c?' active':''}" onclick="setCat('${c}')">${CATLABEL[c]}</div>`).join("");
+}
+function setCat(c){activeCat=c;renderTabs();renderFoodGrid();}
+function renderFoodGrid(){
+ const el=document.getElementById("foodgrid");
+ el.innerHTML=FOODS[activeCat].map(f=>`<div class="food"><div class="em">${f.emoji}</div><h4>${esc(f.name)}</h4><div class="macros">${f.kcal} kcal · P ${f.p}g · H ${f.c}g · G ${f.f}g</div><button onclick="addToPlate('${f.id}')">+ Añadir al plato</button></div>`).join("");
+}
+
+function addToPlate(id){plate[id]=(plate[id]||0)+1;renderPlate();}
+function decPlate(id){if(!plate[id])return;plate[id]--;if(plate[id]<=0)delete plate[id];renderPlate();}
+function clearPlate(){plate={};renderPlate();document.getElementById("debugbox").className="debugbox";}
+
+function renderPlate(){
+ const ids=Object.keys(plate);
+ const list=document.getElementById("plateList");
+ if(!ids.length){list.innerHTML='<div class="empty-plate">Todavía no has añadido nada. Empieza por la proteína.</div>';}
+ else{
+  list.innerHTML=ids.map(id=>{
+   const f=foodById(id);
+   return `<div class="pitem"><span>${f.emoji} ${esc(f.name)}</span><span class="qty"><button onclick="decPlate('${id}')">−</button>${plate[id]}<button onclick="addToPlate('${id}')">+</button></span></div>`;
+  }).join("");
+ }
+ const totals=calcTotals();
+ document.getElementById("tkcal").textContent=totals.kcal;
+ document.getElementById("titems").textContent=ids.reduce((a,id)=>a+plate[id],0);
+
+ const maxKcal=Math.max(totals.kcal,1);
+ const pKcal=totals.p*4,cKcal=totals.c*4,fKcal=totals.f*9;
+ const sum=Math.max(pKcal+cKcal+fKcal,1);
+ document.getElementById("macrobar").innerHTML=
+  `<div style="width:${pKcal/sum*100}%;background:#08b9d6"></div>`+
+  `<div style="width:${cKcal/sum*100}%;background:#19d7e8"></div>`+
+  `<div style="width:${fKcal/sum*100}%;background:#071b3a"></div>`;
+
+ renderChecklist(totals,ids);
+}
+
+function calcTotals(){
+ let kcal=0,p=0,c=0,f=0;
+ Object.keys(plate).forEach(id=>{
+  const food=foodById(id),q=plate[id];
+  kcal+=food.kcal*q;p+=food.p*q;c+=food.c*q;f+=food.f*q;
+ });
+ return {kcal,p,c,f};
+}
+
+function renderChecklist(totals,ids){
+ const cats=ids.map(catOf);
+ const hasProt=cats.includes("proteina");
+ const hasCarb=cats.includes("hidrato");
+ const hasVeg=cats.includes("verdura");
+ const hasFat=cats.includes("grasa");
+ const items=[
+  {ok:hasProt,label:hasProt?"Proteína incluida — buena base para saciedad.":"Falta proteína. Sin ella cuesta parar de comer hidrato."},
+  {ok:hasVeg,label:hasVeg?"Verdura incluida — aquí no hay límite, vía libre.":"Sin verdura todavía. Añade la que te apetezca, no hay tope."},
+  {ok:hasFat,warn:!hasFat,label:hasFat?"Grasa de calidad presente.":"Sin grasa añadida — no hace falta en todas las comidas, pero sí en 2 platos principales al día."},
+  {ok:ids.length>0,label:ids.length?("Densidad calórica del plato: "+totals.kcal+" kcal."):"Añade piezas para ver el cálculo."}
+ ];
+ document.getElementById("checklist").innerHTML=items.map(it=>{
+  const dot=it.ok?"ok":(it.warn?"warn":"off");
+  return `<div class="check"><span class="dot ${dot}"></span><span>${esc(it.label)}</span></div>`;
+ }).join("");
+}
+
+function loadBug(){
+ const keys=Object.keys(BUGS);
+ let key = activeScenario && SCENARIOS.find(s=>s.id===activeScenario) ? SCENARIOS.find(s=>s.id===activeScenario).bug : keys[Math.floor(Math.random()*keys.length)];
+ plate={...BUGS[key].items};
+ renderPlate();
+ const box=document.getElementById("debugbox");
+ box.className="debugbox show";
+ box.innerHTML=`<b>${esc(BUGS[key].label)}</b><br>Este plato tiene un bug. Revisa el checklist y añade las piezas que faltan para "compilarlo" correctamente.`;
+}
+
+function debugPlate(){
+ const totals=calcTotals();
+ const ids=Object.keys(plate);
+ const cats=ids.map(catOf);
+ const hasProt=cats.includes("proteina"), hasCarb=cats.includes("hidrato"), hasVeg=cats.includes("verdura"), hasFat=cats.includes("grasa");
+ const box=document.getElementById("debugbox");
+ let msgs=[];
+ if(!ids.length){msgs.push("El plato está vacío. No hay nada que debuggear todavía.");}
+ else{
+  if(!hasProt)msgs.push("⚠️ ERROR: falta proteína. El plato dará hambre de dopamina y costará parar de comer hidrato.");
+  if(!hasVeg)msgs.push("⚠️ AVISO: sin verdura. Añade la que te apetezca, aquí no hay límite.");
+  if(hasCarb && !hasProt)msgs.push("⚠️ Mucho hidrato sin proteína al lado suele acabar en 'no puedo parar'.");
+  if(!hasFat)msgs.push("ℹ️ Sin grasa añadida — recuerda que no hace falta en todas las comidas, pero sí en al menos 2 platos principales al día.");
+  if(hasProt&&hasVeg)msgs.push("✅ Tiene la base sólida: proteína + verdura.");
+  if(!msgs.length || (hasProt&&hasVeg&&hasFat))msgs.push("✅ Plato compilado sin errores críticos. Buen trabajo.");
+ }
+ const allOk = ids.length>0 && hasProt && hasVeg;
+ box.className="debugbox show"+(allOk?" ok-state":"");
+ box.innerHTML=`<b>🔎 Resultado del debug</b><br>${msgs.map(esc).join("<br>")}<br><br><b>Total:</b> ${totals.kcal} kcal · P ${totals.p}g · H ${totals.c}g · G ${totals.f}g`;
+}
+
+// ---- Lego meal prep planner ----
+function renderLego(){
+ document.getElementById("legoProt").innerHTML=FOODS.proteina.map(f=>`<label class="legochip"><input type="checkbox" data-lego="proteina" value="${f.id}" onchange="updateLego()">${f.emoji} ${esc(f.name.split(' (')[0])}</label>`).join("");
+ document.getElementById("legoBase").innerHTML=FOODS.hidrato.map(f=>`<label class="legochip"><input type="checkbox" data-lego="hidrato" value="${f.id}" onchange="updateLego()">${f.emoji} ${esc(f.name.split(' (')[0])}</label>`).join("");
+ document.getElementById("legoVeg").innerHTML=FOODS.verdura.map(f=>`<label class="legochip"><input type="checkbox" data-lego="verdura" value="${f.id}" onchange="updateLego()">${f.emoji} ${esc(f.name.split(' (')[0])}</label>`).join("");
+ updateLego();
+}
+function updateLego(){
+ const nP=document.querySelectorAll('[data-lego="proteina"]:checked').length;
+ const nH=document.querySelectorAll('[data-lego="hidrato"]:checked').length;
+ const nV=document.querySelectorAll('[data-lego="verdura"]:checked').length;
+ const combos=nP*nH*nV;
+ const el=document.getElementById("legoResult");
+ if(!nP||!nH||!nV){
+  el.innerHTML=`Selecciona al menos 1 proteína, 1 base y 1 verdura para calcular tus combinaciones.<br><span style="font-size:12px;opacity:.85">Ahora mismo: ${nP} proteína(s) · ${nH} base(s) · ${nV} verdura(s)</span>`;
+  return;
+ }
+ el.innerHTML=`Con ${nP} proteína(s) × ${nH} base(s) × ${nV} verdura(s) tienes <b>${combos} combinaciones</b> distintas para la semana, cocinando una sola vez.`;
+}
+
+// ---- Professional evaluation ----
+const INDICATORS=[
+ "Elige proteína antes que hidrato sin que se lo recuerden",
+ "Reconoce cuándo falta una pieza en el plato",
+ "Entiende su propio total de macros, no solo memoriza",
+ "Aplica el criterio a un contexto nuevo (escenario distinto)",
+ "Comprende la lógica de combinaciones del Lego meal prep"
+];
+function renderEvalRows(){
+ document.getElementById("evalRows").innerHTML=INDICATORS.map((x,i)=>`<tr><td>${esc(x)}</td><td><select id="ev${i}"><option value="">—</option>${[1,2,3,4,5].map(v=>`<option value="${v}">${v}</option>`).join("")}</select></td></tr>`).join("");
+}
+function calcEvaluation(){
+ let vals=[];
+ for(let i=0;i<INDICATORS.length;i++){const el=document.getElementById("ev"+i);const v=el?Number(el.value):0;if(v)vals.push(v);}
+ if(vals.length<INDICATORS.length){alert("Completa las "+INDICATORS.length+" puntuaciones para generar la evaluación.");return;}
+ const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+ const level=avg<2?"Dependencia":avg<3?"En transición":avg<4?"Autonomía en desarrollo":"Autonomía consolidada";
+ const client=document.getElementById("clientName").value||"Cliente/a";
+ const focus=document.getElementById("skillFocus").value||"Construcción de plato equilibrado";
+ const notes=document.getElementById("proNotes").value;
+ const totals=calcTotals();
+ const res=document.getElementById("evalResult");
+ res.className="result show";
+ res.innerHTML=`<h3 style="margin-top:0">${esc(level)}</h3>
+ <p><b>Media:</b> ${avg.toFixed(1)}/5 &nbsp; <span class="pill2">${esc(client)}</span> <span class="pill2">${esc(focus)}</span></p>
+ <p><b>Último plato construido:</b> ${totals.kcal} kcal · P ${totals.p}g · H ${totals.c}g · G ${totals.f}g</p>
+ <p><b>Observaciones:</b> ${esc(notes||"Sin observaciones añadidas.")}</p>
+ <p><b>Próximo paso ARRANCA:</b> ${avg>=4?"pasa a un escenario con menos pistas (p. ej. sin categorías predefinidas)":"repite la construcción de plato en un escenario distinto al de hoy"}</p>`;
+ saveHistory({type:"Evaluación",client,focus,avg:avg.toFixed(1),date:new Date().toLocaleString("es-ES")});
+}
+function savePlateExample(){
+ const ids=Object.keys(plate);
+ if(!ids.length){alert("El plato está vacío, no hay nada que guardar.");return;}
+ const totals=calcTotals();
+ const client=document.getElementById("clientName").value||"Cliente/a";
+ const desc=ids.map(id=>foodById(id).name+" x"+plate[id]).join(", ");
+ saveHistory({type:"Plato guardado",client,detail:desc,kcal:totals.kcal,date:new Date().toLocaleString("es-ES")});
+ alert("Plato guardado en el registro.");
+}
+function saveHistory(entry){
+ const data=JSON.parse(localStorage.getItem(KEY)||"[]");
+ data.unshift(entry);
+ localStorage.setItem(KEY,JSON.stringify(data.slice(0,100)));
+ historyRender();
+}
+function historyRender(){
+ const data=JSON.parse(localStorage.getItem(KEY)||"[]");
+ const el=document.getElementById("history");
+ if(!data.length){el.className="emptyh";el.innerHTML="Todavía no hay platos guardados.";return;}
+ el.className="";
+ el.innerHTML=data.slice(0,12).map(d=>{
+  if(d.type==="Evaluación")return `<div class="histrow"><span><strong>${esc(d.client)}</strong><br><small>${esc(d.focus)} · Media ${esc(d.avg)}/5 · ${esc(d.date)}</small></span><span>📊</span></div>`;
+  return `<div class="histrow"><span><strong>${esc(d.client)}</strong><br><small>${esc(d.detail)} · ${d.kcal} kcal · ${esc(d.date)}</small></span><span>🍽️</span></div>`;
+ }).join("");
+}
+
+function init(){
+ renderScenarios();
+ renderTabs();
+ renderFoodGrid();
+ renderPlate();
+ renderLego();
+ renderEvalRows();
+ historyRender();
+}
+init();
+</script>
+</body>
+</html>
