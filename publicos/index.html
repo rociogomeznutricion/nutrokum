@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Paciente demostración</title><style>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Paciente demostración</title><style>
 /* cspell:disable-file */
 /* webkit printing magic: print all background colors */
 html {
@@ -40,7 +40,8 @@ a.visited {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
 	letter-spacing: -0.01em;
 	line-height: 1.2;
 	font-weight: 600;
@@ -76,6 +77,11 @@ h3 {
 	margin-top: 1.25rem;
 }
 
+h4 {
+	font-size: 1rem;
+	margin-top: 1rem;
+}
+
 .source {
 	border: 1px solid #ddd;
 	border-radius: 3px;
@@ -98,28 +104,16 @@ figure {
 	page-break-inside: avoid;
 }
 
-/*
- * Toggles and callouts hold arbitrary content, so they can easily be taller
- * than a page. They must stay breakable: avoiding breaks inside them makes
- * Chromium push the whole block onto the next page, which leaves the previous
- * page mostly empty before every long toggle.
- */
 details,
 aside {
 	margin: 1.25em 0;
 }
 
-/* Keep a toggle's title on the same page as the start of its content. */
 summary {
 	page-break-after: avoid;
 	break-after: avoid;
 }
 
-/*
- * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
- * <summary>. Without this reset, the heading's margin-top pushes it below the
- * ::marker (▼), so the triangle and the title appear on separate lines.
- */
 summary h1,
 summary h2,
 summary h3,
@@ -335,7 +329,6 @@ ol > li {
 	list-style-type: none;
 }
 
-/* Indent toggle children */
 .toggle > li > details {
 	padding-left: 1.7em;
 }
@@ -402,13 +395,6 @@ time {
 	margin-right: 0.5em;
 }
 
-/*
- * Render emoji icons using a ::before pseudo-element to keep the glyph
- * out of the DOM textContent traversal. This avoids double-rendering icons
- * in callouts and page titles.
- * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
- * flag as a duplicate tag after codegen.
- */
 .icon[data-emoji]::before {
 	content: attr(data-emoji);
 }
@@ -508,7 +494,6 @@ code {
 	background: rgba(135, 131, 120, 0.15);
 	border-radius: 3px;
 	padding: 0.2em 0.4em;
-	border-radius: 3px;
 	font-size: 85%;
 	tab-size: 2;
 }
@@ -606,189 +591,21 @@ blockquote.quote-large {
 .code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
 .serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
 .mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
-.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
-.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
-.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
-.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
-.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
-.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
-.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
-.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
-.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
-.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
-.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
-.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
-.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
-.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
-.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
-.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
-.highlight-default {
-	color: rgba(44, 44, 43, 1);
-}
-.highlight-gray {
-	color: rgba(125, 122, 117, 1);
-	fill: rgba(125, 122, 117, 1);
-}
-.highlight-brown {
-	color: rgba(159, 118, 90, 1);
-	fill: rgba(159, 118, 90, 1);
-}
-.highlight-orange {
-	color: rgba(210, 123, 45, 1);
-	fill: rgba(210, 123, 45, 1);
-}
-.highlight-yellow {
-	color: rgba(203, 148, 52, 1);
-	fill: rgba(203, 148, 52, 1);
-}
-.highlight-teal {
-	color: rgba(80, 148, 110, 1);
-	fill: rgba(80, 148, 110, 1);
-}
-.highlight-blue {
-	color: rgba(56, 125, 201, 1);
-	fill: rgba(56, 125, 201, 1);
-}
-.highlight-purple {
-	color: rgba(154, 107, 180, 1);
-	fill: rgba(154, 107, 180, 1);
-}
-.highlight-pink {
-	color: rgba(193, 76, 138, 1);
-	fill: rgba(193, 76, 138, 1);
-}
-.highlight-red {
-	color: rgba(207, 81, 72, 1);
-	fill: rgba(207, 81, 72, 1);
-}
-.highlight-default_background {
-	color: rgba(44, 44, 43, 1);
-}
-.highlight-gray_background {
-	background: rgba(42, 28, 0, 0.07);
-}
-.highlight-brown_background {
-	background: rgba(139, 46, 0, 0.086);
-}
-.highlight-orange_background {
-	background: rgba(224, 101, 1, 0.129);
-}
-.highlight-yellow_background {
-	background: rgba(211, 168, 0, 0.137);
-}
-.highlight-teal_background {
-	background: rgba(0, 100, 45, 0.09);
-}
-.highlight-blue_background {
-	background: rgba(0, 124, 215, 0.094);
-}
-.highlight-purple_background {
-	background: rgba(102, 0, 178, 0.078);
-}
-.highlight-pink_background {
-	background: rgba(197, 0, 93, 0.086);
-}
-.highlight-red_background {
-	background: rgba(223, 22, 0, 0.094);
-}
-.block-color-default {
-	color: inherit;
-	fill: inherit;
-}
-.block-color-gray {
-	color: rgba(125, 122, 117, 1);
-	fill: rgba(125, 122, 117, 1);
-}
-.block-color-brown {
-	color: rgba(159, 118, 90, 1);
-	fill: rgba(159, 118, 90, 1);
-}
-.block-color-orange {
-	color: rgba(210, 123, 45, 1);
-	fill: rgba(210, 123, 45, 1);
-}
-.block-color-yellow {
-	color: rgba(203, 148, 52, 1);
-	fill: rgba(203, 148, 52, 1);
-}
-.block-color-teal {
-	color: rgba(80, 148, 110, 1);
-	fill: rgba(80, 148, 110, 1);
-}
-.block-color-blue {
-	color: rgba(56, 125, 201, 1);
-	fill: rgba(56, 125, 201, 1);
-}
-.block-color-purple {
-	color: rgba(154, 107, 180, 1);
-	fill: rgba(154, 107, 180, 1);
-}
-.block-color-pink {
-	color: rgba(193, 76, 138, 1);
-	fill: rgba(193, 76, 138, 1);
-}
-.block-color-red {
-	color: rgba(207, 81, 72, 1);
-	fill: rgba(207, 81, 72, 1);
-}
-.block-color-default_background {
-	color: inherit;
-	fill: inherit;
-}
-.block-color-gray_background {
-	background: rgba(240, 239, 237, 1);
-}
-.block-color-brown_background {
-	background: rgba(245, 237, 233, 1);
-}
-.block-color-orange_background {
-	background: rgba(251, 235, 222, 1);
-}
-.block-color-yellow_background {
-	background: rgba(249, 243, 220, 1);
-}
-.block-color-teal_background {
-	background: rgba(232, 241, 236, 1);
-}
-.block-color-blue_background {
-	background: rgba(229, 242, 252, 1);
-}
-.block-color-purple_background {
-	background: rgba(243, 235, 249, 1);
-}
-.block-color-pink_background {
-	background: rgba(250, 233, 241, 1);
-}
-.block-color-red_background {
-	background: rgba(252, 233, 231, 1);
-}
-.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
-.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
-.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
-.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
-.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
-.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
-.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
-.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
-.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
-.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
 
-.checkbox {
-	display: inline-flex;
-	vertical-align: text-bottom;
-	width: 16;
-	height: 16;
-	background-size: 16px;
-	margin-left: 2px;
-	margin-right: 5px;
-}
-
-.checkbox-on {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-
-.checkbox-off {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+/* REGLAS RESPONSIVE PARA MÓVILES */
+@media screen and (max-width: 768px) {
+	body {
+		margin: 1em !important;
+		max-width: 100% !important;
+		padding: 0 12px !important;
+	}
+	.column-list {
+		flex-direction: column !important;
+		gap: 20px !important;
+	}
+	.column {
+		width: 100% !important;
+	}
 }
 	
 </style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style></head><body><article id="3da33954-c29d-803f-80fb-c2d8176e20e8" class="page sans"><header><img class="page-cover-image" src="portada_banner_panel_notion.png" style="object-position:center 50%"/><h1 class="page-title" dir="auto">Paciente demostración</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div id="3da33954-c29d-80ab-a590-d5ab0c87bc27" class="column-list" data-notion-column-list="" dir="auto"><div id="3da33954-c29d-80e4-a899-eba7ae0ab12c" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><h3 id="3da33954-c29d-8042-aa57-d271d28250b5" class="" dir="auto">Metodología de trabajo</h3></div><div id="3da33954-c29d-8001-b083-c3b7c62f0117" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="3da33954-c29d-8067-8b7b-e7319fe71c61" dir="ltr"><div class="source"><a href="https://docs.google.com/presentation/d/e/2PACX-1vSuM5mlBbyM1Gr32o2AYCg6h0ZJt2k0D7lpM0b9OArEaBkOL-YznqDi4fl5qRjV2A/pub?start=false&amp;loop=false&amp;delayms=60000" data-notion-file="https://docs.google.com/presentation/d/e/2PACX-1vSuM5mlBbyM1Gr32o2AYCg6h0ZJt2k0D7lpM0b9OArEaBkOL-YznqDi4fl5qRjV2A/pub?start=false&amp;loop=false&amp;delayms=60000" data-notion-file-alias="Como vamos a trabajar">Como vamos a trabajar</a></div></figure><figure id="3da33954-c29d-8065-b1ca-d0244efa56a6" dir="ltr"><div class="source"><a href="NUTRIKU__Formulario_de_Primera_Consulta_-_DEMO.pdf" data-notion-file="NUTRIKU__Formulario_de_Primera_Consulta_-_DEMO.pdf" data-notion-file-alias="Formulario primera sesion">Formulario primera sesion</a></div></figure></div></div><h2 id="3da33954-c29d-802f-93b3-e4df4c56b6ef" class="" dir="auto">Recursos primera sesión</h2><h4 id="3da33954-c29d-8068-86f5-f73580eaf965" class="" dir="auto">Cuaderno de trabajo 3 meses</h4><figure id="3da33954-c29d-8040-97bd-d20b632e27b4" dir="ltr"><div class="source"><a href="Cuaderno_NUTRIKU_90dias_1a1.pdf" data-notion-file="Cuaderno_NUTRIKU_90dias_1a1.pdf" data-notion-file-alias="Cuaderno_NUTRIKU_90dias_1a1.pdf">Cuaderno_NUTRIKU_90dias_1a1.pdf</a></div></figure><h3 id="3da33954-c29d-8078-9ade-fbf682ae50d4" class="" dir="auto">Kit de herramientas diarias</h3><figure id="3da33954-c29d-800c-bf1c-c11e5d9fcb93" dir="ltr"><div class="source"><a href="https://nutriku.com/herramientas/NUTRIKU_Planificador_Lego_Meal_Prep.html" data-notion-file="https://nutriku.com/herramientas/NUTRIKU_Planificador_Lego_Meal_Prep.html" data-notion-file-alias="Planificador lego prep meal">Planificador lego prep meal</a></div></figure><figure id="3da33954-c29d-8011-89b5-ca5bd558f6de" dir="ltr"><div class="source"><a href="https://nutriku.com/herramientas/calculadora-fase-ciclo.html" data-notion-file="https://nutriku.com/herramientas/calculadora-fase-ciclo.html" data-notion-file-alias="Calculadora fase ciclo menstrual">Calculadora fase ciclo menstrual</a></div></figure><figure id="3da33954-c29d-8070-b690-c148a9e5645c" dir="ltr"><div class="source"><a href="https://nutriku.com/herramientas/calculadora_equivalencias.html" data-notion-file="https://nutriku.com/herramientas/calculadora_equivalencias.html" data-notion-file-alias="Calculadora de equivalencias de alimentos basicos">Calculadora de equivalencias de alimentos basicos</a></div></figure><figure id="3da33954-c29d-807b-a7fd-c495d6dc251b" dir="ltr"><div class="source"><a href="https://nutriku.com/herramientas/auditor_etiquetas.html" data-notion-file="https://nutriku.com/herramientas/auditor_etiquetas.html" data-notion-file-alias="Auditor de etiquetas de alimentos">Auditor de etiquetas de alimentos</a></div></figure><p id="3da33954-c29d-8009-a8c3-f75b30bb2975" class="" dir="auto">
