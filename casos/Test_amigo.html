@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test del Amigo Invisible 🎄</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter y Mountains of Christmas para toque navideño -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        festive: {
+                            red: '#D42426',
+                            darkred: '#9B1B1E',
+                            green: '#165B33',
+                            darkgreen: '#0B3B21',
+                            gold: '#F8B229',
+                            cream: '#FBF5F0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        festive: ['"Mountains of Christmas"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Copos de nieve animados */
+        .snowflake {
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px #000;
+            position: fixed;
+            top: -10%;
+            z-index: 9999;
+            user-select: none;
+            cursor: default;
+            animation-name: snowflakes-fall, snowflakes-shake;
+            animation-duration: 10s, 3s;
+            animation-timing-function: linear, ease-in-out;
+            animation-iteration-count: infinite, infinite;
+            animation-play-state: running, running;
+        }
+        @keyframes snowflakes-fall {
+            0% { top: -10%; }
+            100% { top: 100%; }
+        }
+        @keyframes snowflakes-shake {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(80px); }
+        }
+        .snowflake:nth-of-type(0) { left: 1%; animation-delay: 0s, 0s; }
+        .snowflake:nth-of-type(1) { left: 10%; animation-delay: 1s, 1s; }
+        .snowflake:nth-of-type(2) { left: 20%; animation-delay: 6s, 0.5s; }
+        .snowflake:nth-of-type(3) { left: 30%; animation-delay: 4s, 2s; }
+        .snowflake:nth-of-type(4) { left: 40%; animation-delay: 2s, 2s; }
+        .snowflake:nth-of-type(5) { left: 50%; animation-delay: 8s, 3s; }
+        .snowflake:nth-of-type(6) { left: 60%; animation-delay: 6s, 2s; }
+        .snowflake:nth-of-type(7) { left: 70%; animation-delay: 2.5s, 1s; }
+        .snowflake:nth-of-type(8) { left: 80%; animation-delay: 1s, 0s; }
+        .snowflake:nth-of-type(9) { left: 90%; animation-delay: 3s, 1.5s; }
+
+        /* Brillo sutil */
+        .glow {
+            box-shadow: 0 0 15px rgba(248, 178, 41, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-festive-darkgreen via-festive-green to-festive-darkred min-h-screen text-slate-800 font-sans pb-12 relative overflow-x-hidden">
+
+    <!-- Animación de Nieve -->
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+    </div>
+
+    <!-- Banner Decorativo Superior -->
+    <div class="w-full bg-festive-red text-festive-gold text-center py-2 px-4 shadow-md flex justify-center items-center gap-2 font-bold text-sm sm:text-base border-b-2 border-festive-gold">
+        <span>🎁</span>
+        <span>¡Edición Navidad 2026! Completa tus gustos y compártelos</span>
+        <span>🎄</span>
+    </div>
+
+    <main class="max-w-2xl mx-auto px-4 mt-6">
+        <!-- Tarjeta Principal -->
+        <div class="bg-festive-cream rounded-3xl shadow-2xl overflow-hidden border-4 border-festive-gold">
+            
+            <!-- Encabezado -->
+            <div class="bg-gradient-to-r from-festive-red to-festive-darkred p-6 sm:p-8 text-center text-white relative">
+                <div class="text-4xl sm:text-5xl mb-2">🎄</div>
+                <h1 class="font-festive text-4xl sm:text-5xl font-bold tracking-wide text-festive-gold drop-shadow-md">
+                    TEST DEL AMIGO INVISIBLE
+                </h1>
+                <p class="text-slate-100 mt-2 text-sm sm:text-base font-light">
+                    Ayuda a tu amigo invisible a acertar de lleno con tu regalo ✨
+                </p>
+            </div>
+
+            <!-- Formulario -->
+            <form id="secretSantaForm" class="p-6 sm:p-8 space-y-6">
+                
+                <!-- Nombre -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="nombre" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <i class="fa-solid font-bold text-festive-red fa-user"></i> Tu Nombre:
+                    </label>
+                    <input type="text" id="nombre" required placeholder="Escribe tu nombre completo o apodo..." 
+                           class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition">
+                </div>
+
+                <!-- Pregunta 1 -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="p1" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <span>✨</span> Ahora mismo, ¿qué cosa te hace especial ilusión?
+                    </label>
+                    <textarea id="p1" rows="2" placeholder="Un viaje, ir a un concierto, aprender algo nuevo..." 
+                              class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition resize-none"></textarea>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="p2" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <span>☕</span> ¿Cuál es tu pequeño capricho favorito?
+                    </label>
+                    <textarea id="p2" rows="2" placeholder="Un buen café, velas aromáticas, calcetines suavecitos..." 
+                              class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition resize-none"></textarea>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="p3" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <span>💡</span> Algo que te gustaría tener pero nunca te compras:
+                    </label>
+                    <textarea id="p3" rows="2" placeholder="Ese gadget curioso, una edición especial de algo..." 
+                              class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition resize-none"></textarea>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="p4" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <span>🎧</span> Últimamente, ¿qué te interesa o te tiene enganchado/a?
+                    </label>
+                    <textarea id="p4" rows="2" placeholder="Una serie, un videojuego, la cocina, leer..." 
+                              class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition resize-none"></textarea>
+                </div>
+
+                <!-- Pregunta 5 -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="p5" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <span>🛍️</span> Una tienda, marca o sitio donde siempre encuentras cosas que te gustan:
+                    </label>
+                    <textarea id="p5" rows="2" placeholder="Fnac, Zara Home, una librería de barrio, Amazon..." 
+                              class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition resize-none"></textarea>
+                </div>
+
+                <!-- Pregunta 6 -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="p6" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <span>🍫</span> Tu comida, dulce o snack favorito:
+                    </label>
+                    <textarea id="p6" rows="2" placeholder="Chocolate negro, patatas fritas, turrón de pistacho..." 
+                              class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition resize-none"></textarea>
+                </div>
+
+                <!-- Pregunta 7 -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="p7" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <span>🎁</span> Una cosa que nunca te cansas de recibir:
+                    </label>
+                    <textarea id="p7" rows="2" placeholder="Libros, tazas divertidas, plantas, notas bonitas..." 
+                              class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition resize-none"></textarea>
+                </div>
+
+                <!-- Pregunta 8 -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-red-100 shadow-sm focus-within:border-festive-red transition-all">
+                    <label for="p8" class="block font-bold text-festive-darkred mb-1 flex items-center gap-2">
+                        <span>🚫</span> Algo que definitivamente NO te gustaría que te regalaran:
+                    </label>
+                    <textarea id="p8" rows="2" placeholder="Perfumes intensos, ropa de cierto color, tazas (ya tengo 50)..." 
+                              class="w-full px-3 py-2 bg-slate-50 rounded-xl outline-none focus:bg-white text-slate-700 transition resize-none"></textarea>
+                </div>
+
+                <!-- Botón Generar -->
+                <div class="pt-4">
+                    <button type="button" onclick="generateSummary()" 
+                            class="w-full bg-festive-red hover:bg-festive-darkred text-white font-bold py-4 px-6 rounded-2xl shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition flex justify-center items-center gap-3 text-lg border-2 border-festive-gold glow">
+                        <i class="fa-solid fa-magic"></i> Generar Resumen Navideño
+                    </button>
+                </div>
+            </form>
+
+            <!-- Sección de Resultados (Oculta al principio) -->
+            <div id="resultSection" class="hidden p-6 sm:p-8 bg-slate-100 border-t-4 border-festive-gold">
+                <h2 class="text-2xl font-bold text-festive-darkgreen mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-square-check text-festive-gold"></i> ¡Resumen Listo!
+                </h2>
+                <p class="text-sm text-slate-600 mb-4">Revisa cómo ha quedado. Puedes editar el texto directamente aquí abajo antes de copiar si lo deseas:</p>
+                
+                <!-- Área de texto del resultado -->
+                <textarea id="outputArea" rows="12" 
+                          class="w-full p-4 bg-white rounded-2xl border-2 border-slate-300 font-mono text-sm text-slate-800 outline-none focus:border-festive-green shadow-inner transition mb-6"></textarea>
+
+                <!-- Botones de Acción -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button onclick="copyToClipboard()" 
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-base">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i> Copiar para WhatsApp
+                    </button>
+                </div>
+
+                <!-- Alerta / Mensaje de Confirmación -->
+                <div id="copyNotice" class="hidden mt-4 p-4 bg-green-100 border-2 border-green-500 text-green-800 rounded-2xl text-center font-bold flex items-center justify-center gap-2 animate-bounce">
+                    <i class="fa-solid fa-circle-check text-xl"></i> ¡Copiado al portapapeles! Ahora abre WhatsApp y pégalo.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-white/80 text-xs mt-8">
+            Hecho con ❤️ para compartir en estas fiestas. 🎄✨
+        </footer>
+    </main>
+
+    <script>
+        // Función para generar el resumen estructurado en formato listo para WhatsApp
+        function generateSummary() {
+            const nombre = document.getElementById('nombre').value.trim() || 'Anónimo/a';
+            const p1 = document.getElementById('p1').value.trim() || 'Sin especificar';
+            const p2 = document.getElementById('p2').value.trim() || 'Sin especificar';
+            const p3 = document.getElementById('p3').value.trim() || 'Sin especificar';
+            const p4 = document.getElementById('p4').value.trim() || 'Sin especificar';
+            const p5 = document.getElementById('p5').value.trim() || 'Sin especificar';
+            const p6 = document.getElementById('p6').value.trim() || 'Sin especificar';
+            const p7 = document.getElementById('p7').value.trim() || 'Sin especificar';
+            const p8 = document.getElementById('p8').value.trim() || 'Sin especificar';
+
+            // Formato limpio con emojis de WhatsApp
+            const textFormat = 
+`🎄 *TEST DEL AMIGO INVISIBLE* 🎄
+👤 *Nombre:* ${nombre}
+---
+✨ *Ahora mismo, ¿qué cosa te hace especial ilusión?*
+${p1}
+---
+☕ *¿Cuál es tu pequeño capricho favorito?*
+${p2}
+---
+💡 *Algo que te gustaría tener pero nunca te compras:*
+${p3}
+---
+🎧 *Últimamente, ¿qué te interesa o te tiene enganchado/a?*
+${p4}
+---
+🛍️ *Una tienda, marca o sitio donde siempre encuentras cosas que te gustan:*
+${p5}
+---
+🍫 *Tu comida, dulce o snack favorito:*
+${p6}
+---
+🎁 *Una cosa que nunca te cansas de recibir:*
+${p7}
+---
+🚫 *Algo que definitivamente NO te gustaría que te regalaran:*
+${p8}`;
+
+            // Colocar en la caja de texto final
+            const outputArea = document.getElementById('outputArea');
+            outputArea.value = textFormat;
+
+            // Mostrar la sección de resultado con animación de desplazamiento
+            const resultSection = document.getElementById('resultSection');
+            resultSection.classList.remove('hidden');
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Función para copiar el contenido usando document.execCommand('copy') por compatibilidad e iFrames
+        function copyToClipboard() {
+            const outputArea = document.getElementById('outputArea');
+            
+            // Seleccionar texto
+            outputArea.select();
+            outputArea.setSelectionRange(0, 99999); // Para móviles
+
+            try {
+                // Ejecutar comando copiar
+                document.execCommand('copy');
+
+                // Mostrar aviso de confirmación
+                const copyNotice = document.getElementById('copyNotice');
+                copyNotice.classList.remove('hidden');
+
+                // Ocultar aviso automáticamente tras 4 segundos
+                setTimeout(() => {
+                    copyNotice.classList.add('hidden');
+                }, 4000);
+
+            } catch (err) {
+                // Notificación fallback en caso de error
+                const copyNotice = document.getElementById('copyNotice');
+                copyNotice.innerText = "❌ No se pudo copiar automáticamente. Por favor, selecciona el texto y cópialo manualmente.";
+                copyNotice.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
