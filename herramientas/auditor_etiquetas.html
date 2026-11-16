@@ -404,9 +404,9 @@ function auditar(){
   if(kcalReal === 0){
     verdict = 'Introduce al menos grasas, proteínas y carbohidratos para calcular.';
   } else {
-    const dominante = kcalGrasa >= kcalProt && kcalGrasa >= kcalCarb ? 'grasa' :
-                       (kcalProt >= kcalCarb ? 'proteína' : 'carbohidrato');
-    let base = `El macronutriente dominante en kcal es la ${dominante}. `;
+    const dominante = kcalGrasa >= kcalProt && kcalGrasa >= kcalCarb ? 'la grasa' :
+                       (kcalProt >= kcalCarb ? 'la proteína' : 'el carbohidrato');
+    let base = `El macronutriente dominante en kcal es ${dominante}. `;
     if(declaradas !== '' && !isNaN(parseFloat(declaradas))){
       const decl = parseFloat(declaradas);
       const diffAbs = Math.abs(kcalReal - decl);
