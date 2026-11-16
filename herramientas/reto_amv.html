@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reto Acción Mínima Viable - Método ARRANCA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#090D16;--card:#0F172A;--card2:#162036;--line:rgba(255,255,255,.09);--txt:#F8FAFC;--mut:#94A3B8;--teal:#2DD4BF;--green:#34D399;--amber:#FBBF24}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--txt);display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px 16px}
+  .wrap{width:100%;max-width:540px;background:var(--card);border-radius:24px;padding:32px 20px;box-shadow:0 25px 50px -12px rgba(0,0,0,.7),0 0 0 1px var(--line);display:flex;flex-direction:column;gap:20px}
+  .badge{align-self:center;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--teal);border:1px solid rgba(45,212,191,.35);background:rgba(45,212,191,.08);padding:6px 14px;border-radius:999px;text-transform:uppercase}
+  h1{text-align:center;font-size:25px;font-weight:800;line-height:1.2}
+  h1 span{color:var(--teal)}
+  .sub{text-align:center;color:var(--mut);font-size:14px;line-height:1.55}
+  .paso{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--teal);text-transform:uppercase}
+  .bloque{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+  .bloque h3{font-size:16px;font-weight:800}
+  label{font-size:12.5px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+  input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;color:var(--txt);font-family:inherit;font-size:15px;padding:11px 12px}
+  input:focus{outline:2px solid rgba(45,212,191,.5);border-color:transparent}
+  button{font-family:inherit;cursor:pointer;border:none}
+  .dias{display:flex;flex-direction:column;gap:10px}
+  .dia{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .dia .top{display:flex;justify-content:space-between;align-items:center}
+  .dia .top b{font-size:15px}
+  .dia .top span{font-size:12.5px;color:var(--mut);font-weight:600}
+  .ops{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .ops button{padding:10px 4px;border-radius:11px;font-size:12px;font-weight:700;background:rgba(255,255,255,.05);color:var(--mut);border:1px solid var(--line);line-height:1.3}
+  .ops button.on[data-v="n"]{background:rgba(52,211,153,.16);color:var(--green);border-color:rgba(52,211,153,.5)}
+  .ops button.on[data-v="m"]{background:rgba(45,212,191,.16);color:var(--teal);border-color:rgba(45,212,191,.5)}
+  .ops button.on[data-v="x"]{background:rgba(251,191,36,.12);color:var(--amber);border-color:rgba(251,191,36,.45)}
+  .nota{font-size:13.5px;line-height:1.5;color:#CBD5E1;display:none}
+  .nota.on{display:block}
+  .puerta{text-align:center;background:linear-gradient(160deg,#10223A,#0B1324);border:1px solid rgba(45,212,191,.35);border-radius:20px;padding:20px 16px;display:flex;flex-direction:column;gap:6px}
+  .puerta .big{font-size:40px}
+  .puerta p{font-size:15px;line-height:1.5;color:#E2E8F0}
+  .puerta p b{color:var(--teal)}
+  .ghost{padding:13px;border-radius:14px;background:transparent;color:var(--mut);border:1px solid var(--line);font-size:13px;font-weight:600}
+  .frase{text-align:center;font-size:15px;font-weight:700;color:var(--teal);line-height:1.5}
+  .pie{text-align:center;font-size:12px;color:var(--mut);line-height:1.5}
+  .pie b{color:var(--txt)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="badge">Método ARRANCA · Constancia</div>
+  <h1>Reto 7 días: <span>Acción Mínima Viable</span> 🚪</h1>
+  <p class="sub">La versión más pequeña de una conducta que todavía cuenta. Un día normal haces mucho; un día complicado haces poco. Pero sigues entrando por la misma puerta.</p>
+
+  <div class="paso">Paso 1 · Define tus dos versiones</div>
+  <div id="areas" style="display:flex;flex-direction:column;gap:12px"></div>
+
+  <div class="paso">Paso 2 · Cada noche, marca tu día</div>
+  <div class="puerta">
+    <div class="big" id="cuenta">0</div>
+    <p id="msg"></p>
+  </div>
+  <div class="dias" id="dias"></div>
+
+  <button class="ghost" id="reiniciar">Empezar un reto nuevo</button>
+
+  <p class="frase">No necesitas mantener siempre el 100%.<br>Necesitas evitar que el 20% se convierta en 0%.</p>
+  <p class="pie">Lo que marcas se guarda solo en este móvil.<br>Del capítulo de Constancia de <b>Método ARRANCA</b>.</p>
+</main>
+
+<script>
+const AREAS = [
+  ["mov","🚶‍♀️ Movimiento","60 minutos de entrenamiento + paseo","15 minutos caminando"],
+  ["com","🍽️ Comida","Comida casera con mi plato completo","Una comida sencilla y decente (Plan B o C)"],
+  ["cui","🌙 Autocuidado","Mi rutina completa de noche","Acostarme 15 minutos antes"]
+];
+const DIAS = ["Día 1","Día 2","Día 3","Día 4","Día 5","Día 6","Día 7"];
+const $ = id => document.getElementById(id);
+let d = {};
+try { d = JSON.parse(localStorage.getItem('arranca_amv') || '{}'); } catch(e) { d = {}; }
+d.areas = d.areas || {}; d.dias = d.dias || {};
+function guardar(){ try{ localStorage.setItem('arranca_amv', JSON.stringify(d)); }catch(e){} }
+
+$('areas').innerHTML = AREAS.map(([k,t,ideal,min]) =>
+  '<div class="bloque"><h3>'+t+'</h3>'+
+  '<label for="'+k+'_n">Mi día normal</label><input id="'+k+'_n" placeholder="'+ideal+'">'+
+  '<label for="'+k+'_m">Mi mínimo que cuenta</label><input id="'+k+'_m" placeholder="'+min+'">'+
+  '</div>').join('');
+AREAS.forEach(([k,,ideal,min]) => {
+  ['n','m'].forEach(v => {
+    const el = $(k+'_'+v); el.value = d.areas[k+'_'+v] || '';
+    el.addEventListener('input', () => { d.areas[k+'_'+v] = el.value; guardar(); pintarDias(); });
+  });
+});
+function txt(k,v){ const a = AREAS.find(x=>x[0]===k); return (d.areas[k+'_'+v]||'').trim() || (v==='n'?a[2]:a[3]); }
+
+const NOTAS = {
+  n: () => '💪 Día completo. Disfrútalo, y recuerda que mañana no tiene por qué ser igual.',
+  m: () => '🚪 Has entrado por la puerta: ' + AREAS.map(a=>txt(a[0],'m')).join(' · ') + '. Eso también cuenta.',
+  x: () => '🌧️ Hoy no ha podido ser. Ser constante no es no desviarte: es volver. Vuelves en la siguiente comida, no necesitas esperar al lunes.'
+};
+function pintarDias(){
+  $('dias').innerHTML = DIAS.map((t,i) => {
+    const v = d.dias[i];
+    return '<div class="dia"><div class="top"><b>'+t+'</b><span>'+(v==='n'?'Día normal':v==='m'?'Día mínimo':v==='x'?'Hoy no':'Sin marcar')+'</span></div>'+
+      '<div class="ops">'+
+      '<button data-i="'+i+'" data-v="n" class="'+(v==='n'?'on':'')+'">💪<br>Día normal</button>'+
+      '<button data-i="'+i+'" data-v="m" class="'+(v==='m'?'on':'')+'">🚪<br>Mi mínimo</button>'+
+      '<button data-i="'+i+'" data-v="x" class="'+(v==='x'?'on':'')+'">🌧️<br>Hoy no</button>'+
+      '</div><div class="nota '+(v?'on':'')+'">'+(v?NOTAS[v]():'')+'</div></div>';
+  }).join('');
+  $('dias').querySelectorAll('button').forEach(b => b.onclick = () => {
+    const i = b.dataset.i, v = b.dataset.v;
+    if (d.dias[i] === v) delete d.dias[i]; else d.dias[i] = v;
+    guardar(); pintarDias();
+  });
+  const dentro = Object.values(d.dias).filter(v => v==='n' || v==='m').length;
+  const marcados = Object.keys(d.dias).length;
+  const minimos = Object.values(d.dias).filter(v => v==='m').length;
+  $('cuenta').textContent = dentro === 0 ? '🚪' : dentro;
+  $('msg').innerHTML = marcados === 0
+    ? 'Cada noche, marca cómo ha ido tu día. Aquí verás <b>cuántas veces has entrado por la puerta</b>.'
+    : 'Has entrado por la puerta <b>' + dentro + (dentro===1?' vez':' veces') + '</b>' +
+      (minimos ? (minimos===1 ? ', una de ellas con tu mínimo.' : ', ' + minimos + ' de ellas con tu mínimo.') + ' Esos días son los que sostienen el hábito.' : '.');
+}
+$('reiniciar').onclick = () => { d.dias = {}; guardar(); pintarDias(); window.scrollTo({top:0,behavior:'smooth'}); };
+pintarDias();
+</script>
+</body>
+</html>

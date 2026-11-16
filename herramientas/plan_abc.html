@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Plan A, B y C - Método ARRANCA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#090D16;--card:#0F172A;--card2:#162036;--line:rgba(255,255,255,.09);--txt:#F8FAFC;--mut:#94A3B8;--teal:#2DD4BF;--green:#34D399;--amber:#FBBF24;--coral:#FB7185}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--txt);display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px 16px}
+  .wrap{width:100%;max-width:540px;background:var(--card);border-radius:24px;padding:32px 20px;box-shadow:0 25px 50px -12px rgba(0,0,0,.7),0 0 0 1px var(--line);display:flex;flex-direction:column;gap:20px}
+  .badge{align-self:center;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--teal);border:1px solid rgba(45,212,191,.35);background:rgba(45,212,191,.08);padding:6px 14px;border-radius:999px;text-transform:uppercase}
+  h1{text-align:center;font-size:26px;font-weight:800;line-height:1.2}
+  h1 span{color:var(--teal)}
+  .sub{text-align:center;color:var(--mut);font-size:14px;line-height:1.55}
+  .paso{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--teal);text-transform:uppercase}
+  .bloque{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+  .bloque.a{border-left:4px solid var(--green)} .bloque.b{border-left:4px solid var(--amber)} .bloque.c{border-left:4px solid var(--coral)}
+  label{font-size:15px;font-weight:700;line-height:1.4}
+  .pista{font-size:13px;color:var(--mut);line-height:1.5}
+  textarea{width:100%;min-height:64px;resize:vertical;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;color:var(--txt);font-family:inherit;font-size:15px;padding:12px;line-height:1.45}
+  textarea:focus{outline:2px solid rgba(45,212,191,.5);border-color:transparent}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chips button{padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.05);color:#CBD5E1;border:1px solid var(--line);font-size:12.5px;font-weight:600}
+  .chips button:active{background:rgba(45,212,191,.15)}
+  button{font-family:inherit;cursor:pointer;border:none}
+  .main{padding:15px;border-radius:14px;background:var(--teal);color:#062925;font-size:15px;font-weight:800}
+  .ghost{padding:13px;border-radius:14px;background:transparent;color:var(--mut);border:1px solid var(--line);font-size:13px;font-weight:600}
+  .tarjeta{display:none;flex-direction:column;gap:12px;background:linear-gradient(160deg,#10223A,#0B1324);border:1px solid rgba(45,212,191,.35);border-radius:20px;padding:22px 18px}
+  .tarjeta h2{font-size:19px;font-weight:800;text-align:center}
+  .tarjeta .fila{display:flex;gap:10px;align-items:flex-start}
+  .tarjeta .tag{flex:0 0 auto;font-size:11px;font-weight:800;padding:5px 8px;border-radius:7px;letter-spacing:.05em}
+  .tag.a{background:rgba(52,211,153,.16);color:var(--green)} .tag.b{background:rgba(251,191,36,.15);color:var(--amber)} .tag.c{background:rgba(251,113,133,.15);color:var(--coral)} .tag.s{background:rgba(45,212,191,.15);color:var(--teal)}
+  .tarjeta .txt{font-size:14.5px;line-height:1.5;color:#E2E8F0;white-space:pre-wrap}
+  .frase{text-align:center;font-size:15px;font-weight:700;color:var(--teal);line-height:1.5}
+  .pie{text-align:center;font-size:12px;color:var(--mut);line-height:1.5}
+  .pie b{color:var(--txt)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="badge">Método ARRANCA · Rutinas</div>
+  <h1>Mi Plan <span>A, B y C</span> 🗺️</h1>
+  <p class="sub">No diseñes solo tu mejor escenario. Diseña tres. Una buena estrategia es la que evita que un día malo se convierta en una semana mala.</p>
+
+  <div class="paso">Paso 1 · Conócete</div>
+  <div class="bloque">
+    <label for="caos">Mi momento más caótico de la semana es…</label>
+    <textarea id="caos" placeholder="Ej.: los martes, que salgo tarde y llego con muchísima hambre"></textarea>
+  </div>
+  <div class="bloque">
+    <label for="improviso">La comida que más suelo improvisar es…</label>
+    <textarea id="improviso" placeholder="Ej.: la cena entre semana"></textarea>
+  </div>
+  <div class="bloque">
+    <label for="tres">Tres alimentos que siempre quiero tener en casa:</label>
+    <textarea id="tres" placeholder="Ej.: huevos, arroz de microondas y verduras congeladas"></textarea>
+  </div>
+
+  <div class="paso">Paso 2 · Tus tres planes</div>
+  <div class="bloque a">
+    <label for="pa">🟢 Plan A · Tengo tiempo</label>
+    <p class="pista">Cocinas tranquila, varias raciones, producto fresco y dejas bases listas. Perfecto… pero no dependas de él.</p>
+    <textarea id="pa" placeholder="Ej.: el domingo hago pollo al horno con verduras y cocino doble (estrategia C-C)"></textarea>
+  </div>
+  <div class="bloque b">
+    <label for="pb">🟡 Plan B · Tengo poco tiempo</label>
+    <p class="pista">No es el momento de demostrar tus habilidades culinarias. Es el momento de resolver una comida. Toca para añadir:</p>
+    <div class="chips" data-for="pb"></div>
+    <textarea id="pb" placeholder="Mi Plan B para un día con poco tiempo será…"></textarea>
+  </div>
+  <div class="bloque c">
+    <label for="pc">🔴 Plan C · Hoy ha sido un desastre</label>
+    <p class="pista">Sin compra, sin nada preparado, agotada. Aquí entra tu kit nutricional de emergencia. Tener un Plan C no es esperar fracasar: es aceptar que los imprevistos son parte de la vida.</p>
+    <div class="chips" data-for="pc"></div>
+    <textarea id="pc" placeholder="Mi Plan C para un día completamente caótico será…"></textarea>
+  </div>
+
+  <button class="main" id="ver">Ver mi sistema ARRANCA ✨</button>
+
+  <section class="tarjeta" id="tarjeta">
+    <h2>Mi sistema ARRANCA</h2>
+    <div id="resumen" style="display:flex;flex-direction:column;gap:12px"></div>
+  </section>
+  <button class="main" id="compartir" style="display:none">Guardar o compartir 📲</button>
+  <button class="ghost" id="borrar">Borrar y empezar de cero</button>
+
+  <p class="frase">No necesitas la rutina perfecta.<br>Solo que mañana sea un poco más fácil que hoy.</p>
+  <p class="pie">Lo que escribes se guarda solo en este móvil.<br>Del capítulo de Rutinas de <b>Método ARRANCA</b>.</p>
+</main>
+
+<script>
+const CHIPS = {
+  pb: ["Arroz o quinoa de microondas","Verduras congeladas","Conservas","Huevos","Pasta","Ñoquis","Patatas cocidas","Pescado congelado","Tortillas","Queso"],
+  pc: ["Fajita con pavo, verduras y queso","Bol de arroz con atún y tomate","Ñoquis con tomate y queso","Legumbre con huevo cocido","Tortitas con pavo y queso","Yogur con fruta"]
+};
+const CAMPOS = ["caos","improviso","tres","pa","pb","pc"];
+const $ = id => document.getElementById(id);
+let datos = {};
+try { datos = JSON.parse(localStorage.getItem('arranca_plan_abc') || '{}'); } catch(e) { datos = {}; }
+function guardar(){ try{ localStorage.setItem('arranca_plan_abc', JSON.stringify(datos)); }catch(e){} }
+
+CAMPOS.forEach(c => { $(c).value = datos[c] || ''; $(c).addEventListener('input', () => { datos[c] = $(c).value; guardar(); }); });
+document.querySelectorAll('.chips').forEach(box => {
+  const campo = box.dataset.for;
+  box.innerHTML = CHIPS[campo].map(t => '<button type="button">+ ' + t + '</button>').join('');
+  box.querySelectorAll('button').forEach(b => b.onclick = () => {
+    const t = b.textContent.slice(2), ta = $(campo), v = ta.value.trim();
+    ta.value = v ? (v.endsWith(',') ? v + ' ' + t.toLowerCase() : v + ', ' + t.toLowerCase()) : t;
+    datos[campo] = ta.value; guardar();
+  });
+});
+function esc(s){ return s.replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
+function filas(){
+  return [
+    ['s','MI PUNTO DÉBIL', [datos.caos, datos.improviso].filter(Boolean).join(' · ')],
+    ['s','SIEMPRE EN CASA', datos.tres],
+    ['a','PLAN A', datos.pa],
+    ['b','PLAN B', datos.pb],
+    ['c','PLAN C', datos.pc]
+  ].filter(f => f[2] && f[2].trim());
+}
+$('ver').onclick = () => {
+  const f = filas();
+  $('resumen').innerHTML = f.length
+    ? f.map(([k,t,v]) => '<div class="fila"><span class="tag '+k+'">'+t+'</span><span class="txt">'+esc(v.trim())+'</span></div>').join('')
+      + '<div class="fila"><span class="tag s">SIEMPRE</span><span class="txt">Tengo recursos en casa para no depender de la improvisación.</span></div>'
+    : '<p class="pista" style="text-align:center">Rellena al menos un plan para ver tu sistema.</p>';
+  $('tarjeta').style.display = 'flex';
+  $('compartir').style.display = f.length ? 'block' : 'none';
+  $('tarjeta').scrollIntoView({behavior:'smooth', block:'start'});
+};
+$('compartir').onclick = async () => {
+  const texto = '🗺️ Mi sistema ARRANCA\n\n' + filas().map(([k,t,v]) => t + ': ' + v.trim()).join('\n') + '\nSIEMPRE: tengo recursos en casa para no depender de la improvisación.';
+  try{ if(navigator.share){ await navigator.share({title:'Mi Plan A, B y C', text:texto}); return; } }catch(e){ return; }
+  try{ await navigator.clipboard.writeText(texto); $('compartir').textContent = '¡Copiado! Pégalo en tus notas ✅'; }catch(e){}
+};
+$('borrar').onclick = () => { datos = {}; guardar(); CAMPOS.forEach(c => $(c).value = ''); $('tarjeta').style.display='none'; $('compartir').style.display='none'; };
+</script>
+</body>
+</html>

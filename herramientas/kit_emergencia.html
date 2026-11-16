@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi kit nutricional de emergencia - Método ARRANCA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#090D16;--card:#0F172A;--card2:#162036;--line:rgba(255,255,255,.09);--txt:#F8FAFC;--mut:#94A3B8;--teal:#2DD4BF;--green:#34D399;--amber:#FBBF24}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--txt);display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px 16px}
+  .wrap{width:100%;max-width:540px;background:var(--card);border-radius:24px;padding:32px 20px;box-shadow:0 25px 50px -12px rgba(0,0,0,.7),0 0 0 1px var(--line);display:flex;flex-direction:column;gap:20px}
+  .badge{align-self:center;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--teal);border:1px solid rgba(45,212,191,.35);background:rgba(45,212,191,.08);padding:6px 14px;border-radius:999px;text-transform:uppercase}
+  h1{text-align:center;font-size:25px;font-weight:800;line-height:1.2}
+  h1 span{color:var(--teal)}
+  .sub{text-align:center;color:var(--mut);font-size:14px;line-height:1.55}
+  .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;background:rgba(255,255,255,.04);padding:5px;border-radius:14px}
+  .tabs button{padding:10px 4px;border-radius:10px;background:transparent;color:var(--mut);font-size:13px;font-weight:700}
+  .tabs button.on{background:var(--card2);color:var(--txt);box-shadow:0 0 0 1px var(--line)}
+  button{font-family:inherit;cursor:pointer;border:none}
+  .panel{display:none;flex-direction:column;gap:14px}
+  .panel.on{display:flex}
+  .grupo{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--teal);text-transform:uppercase;margin-top:6px}
+  .ayuda{font-size:13px;color:var(--mut);line-height:1.5}
+  .item{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 10px 10px 14px}
+  .item .n{flex:1;font-size:14.5px;font-weight:600;line-height:1.35}
+  .item .ops{display:flex;gap:6px}
+  .item .ops button{padding:8px 10px;border-radius:10px;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.05);color:var(--mut);border:1px solid var(--line);white-space:nowrap}
+  .item .ops button.tengo.on{background:rgba(52,211,153,.16);color:var(--green);border-color:rgba(52,211,153,.5)}
+  .item .ops button.falta.on{background:rgba(251,191,36,.14);color:var(--amber);border-color:rgba(251,191,36,.5)}
+  .combo{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+  .combo.lista{border-color:rgba(52,211,153,.5)}
+  .combo h3{font-size:16px;font-weight:800}
+  .combo .est{font-size:13px;font-weight:700}
+  .combo.lista .est{color:var(--green)}
+  .combo .est.casi{color:var(--amber)}
+  .combo .est.lejos{color:var(--mut)}
+  .combo p{font-size:13.5px;color:#CBD5E1;line-height:1.5}
+  .compra{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.5}
+  .compra li{list-style:none}
+  .vacio{color:var(--mut);font-size:14px;text-align:center;padding:10px}
+  .main{padding:15px;border-radius:14px;background:var(--teal);color:#062925;font-size:15px;font-weight:800}
+  .ghost{padding:13px;border-radius:14px;background:transparent;color:var(--mut);border:1px solid var(--line);font-size:13px;font-weight:600}
+  .frase{text-align:center;font-size:15px;font-weight:700;color:var(--teal);line-height:1.5}
+  .pie{text-align:center;font-size:12px;color:var(--mut);line-height:1.5}
+  .pie b{color:var(--txt)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="badge">Método ARRANCA · Rutinas</div>
+  <h1>Mi kit nutricional <span>de emergencia</span> 🧰</h1>
+  <p class="sub">Si tienes un botiquín con tiritas, ¿por qué no uno nutricional? Para esos días en los que simplemente no te da la vida.</p>
+
+  <div class="tabs">
+    <button class="on" data-p="p1">1 · Mi despensa</button>
+    <button data-p="p2">2 · Qué cocino</button>
+    <button data-p="p3">3 · Qué compro</button>
+  </div>
+
+  <section class="panel on" id="p1">
+    <p class="ayuda">Marca solo lo que <b>de verdad comes</b>. Si no te gusta el atún, no llenes la despensa de atún porque alguien haya dicho que es «saludable». Lo que no marques, no cuenta.</p>
+    <div id="lista"></div>
+    <button class="ghost" id="borrar">Empezar de cero</button>
+  </section>
+
+  <section class="panel" id="p2">
+    <p class="ayuda">Tu kit no tiene por qué ser triste. Estas son comidas de emergencia que puedes montar con lo que tienes:</p>
+    <div id="combos" style="display:flex;flex-direction:column;gap:10px"></div>
+  </section>
+
+  <section class="panel" id="p3">
+    <p class="ayuda">Esto es lo que has marcado como <b>me falta</b>. Llévatelo a la lista de la compra:</p>
+    <ul class="compra" id="compra"></ul>
+    <button class="main" id="copiar">Copiar o compartir mi lista 📲</button>
+  </section>
+
+  <p class="frase">El mejor kit de emergencia es el que vas a utilizar.</p>
+  <p class="pie">Lo que marcas se guarda solo en este móvil.<br>Del capítulo de Rutinas de <b>Método ARRANCA</b>.</p>
+</main>
+
+<script>
+const GRUPOS = [
+  ["Cero cocinado", [
+    ["atun","Atún, caballa o melva en conserva"],["mejillones","Mejillones, anchoas o sardinillas"],
+    ["legumbres","Legumbres cocidas (garbanzos, alubias, lentejas)"],["tortillas","Tortillas de trigo o maíz"],
+    ["huevoc","Huevos cocidos"],["pavo","Pechuga de pavo u otro fiambre de buena composición"],
+    ["queso","Quesos"],["yogur","Yogures"],["arrozmw","Vasitos de arroz o quinoa de microondas"],
+    ["tomate","Conservas o bricks de verduras y tomate"],["tortitas","Tortitas de arroz o maíz"],["fruta","Fruta fácil de comer"]
+  ]],
+  ["Muy poca preparación", [
+    ["pasta","Pasta"],["noquis","Ñoquis"],["patcong","Patatas congeladas"],["patcons","Patatas cocidas en conserva"],
+    ["verdcong","Verduras congeladas"],["huevos","Huevos"],["pescong","Pescado congelado"],
+    ["picada","Carne picada congelada en porciones"],["pizza","Pan o bases de pizza congeladas"]
+  ]]
+];
+const NOMBRE = {}; GRUPOS.forEach(g=>g[1].forEach(([k,n])=>NOMBRE[k]=n));
+// Combinaciones: cada ingrediente puede tener alternativas (array = vale cualquiera)
+const COMBOS = [
+  ["🌯 Fajita exprés", [["tortillas"],["pavo","atun","huevoc"],["verdcong","tomate"],["queso"]], "Tortilla + proteína + verduras salteadas + queso. Del libro: «Puedes hacer una fajita con pollo, verduras y queso»."],
+  ["🍚 Bol de arroz con atún", [["arrozmw"],["atun"],["tomate"]], "Arroz de microondas + atún + tomate (y aguacate si tienes). Listo en dos minutos."],
+  ["🥔 Ñoquis con tomate y queso", [["noquis"],["tomate"],["queso"]], "Ñoquis a la sartén + salsa de tomate + queso por encima."],
+  ["🥗 Ensalada templada de legumbres", [["legumbres"],["huevoc","atun","mejillones"],["tomate","verdcong"]], "Legumbre lavada + huevo o conserva de pescado + verduras."],
+  ["🍝 Pasta con caballa y tomate", [["pasta"],["atun","mejillones"],["tomate"]], "Mientras se hace la pasta, mezclas la conserva con el tomate. Sin más."],
+  ["🍳 Revuelto de patata y verduras", [["huevos"],["patcons","patcong"],["verdcong"]], "Patata cocida + verduras congeladas a la sartén + huevos."],
+  ["🐟 Pescado con verduras", [["pescong"],["verdcong"],["patcons","arrozmw","patcong"]], "Pescado congelado a la plancha o airfryer + verduras + tu hidrato rápido."],
+  ["🍕 Pizza casera de emergencia", [["pizza","tortillas"],["tomate"],["queso"],["pavo","atun","verdcong"]], "Base + tomate + queso + lo que tengas. Al horno o airfryer."],
+  ["🍘 Tortitas con pavo y queso", [["tortitas"],["pavo"],["queso"]], "Para un desayuno, merienda o cena de supervivencia digna."],
+  ["🥣 Yogur con fruta", [["yogur"],["fruta"]], "Postre, desayuno o merienda en 30 segundos."]
+];
+
+let estado = {};
+try { estado = JSON.parse(localStorage.getItem('arranca_kit') || '{}'); } catch(e) { estado = {}; }
+function guardar(){ try{ localStorage.setItem('arranca_kit', JSON.stringify(estado)); }catch(e){} }
+
+function pintarLista(){
+  document.getElementById('lista').innerHTML = GRUPOS.map(([g,items]) =>
+    '<div class="grupo">'+g+'</div>' + items.map(([k,n]) =>
+      '<div class="item" style="margin-top:8px"><span class="n">'+n+'</span><span class="ops">'+
+      '<button class="tengo '+(estado[k]==='t'?'on':'')+'" data-k="'+k+'" data-v="t">✓ Tengo</button>'+
+      '<button class="falta '+(estado[k]==='f'?'on':'')+'" data-k="'+k+'" data-v="f">🛒 Falta</button>'+
+      '</span></div>').join('')).join('');
+  document.querySelectorAll('#lista button').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k, v=b.dataset.v; estado[k] = estado[k]===v ? undefined : v; if(!estado[k]) delete estado[k];
+    guardar(); pintarLista(); pintarCombos(); pintarCompra();
+  });
+}
+function pintarCombos(){
+  const res = COMBOS.map(([t,reqs,txt])=>{
+    const falta = reqs.filter(alts=>!alts.some(a=>estado[a]==='t'));
+    return {t,txt,falta};
+  }).sort((a,b)=>a.falta.length-b.falta.length);
+  document.getElementById('combos').innerHTML = res.map(c=>{
+    let est, cls='';
+    if(c.falta.length===0){ est='✅ Lo tienes todo'; cls='lista'; }
+    else { est = 'Te falta: ' + c.falta.map(alts=>alts.map(a=>NOMBRE[a].split(' (')[0].toLowerCase()).join(' o ')).join(' · '); }
+    const ec = c.falta.length===0 ? '' : (c.falta.length===1 ? 'casi' : 'lejos');
+    return '<div class="combo '+cls+'"><h3>'+c.t+'</h3><div class="est '+ec+'">'+est+'</div><p>'+c.txt+'</p></div>';
+  }).join('');
+}
+function faltan(){ return Object.keys(estado).filter(k=>estado[k]==='f').map(k=>NOMBRE[k]); }
+function pintarCompra(){
+  const f = faltan();
+  document.getElementById('compra').innerHTML = f.length ? f.map(n=>'<li>☐ '+n+'</li>').join('') : '<li class="vacio">Aún no has marcado nada como «Falta». Hazlo en «1 · Mi despensa».</li>';
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+document.getElementById('borrar').onclick=()=>{ estado={}; guardar(); pintarLista(); pintarCombos(); pintarCompra(); };
+document.getElementById('copiar').onclick=async()=>{
+  const f=faltan(); if(!f.length) return;
+  const texto='🛒 Mi kit nutricional de emergencia (Método ARRANCA)\n'+f.map(n=>'☐ '+n).join('\n');
+  try{ if(navigator.share){ await navigator.share({title:'Mi lista del kit',text:texto}); return; } }catch(e){ return; }
+  try{ await navigator.clipboard.writeText(texto); document.getElementById('copiar').textContent='¡Copiada! ✅'; }catch(e){}
+};
+pintarLista(); pintarCombos(); pintarCompra();
+</script>
+</body>
+</html>

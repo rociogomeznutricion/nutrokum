@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Mito o verdad? - Método ARRANCA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#090D16;--card:#0F172A;--card2:#162036;--line:rgba(255,255,255,.09);--txt:#F8FAFC;--mut:#94A3B8;--teal:#2DD4BF;--green:#34D399;--coral:#FB7185}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--txt);display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px 16px}
+  .wrap{width:100%;max-width:540px;background:var(--card);border-radius:24px;padding:32px 24px;box-shadow:0 25px 50px -12px rgba(0,0,0,.7),0 0 0 1px var(--line);display:flex;flex-direction:column;gap:20px}
+  .badge{align-self:center;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--teal);border:1px solid rgba(45,212,191,.35);background:rgba(45,212,191,.08);padding:6px 14px;border-radius:999px;text-transform:uppercase}
+  h1{text-align:center;font-size:26px;font-weight:800;line-height:1.2}
+  h1 span{color:var(--teal)}
+  .sub{text-align:center;color:var(--mut);font-size:14px;line-height:1.5}
+  .bar{display:flex;gap:4px}
+  .bar i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.1)}
+  .bar i.on{background:var(--teal)}
+  .card{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:24px 20px;display:flex;flex-direction:column;gap:18px}
+  .num{font-size:12px;font-weight:700;color:var(--mut);letter-spacing:.08em;text-transform:uppercase}
+  .frase{font-size:20px;font-weight:700;line-height:1.4}
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  button{font-family:inherit;cursor:pointer;border:none}
+  .op{padding:16px 10px;border-radius:14px;font-size:16px;font-weight:800;letter-spacing:.04em;background:rgba(255,255,255,.06);color:var(--txt);border:1px solid var(--line);transition:transform .1s}
+  .op:active{transform:scale(.97)}
+  .op.mito{border-color:rgba(251,113,133,.45)}
+  .op.verdad{border-color:rgba(52,211,153,.45)}
+  .res{display:none;flex-direction:column;gap:12px;animation:in .25s ease}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .sello{align-self:flex-start;font-size:13px;font-weight:800;letter-spacing:.1em;padding:6px 12px;border-radius:8px}
+  .sello.mito{background:rgba(251,113,133,.15);color:var(--coral)}
+  .sello.verdad{background:rgba(52,211,153,.15);color:var(--green)}
+  .tu{font-size:14px;font-weight:600;color:var(--mut)}
+  .exp{font-size:15px;line-height:1.6;color:#E2E8F0}
+  .next{padding:15px;border-radius:14px;background:var(--teal);color:#062925;font-size:15px;font-weight:800}
+  .fin{display:none;text-align:center;flex-direction:column;gap:14px}
+  .fin .big{font-size:44px;font-weight:800;color:var(--teal)}
+  .fin p{color:#E2E8F0;line-height:1.6;font-size:15px}
+  .ghost{padding:14px;border-radius:14px;background:transparent;color:var(--teal);border:1px solid rgba(45,212,191,.4);font-size:15px;font-weight:700}
+  .pie{text-align:center;font-size:12px;color:var(--mut);line-height:1.5}
+  .pie b{color:var(--txt)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="badge">Método ARRANCA · Quiz</div>
+  <h1>¿Mito o <span>verdad</span>? 🧐</h1>
+  <p class="sub">10 frases que vas a seguir escuchando. Decide antes de ver la respuesta.</p>
+  <div class="bar" id="bar"></div>
+
+  <section class="card" id="juego">
+    <div class="num" id="num"></div>
+    <div class="frase" id="frase"></div>
+    <div class="btns" id="btns">
+      <button class="op mito" data-r="MITO">MITO ❌</button>
+      <button class="op verdad" data-r="VERDAD">VERDAD ✅</button>
+    </div>
+    <div class="res" id="res">
+      <div class="sello" id="sello"></div>
+      <div class="tu" id="tu"></div>
+      <div class="exp" id="exp"></div>
+      <button class="next" id="next">Siguiente →</button>
+    </div>
+  </section>
+
+  <section class="card fin" id="fin">
+    <div class="big" id="total"></div>
+    <p id="msg"></p>
+    <button class="next" id="otra">Jugar otra ronda 🔄</button>
+    <button class="ghost" id="compartir">Compartir con alguien 📲</button>
+  </section>
+
+  <p class="pie">Los 20 mitos completos están en el capítulo 17 de <b>Método ARRANCA</b>,<br>tu manual de instrucciones para ponerlo en marcha en tu vida real.</p>
+</main>
+
+<script>
+const BANCO = [
+  ["Los productos «0%» o «light» son siempre la opción más saludable.","MITO","«0%» suele referirse solo a la grasa, no al azúcar ni al resto de ingredientes. Muchos compensan la falta de grasa (y de sabor) con más azúcar. Mira la etiqueta completa, no el reclamo del envase."],
+  ["Saltarte una comida te ayuda a compensar un exceso anterior.","MITO","Saltarte comidas por culpa suele generar más hambre después, peores decisiones y refuerza el ciclo restricción-atracón."],
+  ["Los carbohidratos por la noche engordan más que por la mañana.","MITO","El cuerpo no tiene un «interruptor» que convierta los hidratos en grasa a partir de cierta hora. Cuenta el total del día y la calidad de tu alimentación, no el reloj."],
+  ["Entrenar en ayunas quema más grasa corporal a largo plazo.","MITO","Puede quemar más grasa durante ese entrenamiento concreto, pero eso no se traduce automáticamente en más pérdida de grasa total. Y a muchas personas les supone peor rendimiento, mareo o fatiga."],
+  ["Si no llegas a tus pasos, el entrenamiento de gimnasio no sirve para nada.","MITO","El entrenamiento y el NEAT se complementan, no se excluyen. La fuerza sigue aportando muchísimo aunque ese día no llegues a tus pasos. Lo ideal es sumar ambos."],
+  ["El aguacate hay que evitarlo por su alto contenido en grasa.","MITO","Aporta grasas mayoritariamente saludables (monoinsaturadas), fibra y micronutrientes. Tenlo en cuenta en el plato completo, pero eliminarlo por «tener grasa» no tiene sentido."],
+  ["Cuanta más proteína, mejor: no hay límite.","MITO","Más allá de un rango adecuado para ti, subir la proteína sin control no aporta beneficios extra y puede desplazar fibra, grasas saludables y frutas y verduras."],
+  ["Las harinas de frutos secos son automáticamente más saludables que la de trigo.","MITO","La harina de almendra puede tener casi el doble de calorías por 100 g que la de trigo blanca. «Más saludable» no es sinónimo de «menos calórica»."],
+  ["El pan siempre engorda y hay que eliminarlo.","MITO","El pan es una fuente de hidratos como cualquier otra. El problema suele ser la cantidad, la frecuencia y con qué lo acompañas. Un buen pan en un plato equilibrado no es un problema."],
+  ["Los precocinados son siempre poco saludables.","MITO","Depende de cuáles. Una verdura congelada, una legumbre en conserva o un pescado congelado son precocinados… y opciones excelentes."],
+  ["Sudar mucho al entrenar significa que estás quemando más grasa.","MITO","Sudar es un mecanismo para regular la temperatura. Depende del calor, la ropa y la genética, no de cuánta grasa estás quemando."],
+  ["Hay que beber 2 litros de agua exactos cada día, sin excepción.","MITO","Depende de tu peso, tu actividad, el clima y tu alimentación (la fruta y la verdura también hidratan). Agua a mano, sin obsesionarte con una cifra."],
+  ["Los suplementos «detox» limpian el cuerpo de toxinas.","MITO","Esa función ya la hacen el hígado y los riñones de forma continua. No hay evidencia sólida de que estos productos la mejoren."],
+  ["Si un alimento es ecológico, puedes comer la cantidad que quieras sin que engorde.","MITO","Lo ecológico puede tener ventajas de cultivo, pero no cambia las calorías ni los nutrientes. No son «calorías gratis»."],
+  ["Comer fruta por la noche engorda más que por la mañana.","MITO","No existe ese «interruptor horario». La fruta aporta lo mismo a cualquier hora; importa tu total del día y cómo te sienta a ti."],
+  ["Muchas repeticiones con poco peso «tonifican» y pocas con mucho peso «abultan».","MITO","El músculo no cambia de naturaleza según las repeticiones. «Tonificar» suele significar ganar algo de músculo y perder algo de grasa a la vez."],
+  ["Si dejas de hacer dieta, vas a engordar automáticamente.","MITO","Dejar las dietas restrictivas no es comer sin criterio: es aprender a regularte. Para la mayoría, eso da un peso mucho más estable que el efecto rebote."],
+  ["Las dietas hiperproteicas no tienen ningún riesgo aunque se mantengan mucho tiempo.","MITO","Un aumento puntual y razonable no es un problema en una persona sana. Mantener mucho tiempo una ingesta muy por encima de lo necesario, sin supervisión, sí puede sobrecargar algunos procesos."],
+  ["El azúcar moreno o de coco es mucho más sano que el blanco.","MITO","La diferencia nutricional es mínima: siguen siendo azúcares añadidos. Cambiar el color no cambia el impacto."],
+  ["Si tienes fuerza de voluntad de verdad, cualquier dieta te funciona.","MITO","Quizá el mito más dañino. Las dietas restrictivas fallan por diseño, no por falta de voluntad. El problema nunca fuiste tú: fue el enfoque."],
+  ["Una legumbre en conserva puede ser una opción excelente.","VERDAD","Es un precocinado… y de los buenos. Lávala, escúrrela y tienes la base de un plato completo en dos minutos."],
+  ["Para la mayoría de personas sanas, la sed es un buen indicador de cuánto beber.","VERDAD","Lo es. Obsesionarse con una cifra exacta suele generar más ansiedad que beneficio."],
+  ["La harina de almendra puede tener casi el doble de calorías que la de trigo blanca.","VERDAD","Puede ser interesante según el contexto, pero no es «más ligera». Saludable y poco calórico son cosas distintas."],
+  ["El hígado y los riñones ya se encargan de «depurar» el cuerpo.","VERDAD","Lo hacen de forma continua en una persona sana. Por eso los productos «detox» no tienen mucho que aportar."],
+  ["El azúcar de coco sigue siendo azúcar añadido.","VERDAD","Aporta energía casi vacía de otros nutrientes, igual que el blanco. El envase bonito no lo cambia."],
+  ["El entrenamiento de fuerza y el NEAT se suman, no compiten.","VERDAD","Una hora de gimnasio no compensa estar sentada el resto del día, y los pasos no sustituyen a la fuerza. Juntos, mejor."],
+  ["Lo que importa es el total del día, no la hora a la que comes hidratos o fruta.","VERDAD","No hay un reloj que convierta la comida en grasa. Organiza tus horarios según tu vida y cómo te sientan."],
+  ["Una verdura congelada puede ser tan buena opción como una fresca.","VERDAD","Congelar es una forma de conservar, no de estropear. Y te salva los días sin tiempo."]
+];
+const RONDA = 10;
+let partida = [], i = 0, aciertos = 0;
+const $ = id => document.getElementById(id);
+
+function barajar(a){ a = a.slice(); for(let k=a.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); [a[k],a[j]]=[a[j],a[k]]; } return a; }
+function nueva(){
+  const mitos = barajar(BANCO.filter(b=>b[1]==="MITO")).slice(0,6);
+  const verdades = barajar(BANCO.filter(b=>b[1]==="VERDAD")).slice(0,4);
+  partida = barajar(mitos.concat(verdades)); i = 0; aciertos = 0;
+  $('fin').style.display='none'; $('juego').style.display='flex'; pintar();
+}
+function pintar(){
+  $('bar').innerHTML = partida.map((_,k)=>'<i class="'+(k<=i?'on':'')+'"></i>').join('');
+  $('num').textContent = 'Frase ' + (i+1) + ' de ' + partida.length;
+  $('frase').textContent = '«' + partida[i][0] + '»';
+  $('btns').style.display = 'grid'; $('res').style.display = 'none';
+}
+function responder(r){
+  const [ , ok, exp] = partida[i];
+  const bien = r === ok; if(bien) aciertos++;
+  $('btns').style.display='none';
+  const s=$('sello'); s.textContent = ok; s.className = 'sello ' + ok.toLowerCase();
+  $('tu').textContent = bien ? '¡Bien visto! 🙌' : 'Esta engaña a mucha gente 😉';
+  $('exp').textContent = exp;
+  $('next').textContent = i === partida.length-1 ? 'Ver resultado →' : 'Siguiente →';
+  $('res').style.display='flex';
+}
+function siguiente(){
+  if(i < partida.length-1){ i++; pintar(); return; }
+  $('juego').style.display='none'; $('fin').style.display='flex';
+  $('total').textContent = aciertos + ' / ' + partida.length;
+  $('msg').textContent = aciertos >= 8
+    ? 'Tienes muy buen filtro anti-bulos. Ahora ya sabes qué contestar la próxima vez que lo oigas. 💪'
+    : 'Normal: estos mitos se repiten tanto que parecen verdad. Lo importante es que ahora ya sabes por qué no lo son. 💛';
+}
+document.querySelectorAll('.op').forEach(b=>b.addEventListener('click',()=>responder(b.dataset.r)));
+$('next').addEventListener('click',siguiente);
+$('otra').addEventListener('click',nueva);
+$('compartir').addEventListener('click',async()=>{
+  const texto='He jugado a «¿Mito o verdad?» del Método ARRANCA y he acertado '+aciertos+' de '+partida.length+'. ¿Te atreves?';
+  try{ if(navigator.share){ await navigator.share({title:'¿Mito o verdad?',text:texto,url:location.href}); return; } }catch(e){ return; }
+  try{ await navigator.clipboard.writeText(texto+' '+location.href); $('compartir').textContent='¡Copiado! Pégalo donde quieras ✅'; }catch(e){}
+});
+nueva();
+</script>
+</body>
+</html>
