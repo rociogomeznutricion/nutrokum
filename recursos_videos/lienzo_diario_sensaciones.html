@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infografía - Diario de sensaciones</title>
+  <meta name="description" content="Escuchar a tu cuerpo también se aprende. Empieza escribiéndolo. · Método ARRANCA · Rocío Gómez, dietista.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #090D16;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #F8FAFC;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Contenedor Canvas adaptable (sin altura fija) */
+    .canvas-container {
+      width: 100%;
+      max-width: 540px;
+      height: auto;
+      min-height: auto;
+      background-color: #0F172A;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 36px 28px;
+      position: relative;
+    }
+
+    /* Fondo decorativo de gradiente ambiental */
+    .canvas-container::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      pointer-events: none;
+    }
+
+    .canvas-container::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0) 70%);
+      pointer-events: none;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #A5B4FC;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+    }
+
+    .title span {
+      background: linear-gradient(135deg, #38BDF8 0%, #818CF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle-header {
+      font-size: 13px;
+      color: #94A3B8;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    /* BODY / TARJETAS */
+    .cards-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      background-color: #1E293B;
+      border-radius: 16px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Bordes laterales de acento */
+    .card-emerald { border-left: 5px solid #10B981; }
+    .card-amber   { border-left: 5px solid #F59E0B; }
+    .card-cyan    { border-left: 5px solid #06B6D4; }
+    .card-violet  { border-left: 5px solid #8B5CF6; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .card-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+
+    .card-subtitle {
+      font-size: 12.5px;
+      color: #94A3B8;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .card-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .card-bullets li {
+      font-size: 12.5px;
+      color: #CBD5E1;
+      line-height: 1.45;
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .card-bullets li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #64748B;
+      font-weight: bold;
+    }
+
+    .card-bullets li strong {
+      color: #F1F5F9;
+    }
+
+    /* Caja de Alerta / Advertencia */
+    .alert-box {
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11.5px;
+      line-height: 1.4;
+      font-weight: 600;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .alert-emerald {
+      background: rgba(16, 185, 129, 0.1);
+      color: #6EE7B7;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .alert-amber {
+      background: rgba(245, 158, 11, 0.1);
+      color: #FDE047;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .alert-cyan {
+      background: rgba(6, 182, 212, 0.1);
+      color: #67E8F9;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .alert-violet {
+      background: rgba(139, 92, 246, 0.1);
+      color: #DDD6FE;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    /* FOOTER */
+    .footer {
+      position: relative;
+      z-index: 2;
+    }
+
+    .quote-card {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+    }
+
+    .quote-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+      line-height: 1.45;
+      font-style: italic;
+      margin-bottom: 14px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      width: 100%;
+      background-color: #FFFFFF;
+      color: #4338CA;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border: none;
+      cursor: pointer;
+    }
+  
+    .card-rose    { border-left: 5px solid #F43F5E; }
+    .card-sky     { border-left: 5px solid #0EA5E9; }
+    .card-lime    { border-left: 5px solid #84CC16; }
+    .alert-rose { background: rgba(244,63,94,.1); color: #FDA4AF; border: 1px solid rgba(244,63,94,.2); }
+    .alert-sky  { background: rgba(14,165,233,.1); color: #7DD3FC; border: 1px solid rgba(14,165,233,.2); }
+    .alert-lime { background: rgba(132,204,22,.1); color: #BEF264; border: 1px solid rgba(132,204,22,.2); }
+    .card-mini { padding: 14px 18px; }
+    .card-mini .card-subtitle { margin-bottom: 0; }
+    .letter { display:inline-grid; place-items:center; width:30px; height:30px; border-radius:9px; background:rgba(255,255,255,.08); font-weight:800; font-size:16px; color:#fff; }
+    .cta-button { text-align:center; }
+  </style>
+</head>
+<body>
+
+  <div class="canvas-container">
+
+    <header class="header">
+      <div class="badge">Método ARRANCA • Nutrición Real</div>
+      <h1 class="title">TU DIARIO DE <span>SENSACIONES</span> 📓</h1>
+      <p class="subtitle-header">Escuchar a tu cuerpo también se aprende. Empieza escribiéndolo.</p>
+    </header>
+
+    <main class="cards-wrapper">
+
+      <section class="card card-violet">
+        <div class="card-header">
+          <span class="card-icon">🎯</span>
+          <h2 class="card-title">¿Para qué sirve?</h2>
+        </div>
+        <p class="card-subtitle">Para dejar de comer en piloto automático y empezar a conocer tu patrón.</p>
+        <ul class="card-bullets">
+          <li><strong>Sin calorías, sin culpa, sin juzgar.</strong> Solo observar.</li>
+          <li>Unas pocas palabras sinceras valen más que un texto largo a medias.</li>
+        </ul>
+      </section>
+
+      <section class="card card-cyan">
+        <div class="card-header">
+          <span class="card-icon">✍️</span>
+          <h2 class="card-title">Qué apuntar cada día</h2>
+        </div>
+        <p class="card-subtitle">Te lleva 2 minutos por la noche.</p>
+        <ul class="card-bullets">
+          <li><strong>Energía al despertar</strong> (del 1 al 10) y estado de ánimo.</li>
+          <li><strong>Qué has comido y en qué contexto</strong> (con prisa, con amigas, delante del ordenador...).</li>
+          <li><strong>Cómo te has sentido después</strong> y cómo ha ido tu digestión.</li>
+          <li><strong>¿Hambre física o emocional?</strong> ¿En qué momento?</li>
+        </ul>
+      </section>
+
+      <section class="card card-emerald">
+        <div class="card-header">
+          <span class="card-icon">🔎</span>
+          <h2 class="card-title">Qué vas a descubrir</h2>
+        </div>
+        <p class="card-subtitle">Patrones que no se ven en un solo día.</p>
+        <ul class="card-bullets">
+          <li>Qué comidas te dejan con energía y cuáles te dan bajón.</li>
+          <li>En qué momentos aparece el picoteo emocional.</li>
+          <li>Cómo cambian tu hambre y tu digestión según tu ciclo.</li>
+        </ul>
+        <div class="alert-box alert-emerald">
+          <span>⚠️</span>
+          <span><strong>Clave:</strong> Cuando conoces tu patrón, dejas de pensar «algo hago mal» y pasas a «esto ya lo conozco».</span>
+        </div>
+      </section>
+
+      <section class="card card-amber">
+        <div class="card-header">
+          <span class="card-icon">📅</span>
+          <h2 class="card-title">El reto: 30 días</h2>
+        </div>
+        <p class="card-subtitle">Con el diario imprimible de 30 días del Método ARRANCA.</p>
+        <ul class="card-bullets">
+          <li>Hazlo durante un mes y relee tus notas cada semana.</li>
+        </ul>
+        <div class="alert-box alert-amber">
+          <span>⚠️</span>
+          <span><strong>Tip:</strong> Si un día no lo rellenas, no pasa nada. Sigues al día siguiente.</span>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <div class="quote-card">
+        <p class="quote-text">"Tu cuerpo lleva toda la vida hablándote. Ahora toca escucharlo."</p>
+        <a class="cta-button" href="https://nutriku.com/herramientas/Diario_sensaciones_30_dias.pdf" target="_blank" rel="noopener">📥 Descarga el diario de 30 días</a>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
