@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 20 880 520" fill="none">
+  <!-- YKY HealthTech — isotipo (vectorizado a partir de docs/imagen visual.jpeg) -->
+  <defs>
+    <linearGradient id="yky-arrow" gradientUnits="userSpaceOnUse" x1="540" y1="420" x2="700" y2="260">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#52C79A"/>
+    </linearGradient>
+  </defs>
+  <g stroke="#FFFFFF" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M305 125 A120 120 0 1 0 95 245 L158 318"/>
+    <path d="M243 390 L243 452 A58 58 0 0 1 127 452 C127 425 135 410 150 392 L445 85 A100 100 0 1 1 584 226"/>
+    <path d="M432 372 L502 452"/>
+    <path d="M702 338 L702 450 A72 72 0 0 1 572 492"/>
+  </g>
+  <path d="M368 430 L520 205 L612 300" stroke="#52C79A" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M355 232 L355 445 A70 70 0 0 0 480 485 L820 120" stroke="url(#yky-arrow)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M884 52 L777 79 L863 161 Z" fill="#52C79A" stroke="#52C79A" stroke-width="10" stroke-linejoin="round"/>
+</svg>
