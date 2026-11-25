@@ -60,9 +60,25 @@
     document.querySelectorAll('.esp button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.esp === esp));
     pintaHilo(esp);
     document.querySelectorAll('.solo').forEach((s) => { s.hidden = s.dataset.para !== esp; });
+    const dolor = $('#formDemo select[name=dolor]'); if (dolor) dolor.selectedIndex = esp === 'psicologia' ? 1 : 0;
     const r = $(`#formDemo input[value^="${esp === 'nutricion' ? 'nutrición' : 'psicología'}"]`); if (r) r.checked = true;
     campos = PLANTILLA[esp].map((c) => ({ ...c })); pintaForm();
   }
+
+  /* ---------- Vídeos cortos: no se descarga nada hasta pulsar ---------- */
+  const CORTOS = [['datos', '¿Dónde están las historias de tus pacientes?'], ['formularios', 'Tus preguntas, no las de otro'], ['movil', 'Responde en su móvil, solo lo abres tú'], ['nota', 'La nota, cerrada antes de la siguiente sesión'], ['informe', 'El informe que te quita el domingo'], ['huecos', 'Un hueco vacío no se recupera']];
+  $('#cortos').append(...CORTOS.map(([f, t]) => {
+    const caja = el('span', {}, el('img', { src: `video/${f}.jpg`, alt: '', loading: 'lazy', width: 360, height: 640 }));
+    const b = el('button', { class: 'corto', type: 'button', 'aria-label': `Ver el vídeo: ${t}`, onclick: () => {
+      if (b.classList.contains('viendo')) return;
+      document.querySelectorAll('video').forEach((v) => v.pause());
+      b.classList.add('viendo');
+      const v = el('video', { src: `video/${f}.mp4`, controls: '', playsinline: '', poster: `video/${f}.jpg` });
+      caja.replaceChildren(v); v.play().catch(() => {});
+    } }, caja, el('b', {}, t));
+    return b;
+  }));
+  $('#cine').addEventListener('play', () => document.querySelectorAll('.corto video').forEach((v) => v.pause()));
 
   /* ---------- Recoger la mesa ---------- */
   const mesaNoche = $('#mesaNoche'); const recoger = $('#recoger');
@@ -159,6 +175,6 @@
   });
 
   document.querySelectorAll('.esp button').forEach((b) => b.addEventListener('click', () => ponEspecialidad(b.dataset.esp)));
-  ponEspecialidad(/psico/.test(location.search + location.hash) ? 'psicologia' : 'nutricion');
+  ponEspecialidad(/psico/.test(location.search + location.hash + location.pathname) ? 'psicologia' : 'nutricion');
   const fijo = $('.fijo'); if ('IntersectionObserver' in window) new IntersectionObserver(([x]) => fijo.classList.toggle('fuera', x.isIntersecting)).observe($('#demo'));
 })();

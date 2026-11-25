@@ -11,7 +11,11 @@
 <meta property="og:locale" content="es_ES">
 <meta property="og:title" content="Elegiste cuidar personas. No cuadrar archivos a las once de la noche.">
 <meta property="og:description" content="El programa de consulta que se instala en tu ordenador y se adapta a tu forma de trabajar.">
+<meta property="og:image" content="https://nutriku.com/yky-previa/img/compartir.png"><!-- Cambiar al dominio definitivo -->
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/icono.svg">
+<link rel="preload" href="fonts/familjen.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
@@ -24,7 +28,7 @@
       <button type="button" data-esp="nutricion" aria-pressed="true">Nutrición</button>
       <button type="button" data-esp="psicologia" aria-pressed="false">Psicología</button>
     </div>
-    <nav aria-label="Secciones"><a href="#formularios">A tu medida</a><a href="#datos">Tus datos</a><a href="#quien">Quién lo hace</a></nav>
+    <nav aria-label="Secciones"><a href="#videos" class="solo" data-para="psicologia" hidden>Míralo</a><a href="#formularios">A tu medida</a><a href="#datos">Tus datos</a><a href="#quien">Quién lo hace</a></nav>
     <a class="boton menta" href="#demo">Agendar una demo</a>
   </div>
 </header>
@@ -56,6 +60,16 @@
   <div class="ancho">
     <h2>Esto no sale en la foto de tu consulta</h2>
     <ol class="hilo" id="hilo"></ol>
+  </div>
+</section>
+
+<section class="noche dos solo" id="videos" data-para="psicologia" hidden>
+  <div class="ancho">
+    <div class="cab"><h2>Míralo funcionando. Sin voz, sin prisa y sin dejar tus datos.</h2>
+    <p>Pantallas reales del programa, con personas inventadas. El recorrido completo dura poco más de dos minutos; los cortos, menos de uno.</p></div>
+    <figure class="cine"><video id="cine" controls playsinline preload="none" poster="video/completo.jpg" src="video/completo.mp4"></video></figure>
+    <div class="cortos" id="cortos"></div>
+    <p class="pide"><span>¿Te ves usándolo?</span> <a class="boton menta grande" href="#demo">Pedir mi demo</a></p>
   </div>
 </section>
 
@@ -129,7 +143,27 @@
   </div>
 </section>
 
-<section class="dia" id="informes">
+<section class="dia" id="diferencias">
+  <div class="ancho">
+    <div class="cab"><h2>Lo que cambia de verdad</h2><p>No hay un programa mejor para todo el mundo. Esto es lo que eliges cuando eliges YKY.</p></div>
+    <div class="tabla"><table>
+      <thead><tr><td></td><th scope="col">Lo habitual en la nube</th><th scope="col" class="si">YKY</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Dónde están las historias</th><td>En el servidor del proveedor</td><td class="si">En tu ordenador, cifradas</td></tr>
+        <tr><th scope="row">Sin internet</th><td>Suele dejar de funcionar</td><td class="si">Funciona igual</td></tr>
+        <tr><th scope="row">Si creces</th><td>Muchos cobran por número de pacientes</td><td class="si">Pacientes sin límite</td></tr>
+        <tr><th scope="row">Formularios</th><td>Plantillas comunes</td><td class="si">Los escribes tú</td></tr>
+        <tr><th scope="row">Si no renuevas</th><td>Depende del contrato</td><td class="si">Lees, exportas y haces copias</td></tr>
+        <tr><th scope="row">Cuando pides ayuda</th><td>Un formulario de incidencias</td><td class="si">Quien lo ha programado</td></tr>
+        <tr><th scope="row">Entrar desde cualquier sitio</th><td class="gana">Sí</td><td>No: solo en tu ordenador</td></tr>
+        <tr><th scope="row">Trabajo en equipo</th><td class="gana">Sí</td><td>No: una persona</td></tr>
+      </tbody>
+    </table></div>
+    <p class="nota">«Lo habitual» resume lo que se ve en el sector, no un producto concreto. Cada programa es distinto: pregunta al tuyo.</p>
+  </div>
+</section>
+
+<section class="dia borde" id="informes">
   <div class="ancho partido">
     <div><h2>El informe, en un clic. Y que el domingo vuelva a ser domingo.</h2>
     <p>Los datos ya están en la ficha. Entonces, ¿por qué los vuelves a escribir? Monta tu informe una vez, por bloques: datos, gráfica, texto, firma. La siguiente vez parte de tu plantilla, con los datos de cada paciente, y sale en PDF <strong>con un clic</strong>, con tu logo y tus colores.</p>
@@ -177,7 +211,19 @@
     <details><summary>¿Y si se me rompe el ordenador?</summary><p>Instalas YKY en otro, te activo la licencia, restauras tu copia y sigues. Por eso las copias se hacen solas al cerrar.</p></details>
     <details><summary>¿Y si olvido la contraseña?</summary><p>Al crearla recibes una clave de recuperación para imprimir y guardar. No hay puerta trasera: yo tampoco puedo entrar.</p></details>
     <details><summary>¿Puedo probarlo?</summary><p>Sí. Incluye una consulta de ejemplo con pacientes inventados que puedes tocar sin miedo durante 15 días.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿Qué tests trae?</summary><p>PHQ-9, GAD-7, PCL-5, PC-PTSD-5 y la escala de Rosenberg, con su puntuación. Solo los que tienen permiso de uso. Puedes crear los tuyos, con subescalas, ítems inversos y avisos.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿Una nota cerrada se puede cambiar?</summary><p>No. Al cerrarla queda fija y después solo se añaden aclaraciones con su fecha.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿Cómo funciona con menores y parejas?</summary><p>Cada ficha guarda a sus tutores, su pareja u otros profesionales, con sus consentimientos. Si es menor y falta registrar el de un tutor, te avisa. El aviso es orientativo: el criterio es tuyo.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿La firma en pantalla vale para un consentimiento?</summary><p>Es una firma electrónica simple: guarda el trazo, la fecha y una huella del documento. Los textos incluidos son orientativos; revísalos con tu colegio o asesoría.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿Lo ha hecho alguien de psicología?</summary><p>No. Lo programo yo, técnico superior en Dietética y con más de 16 años de software a medida. La parte de psicología la quiero afinar con quien la ejerce: si ves algo que no encaja, me ayuda saberlo.</p></details>
     <details><summary>¿Cuánto cuesta?</summary><p>Es una licencia anual según lo que uses, con pacientes ilimitados. Te doy el precio exacto en la demo, sin letra pequeña.</p></details>
+  </div>
+</section>
+
+<section class="dia borde" id="pasos">
+  <div class="ancho">
+    <h2>Cómo empezamos</h2>
+    <ol class="pasos"><li><b>Me cuentas cómo trabajas</b><span>Cinco minutos. Qué te quita tiempo y qué no quieres cambiar.</span></li><li><b>Te enseño solo eso</b><span>Quince minutos por videollamada, con personas inventadas.</span></li><li><b>Lo pruebas quince días</b><span>En tu ordenador, con una consulta de ejemplo que puedes romper.</span></li><li><b>Si te encaja, lo montamos a la vez</b><span>Tu contraseña, tu membrete, tus copias y tu primera persona.</span></li></ol>
   </div>
 </section>
 
@@ -200,6 +246,7 @@
 
 <footer><div class="ancho"><span><img src="img/marca-clara.svg" alt="" width="40" height="24"> YKY, de YesKYes HealthTech</span><nav aria-label="Legal"><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="https://nutriku.com/" target="_blank" rel="noopener">NUTRIKU</a><a href="https://www.instagram.com/rociogomez_nutriku" target="_blank" rel="noopener">Instagram</a></nav><small>Las pantallas muestran personas y datos inventados. YKY es una herramienta de gestión: no diagnostica ni sustituye el criterio profesional.</small></div></footer>
 <a class="boton menta fijo" href="#demo">Agendar una demo</a>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"YKY","applicationCategory":"BusinessApplication","operatingSystem":"Windows","description":"Programa de escritorio para consultas de nutrición y psicología: historia, formularios a medida, agenda, evolución e informes, con los datos cifrados en el ordenador de quien lo usa.","author":{"@type":"Person","name":"Rocío Gómez","jobTitle":"Técnico superior en Dietética y desarrolladora de software"}}</script>
 <script src="web.js"></script>
 </body>
 </html>

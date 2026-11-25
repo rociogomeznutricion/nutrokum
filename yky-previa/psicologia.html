@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="es" data-esp="psicologia">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YKY · Programa para consultas de psicología, en tu ordenador</title>
+<meta name="description" content="Historia clínica, notas SOAP, tests, cuestionarios para casa, agenda, informes y firma para quien lleva su consulta de psicología por su cuenta. Cifrado en tu ordenador, sin nube. Mira los vídeos y agenda una demo.">
+<meta name="robots" content="noindex,nofollow"><!-- Quitar al publicar -->
+<meta name="theme-color" content="#00333C">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="Elegiste acompañar a personas. No escribir notas a las once de la noche.">
+<meta property="og:description" content="El programa de consulta que se instala en tu ordenador y se adapta a tu forma de trabajar.">
+<meta property="og:image" content="https://nutriku.com/yky-previa/img/compartir.png"><!-- Cambiar al dominio definitivo -->
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="img/icono.svg">
+<link rel="preload" href="fonts/familjen.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<a class="salta" href="#contenido">Ir al contenido</a>
+
+<header class="barra">
+  <div class="ancho">
+    <a class="marca" href="#inicio" aria-label="YKY, inicio"><img src="img/marca-clara.svg" alt="" width="52" height="31"><span>YKY</span></a>
+    <div class="esp" role="group" aria-label="¿A qué te dedicas?">
+      <button type="button" data-esp="nutricion" aria-pressed="true">Nutrición</button>
+      <button type="button" data-esp="psicologia" aria-pressed="false">Psicología</button>
+    </div>
+    <nav aria-label="Secciones"><a href="#videos" class="solo" data-para="psicologia" hidden>Míralo</a><a href="#formularios">A tu medida</a><a href="#datos">Tus datos</a><a href="#quien">Quién lo hace</a></nav>
+    <a class="boton menta" href="#demo">Agendar una demo</a>
+  </div>
+</header>
+
+<main id="contenido">
+
+<section class="noche" id="inicio">
+  <div class="ancho inicio">
+    <div class="inicio-texto">
+      <p class="hora"><time>22:47</time> <span>y sigues con la consulta abierta</span></p>
+      <h1>Elegiste acompañar a personas. No escribir notas a las once de la noche.</h1>
+      <p class="entrada">YKY es el programa de consulta que se instala <strong>en tu ordenador</strong> y se adapta <strong>a tu forma de trabajar</strong>. No al revés.</p>
+      <div class="acciones"><a class="boton menta grande" href="#demo">Agendar una demo</a><button class="boton linea grande" type="button" id="recoger">Recoger todo esto</button></div>
+      <p class="nota">20 minutos, con datos inventados y sin compromiso.</p>
+    </div>
+    <div class="mesa-noche" id="mesaNoche">
+      <div class="papel p1"><b>notas_sesion_BUENO.docx</b><i>no es el bueno</i></div>
+      <div class="papel p2"><b>WhatsApp</b>«Te mando el cuestionario en foto, se ve regular»</div>
+      <div class="papel p3"><b>Cuaderno azul</b>Elena: ¿en qué quedamos?</div>
+      <div class="papel p4"><b>informe (copia) (2).docx</b>Cambiar el nombre, que es del paciente anterior</div>
+      <div class="papel p5"><b>Nota adhesiva</b>¿Marta me pagó?</div>
+      <div class="papel p6"><b>Formulario online</b>Respuestas: 34. ¿Dónde se guardan?</div>
+      <figure class="ventana"><img src="img/hoy.webp" width="1330" height="780" alt="Pantalla Hoy de YKY: las citas del día, lo último que contó la paciente, en qué quedasteis y lo que queda por cerrar"></figure>
+    </div>
+  </div>
+</section>
+
+<section class="noche dos" id="problemas">
+  <div class="ancho">
+    <h2>Esto no sale en la foto de tu consulta</h2>
+    <ol class="hilo" id="hilo"></ol>
+  </div>
+</section>
+
+<section class="noche dos solo" id="videos" data-para="psicologia" hidden>
+  <div class="ancho">
+    <div class="cab"><h2>Míralo funcionando. Sin voz, sin prisa y sin dejar tus datos.</h2>
+    <p>Pantallas reales del programa, con personas inventadas. El recorrido completo dura poco más de dos minutos; los cortos, menos de uno.</p></div>
+    <figure class="cine"><video id="cine" controls playsinline preload="none" poster="video/completo.jpg" src="video/completo.mp4"></video></figure>
+    <div class="cortos" id="cortos"></div>
+    <p class="pide"><span>¿Te ves usándolo?</span> <a class="boton menta grande" href="#demo">Pedir mi demo</a></p>
+  </div>
+</section>
+
+<section class="dia" id="formularios">
+  <div class="ancho">
+    <div class="cab"><h2>Llevas años afinando tus preguntas. ¿Por qué tienes que usar las de otro?</h2>
+    <p>Un formulario pensado para todo el mundo no es el tuyo. En YKY lo escribes tú y lo ves al momento. Prueba: cambia una pregunta.</p></div>
+    <div class="taller">
+      <div class="editor">
+        <p class="rotulo">Tu formulario</p>
+        <div id="campos"></div>
+        <div class="anadir"><span>Añadir:</span><button type="button" data-tipo="texto">Texto</button><button type="button" data-tipo="escala">Escala</button><button type="button" data-tipo="sino">Sí o no</button><button type="button" data-tipo="opciones">Opciones</button></div>
+      </div>
+      <div class="movil"><div class="movil-in"><p class="movil-cab">Cuestionario para casa</p><form id="previa"></form></div></div>
+      <div class="codigo">
+        <p class="rotulo">Lo que viaja</p>
+        <pre id="cifrado" aria-live="polite">Responde en el móvil y pulsa «Enviar».</pre>
+        <p class="rotulo">Lo que lees tú</p>
+        <div id="abierto" class="abierto"></div>
+        <p class="nota">Aquí se cifra de verdad, en tu navegador, y nada sale de esta página. En YKY cada envío lleva su propia clave y solo tu ordenador puede abrirlo.</p>
+      </div>
+    </div>
+    <ul class="hechos"><li><strong>Preguntas que aparecen</strong> según la respuesta anterior.</li><li><strong>Números que se convierten en gráfica</strong> solos.</li><li><strong>Tests con su puntuación:</strong> PHQ-9, GAD-7, PCL-5 y otros de uso permitido.</li><li><strong>Plantillas de partida</strong> para no empezar en blanco.</li></ul>
+  </div>
+</section>
+
+<section class="dia borde solo" id="nutricion" data-para="nutricion">
+  <div class="ancho">
+    <div class="cab"><h2>En esa casa se cocina una vez. Tu pauta no puede exigir cuatro cenas.</h2>
+    <p>Por buena que sea, si obliga a cocinar aparte, dura dos semanas. YKY hace el menú para quien tienes delante <em>y para quien se sienta a su mesa</em>. Quita y pon comensales.</p></div>
+    <div class="mesa">
+      <div class="mesa-izq">
+        <div class="platos" id="platos" role="tablist" aria-label="Cena"></div>
+        <h3 id="platoNombre"></h3>
+        <div id="comensales" class="comensales"></div>
+      </div>
+      <div class="mesa-der"><p class="rotulo">Hay que preparar</p><p class="total" id="total" aria-live="polite"></p><ul id="compra" class="compra"></ul><p class="nota">Raciones calculadas por YKY en la consulta de demostración. La variante cambia solo la proteína.</p></div>
+    </div>
+    <div class="pestanas" data-grupo="nutri"></div>
+  </div>
+</section>
+
+<section class="dia borde solo" id="psicologia" data-para="psicologia" hidden>
+  <div class="ancho">
+    <div class="cab"><h2>Te han contado lo que no le han contado a nadie. Guárdalo como se merece.</h2>
+    <p>Una historia clínica que se escribe rápido, se cierra de verdad y se entiende seis meses después.</p></div>
+    <div class="pestanas" data-grupo="psico"></div>
+  </div>
+</section>
+
+<section class="sello" id="datos">
+  <div class="ancho">
+    <div class="cab"><h2>¿Sabes en qué ordenador están ahora mismo las historias de tus pacientes?</h2>
+    <p>Con YKY la respuesta cabe en tres palabras: <strong>en el tuyo</strong>. Haz la prueba, apaga el wifi.</p></div>
+    <div class="wifi" id="wifi" data-on="1">
+      <button type="button" role="switch" aria-checked="true" id="interruptor"><span class="pal"></span><b>Wifi</b> <em>encendido</em></button>
+      <div class="lados">
+        <div class="lado nube"><h3>Programa en la nube</h3><p class="estado on">Conectado al servidor de otra empresa</p><p class="estado off">Sin conexión. Vuelve a intentarlo más tarde.</p><div class="renglones"><i></i><i></i><i></i><i></i></div></div>
+        <div class="lado yky"><h3>YKY</h3><p class="estado siempre">Trabajando en tu ordenador</p><div class="ficha"><b>Elena Ruiz Campos</b><span>17:00, sesión</span><span>Quedasteis en: espaciar a quincenal.</span></div></div>
+      </div>
+    </div>
+    <dl class="garantias">
+      <div><dt>Instalado, no alquilado en la nube</dt><dd>Las historias de tus pacientes no pasan por mis servidores. No tengo.</dd></div>
+      <div><dt>Cifrado, no solo guardado</dt><dd>Toda la base de datos va cifrada (AES-256) y se abre con tu contraseña. También los archivos y las notas de voz.</dd></div>
+      <div><dt>Se bloquea solo</dt><dd>Cuando dejas de usarlo, al suspender el equipo o con una tecla. Sin perder lo que escribías.</dd></div>
+      <div><dt>Copias cifradas automáticas</dt><dd>Al cerrar, en tu USB o donde tú decidas. Si se rompe el portátil, no se rompe tu consulta.</dd></div>
+      <div><dt>Pacientes sin límite</dt><dd>No pagas más por tener más trabajo.</dd></div>
+      <div><dt>Si un día te vas, te lo llevas</dt><dd>Aunque no renueves puedes consultar, exportar y hacer copias. Tus datos no son un rehén.</dd></div>
+    </dl>
+    <p class="nota">La responsabilidad sobre los datos sigue siendo tuya: YKY pone las herramientas; la contraseña, las copias y el equipo los cuidas tú.</p>
+  </div>
+</section>
+
+<section class="dia" id="diferencias">
+  <div class="ancho">
+    <div class="cab"><h2>Lo que cambia de verdad</h2><p>No hay un programa mejor para todo el mundo. Esto es lo que eliges cuando eliges YKY.</p></div>
+    <div class="tabla"><table>
+      <thead><tr><td></td><th scope="col">Lo habitual en la nube</th><th scope="col" class="si">YKY</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Dónde están las historias</th><td>En el servidor del proveedor</td><td class="si">En tu ordenador, cifradas</td></tr>
+        <tr><th scope="row">Sin internet</th><td>Suele dejar de funcionar</td><td class="si">Funciona igual</td></tr>
+        <tr><th scope="row">Si creces</th><td>Muchos cobran por número de pacientes</td><td class="si">Pacientes sin límite</td></tr>
+        <tr><th scope="row">Formularios</th><td>Plantillas comunes</td><td class="si">Los escribes tú</td></tr>
+        <tr><th scope="row">Si no renuevas</th><td>Depende del contrato</td><td class="si">Lees, exportas y haces copias</td></tr>
+        <tr><th scope="row">Cuando pides ayuda</th><td>Un formulario de incidencias</td><td class="si">Quien lo ha programado</td></tr>
+        <tr><th scope="row">Entrar desde cualquier sitio</th><td class="gana">Sí</td><td>No: solo en tu ordenador</td></tr>
+        <tr><th scope="row">Trabajo en equipo</th><td class="gana">Sí</td><td>No: una persona</td></tr>
+      </tbody>
+    </table></div>
+    <p class="nota">«Lo habitual» resume lo que se ve en el sector, no un producto concreto. Cada programa es distinto: pregunta al tuyo.</p>
+  </div>
+</section>
+
+<section class="dia borde" id="informes">
+  <div class="ancho partido">
+    <div><h2>El informe, en un clic. Y que el domingo vuelva a ser domingo.</h2>
+    <p>Los datos ya están en la ficha. Entonces, ¿por qué los vuelves a escribir? Monta tu informe una vez, por bloques: datos, gráfica, texto, firma. La siguiente vez parte de tu plantilla, con los datos de cada paciente, y sale en PDF <strong>con un clic</strong>, con tu logo y tus colores.</p>
+    <ul class="hechos una"><li><strong>Tu membrete</strong>, en cada página.</li><li><strong>La gráfica de su evolución</strong>, dentro del informe.</li><li><strong>Consentimientos</strong> y firma en pantalla.</li><li><strong>El plan en el móvil</strong> del paciente, sin apps ni registros.</li></ul></div>
+    <div class="doble"><figure class="marco"><img loading="lazy" src="img/documento.webp" width="1920" height="1080" alt="Editor de informes de YKY, con bloques de datos, texto, evolución y firma"></figure><figure class="telefono"><img loading="lazy" src="img/movil.webp" width="400" height="728" alt="Plan semanal en el móvil del paciente"></figure></div>
+  </div>
+</section>
+
+<section class="dia borde" id="mejoras">
+  <div class="ancho partido inverso">
+    <div class="carta"><p>«Esto que hago yo, tu programa no lo hace.»</p><p class="resp">Cuéntame cómo lo haces y vemos cómo meterlo.</p></div>
+    <div><h2>¿Cuántas veces has pedido un cambio y te han dado un número de incidencia?</h2>
+    <p>Aquí hablas con quien lo programa. Las mejoras se deciden escuchando a quien lo usa cada día, y si necesitas algo muy tuyo, se estudia y se presupuesta antes de empezar. No hay dos consultas iguales. Tu programa tampoco debería serlo.</p></div>
+  </div>
+</section>
+
+<section class="noche" id="quien">
+  <div class="ancho quien">
+    <img loading="lazy" src="img/rocio.webp" width="640" height="747" alt="Rocío Gómez">
+    <div>
+      <h2>Vivo a los dos lados de la pantalla</h2>
+      <p class="cifras"><span><b>+16</b> años creando software a medida</span><span><b>4</b> años como técnico superior en Dietética</span></p>
+      <p>Soy Rocío Gómez. Durante más de 16 años he construido programas para quien tenía un problema que ningún programa resolvía. Luego me senté al otro lado: la consulta, la persona delante, el reloj.</p>
+      <p>Y entendí algo que no se ve desde un despacho de informática: <strong>lo que agota no es atender, es todo lo demás.</strong> Reescribir, buscar, cuadrar, recordar. Y la inquietud de no saber del todo dónde están los datos de quien ha confiado en ti.</p>
+      <p>YKY nace de juntar los dos mundos: ver la necesidad en la consulta y saber construir la solución.</p>
+      <p class="nota"><a href="https://nutriku.com/" target="_blank" rel="noopener">Conoce mi consulta, NUTRIKU</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="dia" id="limites">
+  <div class="ancho estrecho">
+    <h2>Lo que YKY no hace</h2>
+    <p>Mejor que lo sepas antes de la demo:</p>
+    <ul class="noes"><li>Solo funciona en <strong>Windows</strong>. Nada de Mac o tablet por ahora.</li><li>Es para <strong>una persona en un ordenador</strong>. No comparte agenda entre un equipo.</li><li>Emite <strong>recibos</strong>, no facturas.</li><li>Sin reserva de cita por internet, videollamada ni inteligencia artificial.</li></ul>
+    <p>Si algo de esto es imprescindible para ti, hay programas que lo hacen bien. Si lo que buscas es calma, criterio propio y tus datos en casa, hablemos.</p>
+  </div>
+</section>
+
+<section class="dia borde" id="preguntas">
+  <div class="ancho estrecho">
+    <h2>Antes de escribirme</h2>
+    <details><summary>¿Es difícil de usar?</summary><p>Trae dentro una ayuda que responde a tus preguntas y te ilumina el botón que toca. Y la puesta en marcha la hacemos a la vez.</p></details>
+    <details><summary>¿Puedo traer mis pacientes?</summary><p>Sí, desde Excel u otro programa que exporte a CSV.</p></details>
+    <details><summary>¿Y si se me rompe el ordenador?</summary><p>Instalas YKY en otro, te activo la licencia, restauras tu copia y sigues. Por eso las copias se hacen solas al cerrar.</p></details>
+    <details><summary>¿Y si olvido la contraseña?</summary><p>Al crearla recibes una clave de recuperación para imprimir y guardar. No hay puerta trasera: yo tampoco puedo entrar.</p></details>
+    <details><summary>¿Puedo probarlo?</summary><p>Sí. Incluye una consulta de ejemplo con pacientes inventados que puedes tocar sin miedo durante 15 días.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿Qué tests trae?</summary><p>PHQ-9, GAD-7, PCL-5, PC-PTSD-5 y la escala de Rosenberg, con su puntuación. Solo los que tienen permiso de uso. Puedes crear los tuyos, con subescalas, ítems inversos y avisos.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿Una nota cerrada se puede cambiar?</summary><p>No. Al cerrarla queda fija y después solo se añaden aclaraciones con su fecha.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿Cómo funciona con menores y parejas?</summary><p>Cada ficha guarda a sus tutores, su pareja u otros profesionales, con sus consentimientos. Si es menor y falta registrar el de un tutor, te avisa. El aviso es orientativo: el criterio es tuyo.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿La firma en pantalla vale para un consentimiento?</summary><p>Es una firma electrónica simple: guarda el trazo, la fecha y una huella del documento. Los textos incluidos son orientativos; revísalos con tu colegio o asesoría.</p></details>
+    <details class="solo" data-para="psicologia" hidden><summary>¿Lo ha hecho alguien de psicología?</summary><p>No. Lo programo yo, técnico superior en Dietética y con más de 16 años de software a medida. La parte de psicología la quiero afinar con quien la ejerce: si ves algo que no encaja, me ayuda saberlo.</p></details>
+    <details><summary>¿Cuánto cuesta?</summary><p>Es una licencia anual según lo que uses, con pacientes ilimitados. Te doy el precio exacto en la demo, sin letra pequeña.</p></details>
+  </div>
+</section>
+
+<section class="dia borde" id="pasos">
+  <div class="ancho">
+    <h2>Cómo empezamos</h2>
+    <ol class="pasos"><li><b>Me cuentas cómo trabajas</b><span>Cinco minutos. Qué te quita tiempo y qué no quieres cambiar.</span></li><li><b>Te enseño solo eso</b><span>Quince minutos por videollamada, con personas inventadas.</span></li><li><b>Lo pruebas quince días</b><span>En tu ordenador, con una consulta de ejemplo que puedes romper.</span></li><li><b>Si te encaja, lo montamos a la vez</b><span>Tu contraseña, tu membrete, tus copias y tu primera persona.</span></li></ol>
+  </div>
+</section>
+
+<section class="sello" id="demo">
+  <div class="ancho demo">
+    <div><h2>Mañana, a las 22:47, podrías estar en el sofá</h2><p>Cuéntame cómo es tu consulta. Te enseño YKY en 20 minutos por videollamada, solo lo que a ti te sirve.</p><p class="nota">Esta web no guarda lo que escribes: prepara un mensaje de WhatsApp y tú decides si lo envías.</p></div>
+    <form id="formDemo" novalidate>
+      <label>Tu nombre<input name="nombre" autocomplete="given-name" required></label>
+      <fieldset><legend>Me dedico a</legend><label class="op"><input type="radio" name="esp" value="nutrición o dietética" checked>Nutrición o dietética</label><label class="op"><input type="radio" name="esp" value="psicología">Psicología</label><label class="op"><input type="radio" name="esp" value="pedagogía o logopedia">Pedagogía o logopedia</label></fieldset>
+      <fieldset><legend>Mi ordenador es</legend><label class="op"><input type="radio" name="so" value="Windows" checked>Windows</label><label class="op"><input type="radio" name="so" value="Mac">Mac</label></fieldset>
+      <p class="aviso" id="avisoMac" hidden>Hoy YKY no funciona en Mac. Si me escribes, te aviso cuando lo haga.</p>
+      <label>Lo que más tiempo me quita<select name="dolor"><option>Hacer menús y pautas</option><option>Escribir notas e informes</option><option>Formularios y cuestionarios</option><option>Tenerlo todo repartido</option><option>La protección de los datos</option></select></label>
+      <label>Me viene bien<select name="cuando"><option>Por la mañana</option><option>A mediodía</option><option>Por la tarde</option></select></label>
+      <p class="error" id="errorDemo" role="alert" hidden>Escribe tu nombre para poder saludarte.</p>
+      <button class="boton menta grande" type="submit">Preparar mi mensaje</button>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer><div class="ancho"><span><img src="img/marca-clara.svg" alt="" width="40" height="24"> YKY, de YesKYes HealthTech</span><nav aria-label="Legal"><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="https://nutriku.com/" target="_blank" rel="noopener">NUTRIKU</a><a href="https://www.instagram.com/rociogomez_nutriku" target="_blank" rel="noopener">Instagram</a></nav><small>Las pantallas muestran personas y datos inventados. YKY es una herramienta de gestión: no diagnostica ni sustituye el criterio profesional.</small></div></footer>
+<a class="boton menta fijo" href="#demo">Agendar una demo</a>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"YKY","applicationCategory":"BusinessApplication","operatingSystem":"Windows","description":"Programa de escritorio para consultas de nutrición y psicología: historia, formularios a medida, agenda, evolución e informes, con los datos cifrados en el ordenador de quien lo usa.","author":{"@type":"Person","name":"Rocío Gómez","jobTitle":"Técnico superior en Dietética y desarrolladora de software"}}</script>
+<script src="web.js"></script>
+</body>
+</html>
